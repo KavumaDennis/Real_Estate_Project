@@ -1,0 +1,398 @@
+import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { HiPlus, HiPencil, HiTrash, HiChevronRight, HiX, HiPhotograph, HiCheck, HiExclamation } from 'react-icons/hi';
+import { BiBuildingHouse } from 'react-icons/bi';
+import propertyService from '../services/propertyService';
+import api from '../services/api';
+import SafeImage from '../components/SafeImage';
+
+const FALLBACK = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
+
+const StatusBadge = ({ status, availability }) => {
+    const isForSale = status === 'for_sale';
+    return (
+        <div className="flex flex-col gap-1">
+            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${isForSale ? 'bg-blue-100 text-blue-700' : 'bg-green-100 border border-black/20 text-green-700'}`}>
+                {isForSale ? 'For Sale' : 'For Rent'}
+            </span>
+            {availability && (
+                <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${availability === 'available' ? 'bg-blue-50 border border-black/20 text-blue-500' :
+                    availability === 'sold' ? 'bg-red-50 text-red-500' :
+                        'bg-orange-50 text-orange-500'
+                    }`}>
+                    {availability.replace('_', ' ')}
+                </span>
+            )}
+        </div>
+    );
+};
+
+// ── Edit Modal ──────────────────────────────────────────────
+const EditModal = ({ property, locations, onClose, onSaved }) => {
+    const [form, setForm] = useState({
+        title: property.title || '',
+        description: property.description || '',
+        type: property.type || 'house',
+        status: property.status || 'for_sale',
+        price: property.price || '',
+        address: property.address || '',
+        location_id: property.location?.id || '',
+        bedrooms: property.bedrooms || '',
+        bathrooms: property.bathrooms || '',
+        size: property.size || '',
+        virtual_tour_url: property.virtual_tour_url || '',
+        availability: property.availability || 'available',
+        is_published: property.is_published ?? true,
+        is_featured: property.is_featured ?? false,
+    });
+    const [newImages, setNewImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        setNewImages(files);
+        setImagePreviews(files.map(f => URL.createObjectURL(f)));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        setError('');
+        try {
+            const fd = new FormData();
+            Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+            newImages.forEach(img => fd.append('images[]', img));
+            await propertyService.update(property.id, fd);
+            onSaved();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Update failed. Please check your inputs.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="bg-teal-700 w-full max-w-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between p-4 px-8 border-b">
+                    <h2 className="text-2xl font-black text-white">Edit Property</h2>
+                    <button onClick={onClose} className="h-10 w-10 bg-amber-600 flex items-center justify-center hover:bg-gray-200 transition">
+                        <HiX className="h-5 w-5" />
+                    </button>
+                </div>
+
+                {error && (
+                    <div className="mx-8 mt-6 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center space-x-3 text-red-700">
+                        <HiExclamation className="h-5 w-5 flex-shrink-0" />
+                        <p className="text-sm font-medium">{error}</p>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="overflow-y-auto p-8 space-y-5">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="col-span-2">
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Title</label>
+                            <input className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Type</label>
+                            <select className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="commercial">Commercial</option>
+                                <option value="land">Land</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Status</label>
+                            <select className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+                                <option value="for_sale">For Sale</option>
+                                <option value="for_rent">For Rent</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price ($)</label>
+                            <input type="number" className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Location</label>
+                            <select className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.location_id} onChange={e => setForm({ ...form, location_id: e.target.value })}>
+                                {locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                            </select>
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Address</label>
+                            <input className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bedrooms</label>
+                            <input type="number" className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.bedrooms} onChange={e => setForm({ ...form, bedrooms: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bathrooms</label>
+                            <input type="number" className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.bathrooms} onChange={e => setForm({ ...form, bathrooms: e.target.value })} />
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Description</label>
+                            <textarea rows="3" className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required />
+                        </div>
+                        <div className="col-span-2 grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Virtual Tour URL</label>
+                                <input className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.virtual_tour_url} onChange={e => setForm({ ...form, virtual_tour_url: e.target.value })} placeholder="YouTube/Matterport link" />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Availability</label>
+                                <select className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" value={form.availability} onChange={e => setForm({ ...form, availability: e.target.value })}>
+                                    <option value="available">Available</option>
+                                    <option value="sold">Sold</option>
+                                    <option value="reserved">Reserved</option>
+                                    <option value="off_market">Off Market</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Add More Images</label>
+                            <label className="flex items-center space-x-3 border-2 border-dashed border-gray-200 rounded-2xl p-4 cursor-pointer hover:border-blue-400 transition">
+                                <HiPhotograph className="h-6 w-6 text-gray-300" />
+                                <span className="text-gray-400 font-medium text-sm">Click to upload images</span>
+                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageChange} />
+                            </label>
+                            {imagePreviews.length > 0 && (
+                                <div className="flex gap-2 mt-3 flex-wrap">
+                                    {imagePreviews.map((src, i) => (
+                                        <SafeImage key={i} src={src} className="h-16 w-16 rounded-xl object-cover" alt="" />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className="col-span-2 flex gap-6">
+                            <label className="flex items-center space-x-3 cursor-pointer">
+                                <div onClick={() => setForm({ ...form, is_published: !form.is_published })} className={`h-6 w-11 rounded-full transition ${form.is_published ? 'bg-blue-600' : 'bg-gray-200'} relative`}>
+                                    <div className={`h-5 w-5 bg-white rounded-full absolute top-0.5 transition-all ${form.is_published ? 'left-5' : 'left-0.5'}`} />
+                                </div>
+                                <span className="text-sm font-bold text-black">Published</span>
+                            </label>
+                            <label className="flex items-center space-x-3 cursor-pointer">
+                                <div onClick={() => setForm({ ...form, is_featured: !form.is_featured })} className={`h-6 w-11 rounded-full transition ${form.is_featured ? 'bg-orange-500' : 'bg-gray-200'} relative`}>
+                                    <div className={`h-5 w-5 bg-white rounded-full absolute top-0.5 transition-all ${form.is_featured ? 'left-5' : 'left-0.5'}`} />
+                                </div>
+                                <span className="text-sm font-bold text-black">Featured</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+
+                <div className="p-8 pt-3 flex gap-3">
+                    <button onClick={onClose} className="flex-1 px-6 py-3 border border-black/60 text-xs text-center font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Cancel</button>
+                    <button onClick={handleSubmit} disabled={saving} className="flex-1 px-6 py-3 border border-black/10 bg-amber-600 text-xs text-center font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50">
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ── Delete Confirm Modal ─────────────────────────────────────
+const DeleteModal = ({ property, onClose, onDeleted }) => {
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            await propertyService.delete(property.id);
+            onDeleted();
+        } catch {
+            setDeleting(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white w-full max-w-md rounded-[32px] shadow-2xl p-8 text-center">
+                <div className="h-16 w-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <HiTrash className="h-8 w-8 text-red-500" />
+                </div>
+                <h2 className="text-2xl font-black text-gray-900 mb-3">Delete Property?</h2>
+                <p className="text-gray-400 mb-8">
+                    "<span className="font-bold text-gray-700">{property.title}</span>" will be permanently removed along with all its images. This cannot be undone.
+                </p>
+                <div className="flex gap-3">
+                    <button onClick={onClose} className="flex-1 py-3 bg-gray-100 text-gray-700 font-black rounded-2xl hover:bg-gray-200 transition">Cancel</button>
+                    <button onClick={handleDelete} disabled={deleting} className="flex-1 py-3 bg-red-500 text-white font-black rounded-2xl hover:bg-red-600 transition disabled:opacity-50">
+                        {deleting ? 'Deleting...' : 'Yes, Delete'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ── Main Component ───────────────────────────────────────────
+const MyProperties = () => {
+    const [properties, setProperties] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [editingProperty, setEditingProperty] = useState(null);
+    const [deletingProperty, setDeletingProperty] = useState(null);
+    const [toast, setToast] = useState(null);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [propsRes, locsRes] = await Promise.all([
+                propertyService.getMyProperties(),
+                api.get('/locations'),
+            ]);
+            setProperties(propsRes.data.data || propsRes.data || []);
+            setLocations(locsRes.data);
+        } catch (err) {
+            console.error('Error fetching data:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const showToast = (msg, type = 'success') => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3500);
+    };
+
+    const handleSaved = () => {
+        setEditingProperty(null);
+        fetchData();
+        showToast('Property updated successfully!');
+    };
+
+    const handleDeleted = () => {
+        setDeletingProperty(null);
+        fetchData();
+        showToast('Property deleted.', 'info');
+    };
+
+    return (
+        <div className="space-y-8">
+            {/* Toast */}
+            {toast && (
+                <div className={`fixed top-6 right-6 z-50 flex items-center space-x-3 px-6 py-4 rounded-2xl shadow-2xl text-white font-bold text-sm transition-all ${toast.type === 'success' ? 'bg-green-600' : 'bg-blue-600'}`}>
+                    <HiCheck className="h-5 w-5" />
+                    <span>{toast.msg}</span>
+                </div>
+            )}
+
+            {editingProperty && (
+                <EditModal
+                    property={editingProperty}
+                    locations={locations}
+                    onClose={() => setEditingProperty(null)}
+                    onSaved={handleSaved}
+                />
+            )}
+            {deletingProperty && (
+                <DeleteModal
+                    property={deletingProperty}
+                    onClose={() => setDeletingProperty(null)}
+                    onDeleted={handleDeleted}
+                />
+            )}
+
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">My Listings</h1>
+                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Manage, publish, and track your properties.</p>
+                </div>
+                <Link
+                    to="/dashboard/properties/create"
+                    className="px-6 py-3 flex items-center border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                >
+                    <HiPlus className="h-5 w-5" />
+                    <span>Add New Property</span>
+                </Link>
+            </div>
+
+            <div className="bg-white shadow-sm border border-black/30 overflow-hidden">
+                {loading ? (
+                    <div className="p-20 text-center">
+                        <BiBuildingHouse className="h-12 w-12 text-gray-200 mx-auto mb-4 animate-pulse" />
+                        <p className="text-gray-400 font-medium">Loading your listings...</p>
+                    </div>
+                ) : properties.length === 0 ? (
+                    <div className="p-20 text-center">
+                        <BiBuildingHouse className="h-16 w-16 text-gray-200 mx-auto mb-6" />
+                        <h3 className="text-xl font-black text-gray-900 mb-2">No Properties Yet</h3>
+                        <p className="text-gray-400 mb-6">Add your first listing to get started.</p>
+                        <Link to="/dashboard/properties/create" className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition">
+                            <HiPlus className="h-5 w-5" />
+                            <span>Add Property</span>
+                        </Link>
+                    </div>
+                ) : (
+                    <table className="w-full text-left border-collapse border-black/30">
+                        <thead>
+                            <tr className="bg-amber-600 border-b">
+                                <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest">Property</th>
+                                <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest">Status</th>
+                                <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest">Price</th>
+                                <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest">Published</th>
+                                <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y-2">
+                            {properties.map(property => (
+                                <tr key={property.id} className="bg-teal-700 transition group">
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="h-14 w-14 bg-gray-100 flex-shrink-0 overflow-hidden">
+                                                <SafeImage
+                                                    src={property.images?.[0]}
+                                                    className="w-full h-full object-cover"
+                                                    alt={property.title}
+                                                />
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-gray-900 line-clamp-1">{property.title}</p>
+                                                <p className="text-xs text-white mt-0.5">{property.address}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <StatusBadge status={property.status} availability={property.availability} />
+                                    </td>
+                                    <td className="px-6 py-5 font-black text-white">
+                                        ${Number(property.price).toLocaleString()}
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <span className={`h-2.5 w-2.5 rounded-full inline-block mr-2 ${property.is_published ? '' : ''}`} />
+                                        <span className="text-sm font-bold text-orange-400 uppercase">{property.is_published ? 'Live' : 'Draft'}</span>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <div className="flex justify-end space-x-1">
+                                            <Link to={`/properties/${property.slug}`} className="p-2 text-blue-50  hover:text-amber-600 border border-blue-50 transition" title="View">
+                                                <HiChevronRight className="h-5 w-5" />
+                                            </Link>
+                                            <button onClick={() => setEditingProperty(property)} className="p-2 text-indigo-950 transition" title="Edit">
+                                                <HiPencil className="h-5 w-5" />
+                                            </button>
+                                            <button onClick={() => setDeletingProperty(property)} className="p-2 text-rose-600/95 transition" title="Delete">
+                                                <HiTrash className="h-5 w-5" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default MyProperties;
