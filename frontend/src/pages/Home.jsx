@@ -105,9 +105,8 @@ const Home = () => {
     return (
         <div className="bg-emerald-100/80 backdrop-blur-2xl font-sans mt-5">
             {/* Hero Section */}
-            <section className=" h-[86vh] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-                <div className="relative group/hero">
-
+            <section className="h-fit md:h-[86vh] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+                <div className="relative h-100 md:h-full group/hero">
 
                     {carouselImages.map((slide, idx) => (
                         <div key={idx} className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-100 pointer-events-none'}`}>
@@ -157,7 +156,7 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-                <div className="flex flex-col justify-between ml-3 relative">
+                <div className="flex flex-col justify-between md:ml-3 relative">
                     {/* Search Results Modal / Overlay */}
                     {isSearching && (
                         <div className="absolute inset-0 z-30 bg-teal-700 border border-black/30 backdrop-blur-xl p-8 overflow-y-auto animate-in fade-in slide-in-from-left duration-500">

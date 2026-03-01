@@ -43,7 +43,7 @@ const Footer = () => {
                         <div>
                             <h4 className="text-sm font-black text-start text-amber-600 uppercase tracking-widest mb-8">Company</h4>
                             <ul className="space-y-4">
-                                {['About Us', 'Our Agents', 'Journal', 'Contact'].map(item => (
+                                {['About Us', 'Agents', 'Blog', 'Contact'].map(item => (
                                     <li key={item}>
                                         <Link to={`/${item.toLowerCase().replace(' ', '-')}`} className="text-gray-400 hover:text-amber-500 transition font-medium flex items-center group">
                                             <span className="h-1.5 w-0 bg-teal-700 group-hover:w-3 mr-0 group-hover:mr-2 transition-all"></span>

@@ -16,6 +16,8 @@ class AgentController extends Controller
             ->with(['properties' => function ($q) {
                 $q->with('images')->where('is_published', true)->latest()->limit(3);
             }])
+            ->where('is_verified', true)
+            ->whereHas('role', fn($q) => $q->whereIn('slug', ['agent', 'admin', 'super-admin']))
             ->whereHas('properties');
 
         if ($request->filled('location_id')) {
@@ -30,7 +32,7 @@ class AgentController extends Controller
                 'name'           => $user->name,
                 'email'          => $user->email,
                 'phone'          => $user->phone,
-                'avatar'         => $user->avatar_url,
+                'avatar_url'     => $user->avatar_url,
                 'bio'            => $user->bio,
                 'specialization' => $user->specialization ?? 'Real Estate Agent',
                 'listings_count' => $user->properties_count,
@@ -67,7 +69,7 @@ class AgentController extends Controller
             'name'           => $agent->name,
             'email'          => $agent->email,
             'phone'          => $agent->phone,
-            'avatar'         => $agent->avatar_url,
+            'avatar_url'     => $agent->avatar_url,
             'bio'            => $agent->bio ?? 'Experienced real estate professional dedicated to helping clients find their perfect property.',
             'specialization' => $agent->specialization ?? 'Residential & Commercial Properties',
             'listings_count' => $agent->properties_count,
