@@ -121,7 +121,7 @@ const PropertyDetails = () => {
         : [null]; // Will trigger SafeImage placeholder
 
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className="bg-emerald-100/80 min-h-screen">
             {/* Inquiry Modal */}
             {isInquiryModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -183,10 +183,8 @@ const PropertyDetails = () => {
             )}
 
             {/* Premium Header */}
-            <div className="bg-white pt-8">
+            <div className="pt-8">
                 <div className="">
-
-
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         <div className="lg:col-span-2">
                             <div className="flex items-center justify-between mb-6">

@@ -285,10 +285,10 @@ const Home = () => {
                             <div className="flex items-end">
                                 <button
                                     onClick={handleSearch}
-                                    className="flex items-center w-full justify-center gap-2 px-8 py-3 bg-teal-800 text-xs font-black uppercase tracking-widest text-white hover:bg-black transition-all shadow-xl"
+                                    className="flex items-center w-full justify-start gap-2 px-8 py-3 bg-teal-800 text-xs font-black uppercase tracking-widest text-white hover:bg-black transition-all shadow-xl"
                                 >
                                     <HiSearch className="h-5 w-5" />
-                                    <span>Search</span>
+                                    <span>Search Property</span>
                                 </button>
                             </div>
                         </div>
@@ -458,7 +458,7 @@ const Home = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-24">
+            <section className="py-10">
                 <div className="w-full">
                     <div className="bg-teal-700 py-15 px-10 flex flex-col lg:flex-row items-center justify-between gap-12 text-white relative overflow-hidden">
                         <div className="relative z-10 max-w-2xl text-center lg:text-left">

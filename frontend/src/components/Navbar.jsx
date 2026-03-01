@@ -25,7 +25,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
                         <Link to="/" className="block text-sm text-start font-black text-black uppercase tracking-widest">
-                            Real Estate
+                            Green wave
                         </Link>
                     </div>
 

@@ -77,8 +77,8 @@ const AddProperty = () => {
             data.append(key, formData[key]);
         });
 
-        images.forEach((image, index) => {
-            data.append(`images[${index}]`, image);
+        images.forEach(image => {
+            data.append('images[]', image);
         });
 
         try {
@@ -120,11 +120,11 @@ const AddProperty = () => {
                     <div className="grid grid-cols-1 gap-6">
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Property Title</label>
-                            <input name="title" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="e.g. Modern Luxury Villa in Beverly Hills" />
+                            <input name="title" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="e.g. Modern Luxury Villa in Beverly Hills" />
                         </div>
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Description</label>
-                            <textarea name="description" rows="5" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="Describe the property details, surroundings, and highlights..."></textarea>
+                            <textarea name="description" rows="5" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="Describe the property details, surroundings, and highlights..."></textarea>
                         </div>
                     </div>
 
@@ -147,7 +147,7 @@ const AddProperty = () => {
                         </div>
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Virtual Tour URL (Optional)</label>
-                            <input name="virtual_tour_url" type="url" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="https://youtube.com/..." />
+                            <input name="virtual_tour_url" type="url" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="https://youtube.com/..." />
                         </div>
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Availability</label>
@@ -167,11 +167,11 @@ const AddProperty = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price ($)</label>
-                            <input name="price" type="number" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="e.g. 500000" />
+                            <input name="price" type="number" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="e.g. 500000" />
                         </div>
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Location Area</label>
-                            <select name="location_id" required onChange={handleChange} value={formData.location_id} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70">
+                            <select name="location_id" required onChange={handleChange} value={formData.location_id} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70">
                                 <option value="">Select a location</option>
                                 {locations.map(loc => (
                                     <option key={loc.id} value={loc.id}>{loc.name} ({loc.type})</option>
@@ -180,7 +180,7 @@ const AddProperty = () => {
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Physical Address</label>
-                            <input name="address" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="Street name, plot number, etc." />
+                            <input name="address" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="Street name, plot number, etc." />
                         </div>
                     </div>
                 </div>
@@ -192,15 +192,15 @@ const AddProperty = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bedrooms</label>
-                                <input name="bedrooms" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" />
+                                <input name="bedrooms" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" />
                             </div>
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bathrooms</label>
-                                <input name="bathrooms" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" />
+                                <input name="bathrooms" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" />
                             </div>
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Area (sqft)</label>
-                                <input name="size" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" />
+                                <input name="size" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" />
                             </div>
                         </div>
                     </div>
@@ -213,19 +213,19 @@ const AddProperty = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Land Size</label>
-                                <input name="land_size" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" />
+                                <input name="land_size" type="number" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" />
                             </div>
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Zoning Type</label>
-                                <input name="zoning" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="Residential, Commercial, Agricultural..." />
+                                <input name="zoning" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="Residential, Commercial, Agricultural..." />
                             </div>
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Title Type</label>
-                                <input name="title_type" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="Deed, Certificate of Occupancy..." />
+                                <input name="title_type" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="Deed, Certificate of Occupancy..." />
                             </div>
                             <div>
                                 <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Access Road</label>
-                                <input name="access_road" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70" placeholder="Paved, Dirt..." />
+                                <input name="access_road" onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="Paved, Dirt..." />
                             </div>
                         </div>
                     </div>

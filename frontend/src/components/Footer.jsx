@@ -12,7 +12,8 @@ const Footer = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-20">
                     <div className="col-span-1 lg:col-span-1">
                         <Link to="/" className="text-2xl text-start font-black text-white tracking-tighter uppercase italic mb-8 block">
-                            Antigravity<span className="text-blue-500">Estate</span>
+                            {/* Antigravity<span className="text-blue-500">Estate</span> */}
+                            <img src="public/logo.jpeg" alt="" className="w-20 h-20 object-cover" />
                         </Link>
                         <p className="text-gray-400 text-start font-medium leading-relaxed mb-8 max-w-sm">
                             Redefining the real estate experience with sophisticated technology and premium service. Find your sanctuary with us.

@@ -17,8 +17,9 @@ class AgentController extends Controller
                 $q->with('images')->where('is_published', true)->latest()->limit(3);
             }])
             ->where('is_verified', true)
-            ->whereHas('role', fn($q) => $q->whereIn('slug', ['agent', 'admin', 'super-admin']))
-            ->whereHas('properties');
+            ->whereHas('role', function ($q) {
+                $q->whereIn('slug', ['agent', 'admin', 'super-admin']);
+            });
 
         if ($request->filled('location_id')) {
             $query->whereHas('properties', function ($q) use ($request) {

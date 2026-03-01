@@ -37,9 +37,9 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[80vh] grid grid-cols-2 bg-gray-50 py-10">
+        <div className="min-h-[80vh] bg-emerald-100/80 grid grid-cols-2 py-10">
             <div className=""></div>
-            <div className="w-full space-y-8 border bg-amber-600 p-10 py-15 shadow-xl">
+            <div className="w-full lg:col-span-1 col-span-2 space-y-8 border bg-amber-600 p-10 py-15 shadow-xl">
                 <div className="text-center mx-auto w-full">
                     <h2 className="text-lg text-black text-center font-black uppercase tracking-widest ">Welcome back</h2>
                     <p className="mt-2 text-sm text-white">Please sign in to your account</p>

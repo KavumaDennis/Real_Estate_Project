@@ -68,7 +68,7 @@ const BlogPost = () => {
     );
 
     return (
-        <div className="bg-white min-h-screen pb-32">
+        <div className="bg-emerald-100/80 min-h-screen pb-32">
             {/* Article Header */}
             <header className="pt-10">
                 <div className="w-full">
