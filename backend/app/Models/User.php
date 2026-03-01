@@ -26,7 +26,30 @@ class User extends Authenticatable
         'bio',
         'phone',
         'specialization',
+        'is_verified',
+        'verified_at',
     ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['avatar_url'];
+
+    /**
+     * Get the user's avatar URL.
+     *
+     * @return string|null
+     */
+    public function getAvatarUrlAttribute()
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar);
+    }
 
     public function role()
     {
@@ -48,6 +71,11 @@ class User extends Authenticatable
         return $this->hasMany(SavedProperty::class);
     }
 
+    public function savedPosts()
+    {
+        return $this->hasMany(SavedPost::class);
+    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
@@ -55,7 +83,7 @@ class User extends Authenticatable
 
     public function reviews()
     {
-        return $this->hasManyThrough(Review::class, Property::class, 'agent_id', 'property_id');
+        return $this->hasMany(Review::class, 'agent_id');
     }
 
     /**
@@ -75,5 +103,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'verified_at' => 'datetime',
+        'is_verified' => 'boolean',
     ];
 }

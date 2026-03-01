@@ -50,7 +50,7 @@ class PropertyResource extends JsonResource
                 'lng' => $this->longitude,
             ],
             'amenities' => $this->whenLoaded('amenities', fn() => $this->amenities->map(fn($a) => ['id' => $a->id, 'name' => $a->name])),
-            'images' => $this->whenLoaded('images', fn() => $this->images->map(fn($img) => url('storage/' . $img->image_path))),
+            'images' => $this->whenLoaded('images', fn() => $this->images->map(fn($img) => $img->url)),
             'virtual_tour_url' => $this->virtual_tour_url,
             'availability' => $this->availability,
             'is_featured' => $this->is_featured,

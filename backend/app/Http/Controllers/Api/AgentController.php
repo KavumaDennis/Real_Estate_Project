@@ -30,7 +30,7 @@ class AgentController extends Controller
                 'name'           => $user->name,
                 'email'          => $user->email,
                 'phone'          => $user->phone,
-                'avatar'         => $user->avatar,
+                'avatar'         => $user->avatar_url,
                 'bio'            => $user->bio,
                 'specialization' => $user->specialization ?? 'Real Estate Agent',
                 'listings_count' => $user->properties_count,
@@ -40,7 +40,7 @@ class AgentController extends Controller
                         'title'  => $p->title,
                         'slug'   => $p->slug,
                         'price'  => $p->price,
-                        'image'  => $p->images->first() ? (Str::startsWith($p->images->first()->image_path, 'http') ? $p->images->first()->image_path : asset('storage/' . $p->images->first()->image_path)) : null,
+                        'image'  => $p->images->first()?->url,
                     ];
                 }),
             ];
@@ -67,7 +67,7 @@ class AgentController extends Controller
             'name'           => $agent->name,
             'email'          => $agent->email,
             'phone'          => $agent->phone,
-            'avatar'         => $agent->avatar,
+            'avatar'         => $agent->avatar_url,
             'bio'            => $agent->bio ?? 'Experienced real estate professional dedicated to helping clients find their perfect property.',
             'specialization' => $agent->specialization ?? 'Residential & Commercial Properties',
             'listings_count' => $agent->properties_count,
@@ -84,13 +84,15 @@ class AgentController extends Controller
                     'bathrooms'=> $p->bathrooms,
                     'size'     => $p->size,
                     'location' => $p->location ? $p->location->name : null,
-                    'images'   => $p->images->map(fn($img) => Str::startsWith($img->image_path, 'http') ? $img->image_path : asset('storage/' . $img->image_path)),
+                    'images'   => $p->images->map(fn($img) => $img->url),
                 ];
             }),
             'reviews' => $agent->reviews->map(function ($r) {
                 return [
                     'id' => $r->id,
-                    'name' => $r->user->name,
+                    'user' => [
+                        'name' => $r->user->name,
+                    ],
                     'rating' => $r->rating,
                     'comment' => $r->comment,
                     'date' => $r->created_at->diffForHumans(),

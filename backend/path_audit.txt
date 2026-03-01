@@ -1,0 +1,13 @@
+--- USERS AVATARS ---
+ID: 4, Name: kavuma dennis, Raw Avatar: [avatars/ZmdMpMWg2WcrGEixVuJKNYTkszU00YtHvoGvhzRl.jpg], URL: [http://localhost:8000/storage/avatars/ZmdMpMWg2WcrGEixVuJKNYTkszU00YtHvoGvhzRl.jpg]
+
+--- PROPERTY IMAGES ---
+ID: 1, Raw Path: [properties/CyFPYsC9G9a7h3DrOO6q3gGuH3ChqHBfqwlSU2Nc.jpg], URL: [http://localhost:8000/storage/properties/CyFPYsC9G9a7h3DrOO6q3gGuH3ChqHBfqwlSU2Nc.jpg]
+ID: 2, Raw Path: [properties/iiH1xPTPAxt4PZLNXVhGPbsURqir5OpdC5IfMH3a.jpg], URL: [http://localhost:8000/storage/properties/iiH1xPTPAxt4PZLNXVhGPbsURqir5OpdC5IfMH3a.jpg]
+ID: 3, Raw Path: [properties/3s1Nd5J0IHp1Jzy9gtwOSwGKzfhiOwbPUAOTthkn.jpg], URL: [http://localhost:8000/storage/properties/3s1Nd5J0IHp1Jzy9gtwOSwGKzfhiOwbPUAOTthkn.jpg]
+ID: 4, Raw Path: [properties/gyGWz4ydAP9eTx1DaSnZmugvGadK6a2ixXRskpzq.jpg], URL: [http://localhost:8000/storage/properties/gyGWz4ydAP9eTx1DaSnZmugvGadK6a2ixXRskpzq.jpg]
+
+--- POSTS ---
+ID: 1, Raw Image: [posts/Z1bIkDreB5tYRW2IbVqujxu8v3v8yjTK5bEZK1kU.jpg], URL: [http://localhost:8000/storage/posts/Z1bIkDreB5tYRW2IbVqujxu8v3v8yjTK5bEZK1kU.jpg]
+ID: 2, Raw Image: [posts/pXWLFM55Z4jsuvKx637CdRZjSK1meLppc6YQTw5d.jpg], URL: [http://localhost:8000/storage/posts/pXWLFM55Z4jsuvKx637CdRZjSK1meLppc6YQTw5d.jpg]
+ID: 4, Raw Image: [posts/OHsskDuIvohLXOjmw6BKtzFijiXTPhq3oNAl5HuS.jpg], URL: [http://localhost:8000/storage/posts/OHsskDuIvohLXOjmw6BKtzFijiXTPhq3oNAl5HuS.jpg]

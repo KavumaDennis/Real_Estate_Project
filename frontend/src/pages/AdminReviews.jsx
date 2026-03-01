@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import {
     HiOutlineSearch, HiOutlineTrash, HiOutlineCheckCircle,
-    HiOutlineXCircle, HiOutlineStar, HiOutlineHome
+    HiOutlineXCircle, HiOutlineStar, HiOutlineHome, HiOutlineUserCircle
 } from 'react-icons/hi';
 
 const AdminReviews = () => {
@@ -115,7 +115,7 @@ const AdminReviews = () => {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <HiUser className="mr-2 text-teal-500" />
+                                                    <HiOutlineUserCircle className="mr-2 h-5 w-5 text-teal-500" />
                                                     <span className="truncate max-w-[150px]">{r.agent?.name || 'Agent Profile'}</span>
                                                 </>
                                             )}

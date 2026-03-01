@@ -32,8 +32,8 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const login = async (email, password) => {
-        const response = await api.post('/login', { email, password });
+    const login = async (email, password, remember = false) => {
+        const response = await api.post('/login', { email, password, remember });
         const { access_token, user: userData } = response.data;
         localStorage.setItem('token', access_token);
         api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout, api }}>
+        <AuthContext.Provider value={{ user, setUser, loading, login, register, logout, api }}>
             {children}
         </AuthContext.Provider>
     );

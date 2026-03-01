@@ -11,15 +11,15 @@ const Footer = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-20">
                     <div className="col-span-1 lg:col-span-1">
-                        <Link to="/" className="text-3xl font-black text-white tracking-tighter uppercase italic mb-8 block">
+                        <Link to="/" className="text-2xl text-start font-black text-white tracking-tighter uppercase italic mb-8 block">
                             Antigravity<span className="text-blue-500">Estate</span>
                         </Link>
-                        <p className="text-gray-400 font-medium leading-relaxed mb-8 max-w-sm">
+                        <p className="text-gray-400 text-start font-medium leading-relaxed mb-8 max-w-sm">
                             Redefining the real estate experience with sophisticated technology and premium service. Find your sanctuary with us.
                         </p>
                         <div className="flex space-x-4">
                             {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
-                                <a key={i} href="#" className="h-10 w-10 bg-gray-800 rounded-xl flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1">
+                                <a key={i} href="#" className="h-10 w-10 bg-amber-600 flex items-center justify-center text-white hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1">
                                     <Icon size={18} />
                                 </a>
                             ))}
@@ -28,12 +28,12 @@ const Footer = () => {
 
                     <div className="grid grid-cols-2 gap-8 col-span-1 lg:col-span-2">
                         <div>
-                            <h4 className="text-sm font-black text-white uppercase tracking-widest mb-8">Discovery</h4>
+                            <h4 className="text-sm font-black text-start text-amber-600 uppercase tracking-widest mb-8">Discovery</h4>
                             <ul className="space-y-4">
                                 {['Properties', 'Featured Listings', 'New Projects', 'Luxury Homes'].map(item => (
                                     <li key={item}>
-                                        <Link to="/properties" className="text-gray-400 hover:text-blue-500 transition font-medium flex items-center group">
-                                            <span className="h-1.5 w-0 bg-blue-500 group-hover:w-3 mr-0 group-hover:mr-2 transition-all"></span>
+                                        <Link to="/properties" className="text-gray-400 hover:text-amber-500 transition font-medium flex items-center group">
+                                            <span className="h-1.5 w-0 bg-teal-700 group-hover:w-3 mr-0 group-hover:mr-2 transition-all"></span>
                                             {item}
                                         </Link>
                                     </li>
@@ -41,12 +41,12 @@ const Footer = () => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="text-sm font-black text-white uppercase tracking-widest mb-8">Company</h4>
+                            <h4 className="text-sm font-black text-start text-amber-600 uppercase tracking-widest mb-8">Company</h4>
                             <ul className="space-y-4">
                                 {['About Us', 'Our Agents', 'Journal', 'Contact'].map(item => (
                                     <li key={item}>
-                                        <Link to={`/${item.toLowerCase().replace(' ', '-')}`} className="text-gray-400 hover:text-blue-500 transition font-medium flex items-center group">
-                                            <span className="h-1.5 w-0 bg-blue-500 group-hover:w-3 mr-0 group-hover:mr-2 transition-all"></span>
+                                        <Link to={`/${item.toLowerCase().replace(' ', '-')}`} className="text-gray-400 hover:text-amber-500 transition font-medium flex items-center group">
+                                            <span className="h-1.5 w-0 bg-teal-700 group-hover:w-3 mr-0 group-hover:mr-2 transition-all"></span>
                                             {item}
                                         </Link>
                                     </li>
@@ -56,7 +56,7 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="text-sm font-black text-white uppercase tracking-widest mb-8">Connect</h4>
+                        <h4 className="text-sm font-black text-start text-amber-600 uppercase tracking-widest mb-8">Connect</h4>
                         <ul className="space-y-6">
                             <li className="flex items-start space-x-4">
                                 <div className="h-10 w-10 bg-gray-800 rounded-xl flex items-center justify-center text-blue-500 flex-shrink-0">

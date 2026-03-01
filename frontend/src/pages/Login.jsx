@@ -1,21 +1,33 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FcGoogle } from 'react-icons/fc';
 
 const Login = () => {
+    const [searchParams] = useSearchParams();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [remember, setRemember] = useState(false);
+    const [error, setError] = useState(searchParams.get('error') ? (searchParams.get('error') === 'auth_failed' ? 'Social authentication failed. Please try again.' : 'Login failed.') : '');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const errorParam = searchParams.get('error');
+        if (errorParam) {
+            if (errorParam === 'auth_failed') setError('Social authentication failed. Please try again.');
+            else if (errorParam === 'google_auth_failed') setError('Google authentication failed at the source.');
+            else setError('An authentication error occurred.');
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         try {
-            await login(email, password);
+            await login(email, password, remember);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
@@ -54,7 +66,7 @@ const Login = () => {
                         </div>
                         <div>
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Password</label>
-                            <input  
+                            <input
                                 type="password"
                                 required
                                 className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
@@ -67,14 +79,19 @@ const Login = () => {
 
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center">
-                            <input type="checkbox" className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                            <label className="ml-2 text-gray-700">Remember me</label>
+                            <input
+                                type="checkbox"
+                                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                checked={remember}
+                                onChange={(e) => setRemember(e.target.checked)}
+                            />
+                            <label className="ml-2 text-white font-bold">Remember me</label>
                         </div>
-                        <a href="#" className="border border-black/20 bg-teal-700 font-bold text-white focus:outline-none cursor-pointer p-0.5">Forgot password?</a>
+                        <Link to="/forgot-password" size="xs" className="border border-black/20 bg-teal-700 font-bold text-white focus:outline-none cursor-pointer p-0.5">Forgot password?</Link>
                     </div>
 
 
-                    <div className="flex gap-5 items-center">
+                    <div className="flex items-center justify-between">
                         <button
                             type="submit"
                             disabled={loading}
@@ -84,11 +101,27 @@ const Login = () => {
                         </button>
                         <p className="text-center text-sm text-white">
                             Don't have an account?{' '}
-                            <Link to="/register" className="font-bold text-blue-600 hover:text-blue-500">
+                            <Link to="/register" className="font-bold text-teal-800 hover:text-blue-500">
                                 Sign up now
                             </Link>
                         </p>
+                        <div className="flex items-center text-sm text-white gap-3">
+                            <p>
+                                Sign in with
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => window.location.href = 'http://localhost:8000/api/login/google'}
+                                className="w-fit flex items-center justify-center p-2 px-3 bg-white border border-gray-200 hover:bg-gray-50 transition shadow-sm font-black text-gray-700 uppercase tracking-widest text-xs"
+                            >
+                                <FcGoogle className="h-6 w-6" />
+                            </button>
+                        </div>
+
                     </div>
+
+
+
                 </form>
 
 

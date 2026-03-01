@@ -68,19 +68,19 @@ const Leads = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Leads & Inquiries</h1>
-                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Manage property inquiries and track potential buyers.</p>
+                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">Track potential buyers and inquiries.</p>
                 </div>
 
-                <div className="flex items-center space-x-3">
+                <div className="w-full sm:w-auto">
                     <div className="relative">
                         <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
                             placeholder="Search leads..."
-                            className="w-full pl-10 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 md:w-64"
+                            className="w-full pl-10 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 sm:w-64"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -147,42 +147,44 @@ const Leads = () => {
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-teal-700 flex items-center justify-between mt-auto">
+                            <div className="p-4 bg-teal-700 flex flex-col sm:flex-row items-stretch sm:items-center justify-between mt-auto gap-4">
                                 <div className="flex items-center space-x-3 overflow-hidden">
-                                    <SafeImage
-                                        src={lead.property?.images?.[0]}
-                                        alt=""
-                                        className="h-10 w-10 object-cover flex-shrink-0"
-                                    />
+                                    <div className="h-10 w-10 shrink-0 border border-white/20 overflow-hidden">
+                                        <SafeImage
+                                            src={lead.property?.images?.[0]}
+                                            alt=""
+                                            className="h-full w-full object-cover"
+                                        />
+                                    </div>
                                     <div className="overflow-hidden">
-                                        <p className="text-[10px] text-start font-black text-amber-500 uppercase tracking-widest">
-                                            {lead.property ? 'Inquired About' : 'Direct Contact To'}
+                                        <p className="text-[9px] text-start font-black text-amber-500 uppercase tracking-widest">
+                                            {lead.property ? 'Inquired About' : 'Direct Contact'}
                                         </p>
-                                        <p className="text-xs text-start font-bold text-white truncate">
+                                        <p className="text-xs text-start font-bold text-white truncate max-w-[200px]">
                                             {lead.property?.title || lead.agent?.name || 'General Inquiry'}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center justify-end space-x-2">
                                     <button
                                         onClick={() => handleUpdateStatus(lead.id, 'contacted')}
                                         title="Mark as Contacted"
-                                        className="p-2 text-white bg-blue-800 border border-black/20 transition"
+                                        className="flex-1 sm:flex-none p-2 text-white bg-blue-800 border border-white/10 transition flex items-center justify-center"
                                     >
                                         <HiCheckCircle className="h-5 w-5" />
                                     </button>
                                     <button
                                         onClick={() => handleUpdateStatus(lead.id, 'closed')}
                                         title="Close Lead"
-                                        className="p-2 text-white bg-green-600 border border-black/20 transition"
+                                        className="flex-1 sm:flex-none p-2 text-white bg-green-600 border border-white/10 transition flex items-center justify-center"
                                     >
                                         <HiCheckCircle className="h-5 w-5" />
                                     </button>
                                     <button
                                         onClick={() => handleDeleteLead(lead.id)}
                                         title="Delete Lead"
-                                        className="p-2 text-white bg-rose-600 border border-black/20 transition"
+                                        className="flex-1 sm:flex-none p-2 text-white bg-rose-600 border border-white/10 transition flex items-center justify-center"
                                     >
                                         <HiTrash className="h-5 w-5" />
                                     </button>

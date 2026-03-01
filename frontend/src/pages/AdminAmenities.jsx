@@ -70,23 +70,23 @@ const AdminAmenities = () => {
 
     return (
         <div className="space-y-8 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Manage Amenities</h1>
-                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Create features that agents can assign to their property listings.</p>
+                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">Define property features.</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-3 flex items-center border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-3 border border-black/10 bg-teal-700 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                 >
                     <HiOutlinePlus className="h-5 w-5" />
-                    <span>Add New Amenity</span>
+                    <span>New Amenity</span>
                 </button>
             </div>
 
             {/* Search */}
             <div className="relative">
-                 <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <input
                     type="text"
                     placeholder="Search amenities by name..."
@@ -97,59 +97,59 @@ const AdminAmenities = () => {
             </div>
 
             {/* List */}
-            <div className="border border-dashed border-black/30 shadow-sm overflow-hidden">
+            <div className="border border-dashed border-black/30 shadow-sm overflow-x-auto scrollbar-hide">
                 {loading ? (
-                    <div className="p-40 flex flex-col items-center justify-center space-y-4">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Syncing amenities...</p>
+                    <div className="p-20 sm:p-40 flex flex-col items-center justify-center space-y-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+                        <p className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Syncing...</p>
                     </div>
                 ) : filteredAmenities.length === 0 ? (
-                    <div className="p-40 text-center italic text-gray-400 font-medium">No amenities available.</div>
+                    <div className="p-20 sm:p-40 text-center italic text-gray-400 font-black text-[10px] uppercase tracking-widest">No amenities.</div>
                 ) : (
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead>
-                            <tr className="bg-gray-50/50 border-b border-gray-100">
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Feature Name</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Icon Reference</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
+                            <tr className="bg-amber-600 border-b border-black/20">
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Feature Name</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Icon Ref</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Status</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-gray-50/10">
                             {filteredAmenities.map((a) => (
-                                <tr key={a.id} className="hover:bg-gray-50/30 transition-colors group">
-                                    <td className="px-8 py-6">
+                                <tr key={a.id} className="bg-teal-700 transition-colors group">
+                                    <td className="px-6 py-5">
                                         <div className="flex items-center space-x-4">
-                                            <div className="h-12 w-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center group-hover:rotate-12 transition duration-300">
-                                                <HiOutlineSparkles className="h-6 w-6" />
+                                            <div className="h-10 w-10 bg-purple-600/20 text-purple-400 border border-purple-600/30 flex items-center justify-center shrink-0">
+                                                <HiOutlineSparkles className="h-5 w-5" />
                                             </div>
-                                            <p className="font-black text-gray-900 tracking-tight">{a.name}</p>
+                                            <p className="font-black text-white tracking-tight">{a.name}</p>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <code className="text-[10px] font-black bg-gray-50 px-3 py-1.5 rounded-lg text-gray-400">
-                                            {a.icon || 'default-icon'}
+                                    <td className="px-6 py-5">
+                                        <code className="text-[9px] font-black bg-black/20 border border-white/5 px-2 py-1 text-purple-400 uppercase tracking-widest">
+                                            {a.icon || 'default'}
                                         </code>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center text-[10px] font-black text-green-600 uppercase tracking-widest">
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center text-[10px] font-black text-green-500 uppercase tracking-widest">
                                             <HiOutlineCheckCircle className="mr-1.5 h-4 w-4" />
                                             <span>Active</span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-6 py-5">
                                         <div className="flex justify-end space-x-2">
                                             <button
                                                 onClick={() => openModal(a)}
-                                                className="p-3 bg-white border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 rounded-2xl transition shadow-sm"
+                                                className="p-2.5 bg-amber-600 text-white hover:bg-white hover:text-amber-600 transition shadow-sm border border-black/10"
                                             >
-                                                <HiOutlinePencil className="h-5 w-5" />
+                                                <HiOutlinePencil className="h-4 w-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(a.id)}
-                                                className="p-3 bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 rounded-2xl transition shadow-sm"
+                                                className="p-2.5 bg-rose-600 text-white hover:bg-white hover:text-rose-600 transition shadow-sm border border-black/10"
                                             >
-                                                <HiOutlineTrash className="h-5 w-5" />
+                                                <HiOutlineTrash className="h-4 w-4" />
                                             </button>
                                         </div>
                                     </td>
@@ -162,47 +162,47 @@ const AdminAmenities = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-teal-700 border border-black/20 w-full max-w-md p-10 shadow-2xl animate-in zoom-in duration-300">
+                <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-teal-700 border border-black/20 w-full max-w-md p-6 sm:p-10 shadow-2xl animate-in zoom-in duration-300">
                         <div className="mb-8">
-                            <h2 className="text-2xl font-black text-gray-900">{isEditing ? 'Edit Amenity' : 'New Amenity'}</h2>
-                            <p className="text-gray-500 font-medium">Define property feature tags.</p>
+                            <h2 className="text-2xl font-black text-white uppercase tracking-tight">{isEditing ? 'Edit Amenity' : 'New Amenity'}</h2>
+                            <p className="text-white/50 text-xs font-black uppercase tracking-widest mt-2">Define property features.</p>
                         </div>
                         <form onSubmit={handleSave} className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Amenity Name</label>
+                                <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Amenity Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full pl-10 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70"
+                                    className="w-full bg-white border border-black/80 p-3 text-sm font-bold text-black/70 focus:ring-0"
                                     placeholder="e.g. Swimming Pool"
                                     value={currentAmenity.name}
                                     onChange={(e) => setCurrentAmenity({ ...currentAmenity, name: e.target.value })}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Icon Name (optional)</label>
+                                <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Icon Name (optional)</label>
                                 <input
                                     type="text"
-                                    className="w-full pl-10 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold placeholder-black/70"
+                                    className="w-full bg-white border border-black/80 p-3 text-sm font-bold text-black/70 focus:ring-0"
                                     placeholder="e.g. pool-icon"
-                                    value={currentAmenity.icon}
+                                    value={currentAmenity.icon || ''}
                                     onChange={(e) => setCurrentAmenity({ ...currentAmenity, icon: e.target.value })}
                                 />
                             </div>
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="flex-grow py-4 bg-gray-50 text-gray-500 font-black rounded-2xl hover:bg-gray-100 transition uppercase tracking-widest text-xs"
+                                    className="flex-1 py-4 bg-white/10 text-white font-black uppercase tracking-widest text-xs hover:bg-white/20 transition"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-grow py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition shadow-xl shadow-blue-100 uppercase tracking-widest text-xs"
+                                    className="flex-1 py-4 bg-amber-600 text-white font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition shadow-xl"
                                 >
-                                    {isEditing ? 'Save Changes' : 'Create Amenity'}
+                                    {isEditing ? 'Save' : 'Create'}
                                 </button>
                             </div>
                         </form>

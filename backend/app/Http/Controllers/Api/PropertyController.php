@@ -78,6 +78,11 @@ class PropertyController extends Controller
             'images.*'       => 'image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
+        $user = auth()->user();
+        if ($user->role?->slug === 'agent' && !$user->is_verified) {
+            return response()->json(['message' => 'Your account must be verified by an admin before you can list properties.'], 403);
+        }
+
         $property = $this->propertyService->createProperty($validated);
         return new PropertyResource($property->load(['location', 'agent', 'images']));
     }
@@ -124,5 +129,21 @@ class PropertyController extends Controller
 
         $this->propertyService->deleteProperty($property);
         return response()->json(['message' => 'Property deleted successfully.']);
+    }
+
+    public function toggleFeatured($id)
+    {
+        if (auth()->user()->role?->slug !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $property = \App\Models\Property::findOrFail($id);
+        $property->is_featured = !$property->is_featured;
+        $property->save();
+
+        return response()->json([
+            'message' => $property->is_featured ? 'Property marked as featured' : 'Property removed from featured',
+            'is_featured' => $property->is_featured
+        ]);
     }
 }

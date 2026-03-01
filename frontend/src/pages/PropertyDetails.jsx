@@ -132,31 +132,31 @@ const PropertyDetails = () => {
                                 <HiOutlineArrowNarrowRight className="h-6 w-6 rotate-180 text-white" />
                             </button>
                         </div>
-                        <form onSubmit={handleInquirySubmit} className="p-8 space-y-6">
+                        <form onSubmit={handleInquirySubmit} className="p-8 space-y-6 bg-teal-700">
                             <div>
-                                <label className="block text-xs font-black text-black uppercase tracking-widest mb-1">Full Name</label>
+                                <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Full Name</label>
                                 <input
                                     type="text" required
-                                    className="w-full bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/30"
+                                    className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                     value={inquiryForm.name}
                                     onChange={e => setInquiryForm({ ...inquiryForm, name: e.target.value })}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-black text-black uppercase tracking-widest mb-1">Email</label>
+                                    <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Email</label>
                                     <input
                                         type="email" required
-                                        className="w-full bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/30"
+                                        className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                         value={inquiryForm.email}
                                         onChange={e => setInquiryForm({ ...inquiryForm, email: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-black text-black uppercase tracking-widest mb-1">Phone</label>
+                                    <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Phone</label>
                                     <input
                                         type="tel"
-                                        className="w-full bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/30"
+                                        className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                         value={inquiryForm.phone}
                                         onChange={e => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
                                     />
@@ -166,14 +166,14 @@ const PropertyDetails = () => {
                                 <label className="block text-xs font-black text-black uppercase tracking-widest mb-1">Message</label>
                                 <textarea
                                     required rows="4"
-                                    className="w-full bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/30"
+                                    className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                     value={inquiryForm.message}
                                     onChange={e => setInquiryForm({ ...inquiryForm, message: e.target.value })}
                                 ></textarea>
                             </div>
                             <button
                                 type="submit" disabled={submittingInquiry}
-                                className="w-full py-4 bg-amber-600 text-white font-black uppercase tracking-widest hover:bg-teal-700 transition shadow-lg disabled:opacity-50"
+                                className="w-fit gap-1 px-6 py-3 self-start border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                             >
                                 {submittingInquiry ? 'Sending...' : 'Send Inquiry'}
                             </button>
@@ -184,16 +184,17 @@ const PropertyDetails = () => {
 
             {/* Premium Header */}
             <div className="bg-white pt-8">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="flex items-center justify-between mb-6">
-                        <Link to="/properties" className="flex items-center gap-1 text-xs font-black text-black uppercase tracking-widest hover:text-amber-600 transition">
-                            <HiOutlineArrowNarrowRight className="h-5 w-5 rotate-180" />
-                            <span>Back to properties</span>
-                        </Link>
-                    </div>
+                <div className="">
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         <div className="lg:col-span-2">
+                            <div className="flex items-center justify-between mb-6">
+                                <Link to="/properties" className="flex items-center w-fit gap-1 px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                    <HiOutlineArrowNarrowRight className="h-5 w-5 rotate-180" />
+                                    <span>Back to properties</span>
+                                </Link>
+                            </div>
                             <div className="flex gap-3 mb-4">
                                 <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest ${property.status === 'for_sale' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
                                     {property.status === 'for_sale' ? 'For Sale' : 'For Rent'}
@@ -202,7 +203,7 @@ const PropertyDetails = () => {
                                     {property.type}
                                 </span>
                             </div>
-                            <h1 className="text-4xl font-black text-black uppercase tracking-widest mb-4">{property.title}</h1>
+                            <h1 className="block text-xl text-start font-black text-black uppercase tracking-widest mb-1 mb-4">{property.title}</h1>
                             <div className="flex items-center text-gray-600 mb-8">
                                 <HiLocationMarker className="h-5 w-5 mr-2 text-amber-600" />
                                 <span className="text-lg font-medium">{property.address}</span>
@@ -210,159 +211,36 @@ const PropertyDetails = () => {
 
                             {/* Main Image Gallery */}
                             <div className="space-y-6">
-                                <div className="aspect-[16/9] bg-gray-200 relative overflow-hidden group">
+                                <div className="aspect-[16/9] relative bg-gray-200 relative overflow-hidden group">
                                     <SafeImage
                                         src={images[activeImage]}
                                         alt={property.title}
                                         className="w-full h-full object-cover"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                                </div>
-                                <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                                    {images.map((img, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => setActiveImage(idx)}
-                                            className={`flex-shrink-0 w-32 h-20 border-2 transition-all ${activeImage === idx ? 'border-amber-600 scale-105 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                                        >
-                                            <SafeImage src={img} className="w-full h-full object-cover" />
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <div className="py-12 border-t border-gray-100 mt-12">
-                                <h2 className="text-2xl font-black text-black uppercase tracking-widest mb-6">Property Description</h2>
-                                <p className="text-gray-600 leading-relaxed whitespace-pre-line text-lg">
-                                    {property.description}
-                                </p>
-                            </div>
-
-                            {/* Details Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-12 border-y border-gray-100">
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Bedrooms</p>
-                                    <div className="flex items-center gap-2">
-                                        <BiBed className="h-5 w-5 text-amber-600" />
-                                        <span className="font-black text-lg">{property.bedrooms}</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Bathrooms</p>
-                                    <div className="flex items-center gap-2">
-                                        <BiBath className="h-5 w-5 text-amber-600" />
-                                        <span className="font-black text-lg">{property.bathrooms}</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Area Size</p>
-                                    <div className="flex items-center gap-2">
-                                        <BiArea className="h-5 w-5 text-amber-600" />
-                                        <span className="font-black text-lg">{property.size} sqft</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Property Type</p>
-                                    <div className="flex items-center gap-2">
-                                        <BiBuildingHouse className="h-5 w-5 text-amber-600" />
-                                        <span className="font-black text-lg uppercase">{property.type}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Reviews Section */}
-                            <div className="py-12 border-b border-gray-100">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h2 className="text-2xl font-black text-black uppercase tracking-widest flex items-center gap-2">
-                                        <BiMessageRoundedDots className="h-6 w-6 text-amber-600" />
-                                        Property Reviews
-                                    </h2>
-                                    <span className="text-gray-400 font-bold">{property.reviews?.length || 0} reviews</span>
-                                </div>
-
-                                <div className="grid grid-cols-1 gap-8 mb-12">
-                                    {property.reviews?.length > 0 ? (
-                                        property.reviews.map((review) => (
-                                            <div key={review.id} className="bg-white p-8 border border-dashed border-black/30">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="h-12 w-12 bg-amber-600 flex items-center justify-center text-white font-black text-xl">
-                                                            {review.user?.name?.charAt(0)}
-                                                        </div>
-                                                        <div>
-                                                            <p className="font-black text-black uppercase tracking-widest text-sm">{review.user?.name}</p>
-                                                            <p className="text-[10px] text-gray-400 font-bold">{review.created_at}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex text-amber-500">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <HiStar key={i} className={`h-5 w-5 ${i < review.rating ? 'fill-current' : 'text-gray-200'}`} />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <p className="text-gray-600 italic">"{review.comment}"</p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-gray-400 font-medium italic">No reviews yet for this property.</p>
-                                    )}
-                                </div>
-
-                                {/* Review Form */}
-                                <div className="bg-gray-900 p-8 text-white">
-                                    <h3 className="text-lg font-black uppercase tracking-widest mb-6">Write a Review</h3>
-                                    {reviewSuccess ? (
-                                        <div className="bg-green-500/10 border border-green-500/30 p-6 text-center">
-                                            <BiCheck className="h-10 w-10 text-green-400 mx-auto mb-2" />
-                                            <p className="font-black uppercase tracking-widest text-sm">Review Submitted Successfully!</p>
-                                            <button onClick={() => setReviewSuccess(false)} className="mt-4 text-xs font-bold text-amber-500 hover:text-amber-400 underline uppercase tracking-widest">
-                                                Write another one
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <form onSubmit={handleReviewSubmit} className="space-y-6">
-                                            <div>
-                                                <label className="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-2">Rating</label>
-                                                <div className="flex gap-2">
-                                                    {[1, 2, 3, 4, 5].map(star => (
-                                                        <button
-                                                            key={star} type="button"
-                                                            onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                                                            className={`p-1 transition-colors ${reviewForm.rating >= star ? 'text-amber-500' : 'text-gray-600'}`}
-                                                        >
-                                                            <HiStar className="h-8 w-8 fill-current" />
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label className="block text-[10px] font-black text-white/60 uppercase tracking-widest mb-2">Your Experience</label>
-                                                <textarea
-                                                    required rows="4"
-                                                    className="w-full bg-white/5 border border-white/10 p-4 focus:ring-0 text-sm font-medium placeholder-white/20"
-                                                    value={reviewForm.comment}
-                                                    onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                                                    placeholder="Tell others about your thoughts on this property..."
-                                                ></textarea>
-                                            </div>
+                                    <div className="flex gap-4 absolute bottom-3 right-3">
+                                        {images.map((img, idx) => (
                                             <button
-                                                type="submit" disabled={submittingReview}
-                                                className="px-10 py-4 bg-amber-600 text-white font-black uppercase tracking-widest hover:bg-white hover:text-teal-700 transition shadow-lg disabled:opacity-50"
+                                                key={idx}
+                                                onClick={() => setActiveImage(idx)}
+                                                className={`flex-shrink-0 w-32 h-20 border-2 transition-all ${activeImage === idx ? 'border-amber-500 scale-105 shadow-lg' : 'border-white/50'}`}
                                             >
-                                                {submittingReview ? 'Submitting...' : 'Post Review'}
+                                                <SafeImage src={img} className="w-full h-full object-cover" />
                                             </button>
-                                        </form>
-                                    )}
+                                        ))}
+                                    </div>
                                 </div>
+
                             </div>
+
+
                         </div>
 
                         {/* Sidebar */}
                         <div className="space-y-8">
-                            <div className="bg-white p-8 border border-black/10 shadow-lg">
-                                <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Asking Price</p>
-                                <div className="text-4xl font-black text-amber-600 tracking-tight">
+                            <div className="bg-amber-500 p-8 border border-black/30 shadow-lg">
+                                <p className="text-xs font-black text-start text-white uppercase tracking-widest mb-1">Asking Price</p>
+                                <div className="text-4xl font-black text-start text-black/90 tracking-tight">
                                     ${property.price.toLocaleString()}
                                 </div>
                                 <button
@@ -395,7 +273,135 @@ const PropertyDetails = () => {
                                     </Link>
                                 </div>
                             </div>
+                            {/* Details Grid */}
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="space-y-1">
+                                    <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bedrooms</p>
+                                    <div className="flex items-center w-full gap-1 px-6 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                        <BiBed className="h-5 w-5 text-amber-600" />
+                                        <span className="font-black">{property.bedrooms}</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bathrooms</p>
+                                    <div className="flex items-center w-full gap-1 px-6 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                        <BiBath className="h-5 w-5 text-amber-600" />
+                                        <span className="font-black">{property.bathrooms}</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Area Size</p>
+                                    <div className="flex items-center w-full gap-1 px-6 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                        <BiArea className="h-5 w-5 text-amber-600" />
+                                        <span className="font-black">{property.size} sqft</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Property Type</p>
+                                    <div className="flex items-center w-full gap-1 px-6 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                        <BiBuildingHouse className="h-5 w-5 text-amber-600" />
+                                        <span className="font-black">{property.type}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2  py-10">
+                        {/* Description */}
+                        <div className="py-12 border-t border-gray-100">
+                            <h2 className="text-2xl text-start font-black text-black uppercase tracking-widest mb-6">Property Description</h2>
+                            <p className="text-gray-600 text-start mr-5 leading-relaxed whitespace-pre-line text-md">
+                                {property.description}
+                            </p>
+                        </div>
+
+                        {/* Review Form */}
+                        <div className="bg-gray-900 p-8 text-white">
+                            <h3 className="text-lg text-start font-black uppercase tracking-widest mb-6">Write a Review</h3>
+                            {reviewSuccess ? (
+                                <div className="bg-green-500/10 border border-green-500/30 p-6 text-center">
+                                    <BiCheck className="h-10 w-10 text-green-400 mx-auto mb-2" />
+                                    <p className="font-black uppercase tracking-widest text-sm">Review Submitted Successfully!</p>
+                                    <button onClick={() => setReviewSuccess(false)} className="mt-4 text-xs font-bold text-amber-500 hover:text-amber-400 underline uppercase tracking-widest">
+                                        Write another one
+                                    </button>
+                                </div>
+                            ) : (
+                                <form onSubmit={handleReviewSubmit} className="space-y-6 flex flex-col items-start">
+                                    <div>
+                                        <label className="block text-[10px] text-start font-black text-white/60 uppercase tracking-widest mb-2">Rating</label>
+                                        <div className="flex gap-2">
+                                            {[1, 2, 3, 4, 5].map(star => (
+                                                <button
+                                                    key={star} type="button"
+                                                    onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                                                    className={`p-1 transition-colors ${reviewForm.rating >= star ? 'text-amber-500' : 'text-gray-600'}`}
+                                                >
+                                                    <HiStar className="h-8 w-8 fill-current" />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className='w-full'>
+                                        <label className="block text-[10px] text-start font-black text-white/60 uppercase tracking-widest mb-2">Your Experience</label>
+                                        <textarea
+                                            required rows="4"
+                                            className="w-full bg-white/5 border border-white/10 p-4 focus:ring-0 text-sm font-medium placeholder-white/20"
+                                            value={reviewForm.comment}
+                                            onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                                            placeholder="Tell others about your thoughts on this property..."
+                                        ></textarea>
+                                    </div>
+                                    <button
+                                        type="submit" disabled={submittingReview}
+                                        className="w-fit gap-1 text-start px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
+                                    >
+                                        {submittingReview ? 'Submitting...' : 'Post Review'}
+                                    </button>
+                                </form>
+                            )}
+                        </div>
+
+                    </div>
+                    {/* Reviews Section */}
+                    <div className="py-12 border-b border-gray-100">
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-black text-black uppercase tracking-widest flex items-center gap-2">
+                        
+                                Property Reviews
+                            </h2>
+                            <span className="text-gray-400 font-bold">{property.reviews?.length || 0} reviews</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-8 mb-12">
+                            {property.reviews?.length > 0 ? (
+                                property.reviews.map((review) => (
+                                    <div key={review.id} className="bg-white p-8 border border-dashed border-black/30">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-12 w-12 bg-amber-600 flex items-center justify-center text-white font-black text-xl">
+                                                    {review.user?.name?.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p className="font-black text-black uppercase tracking-widest text-sm">{review.user?.name}</p>
+                                                    <p className="text-[10px] text-gray-400 font-bold">{review.created_at}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex text-amber-500">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <HiStar key={i} className={`h-5 w-5 ${i < review.rating ? 'fill-current' : 'text-gray-200'}`} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-600 italic">"{review.comment}"</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-400 font-medium italic">No reviews yet for this property.</p>
+                            )}
+                        </div>
+
                     </div>
 
                     {/* Similar Properties */}

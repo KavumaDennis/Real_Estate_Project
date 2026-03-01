@@ -53,7 +53,8 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $tokenName = $request->remember ? 'remember_token' : 'auth_token';
+        $token = $user->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'access_token' => $token,

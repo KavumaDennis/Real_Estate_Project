@@ -87,4 +87,17 @@ class UserController extends Controller
     {
         return Role::all();
     }
+
+    public function toggleVerification($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_verified = !$user->is_verified;
+        $user->verified_at = $user->is_verified ? now() : null;
+        $user->save();
+
+        return response()->json([
+            'message' => $user->is_verified ? 'Agent verified successfully' : 'Agent verification revoked',
+            'is_verified' => $user->is_verified
+        ]);
+    }
 }

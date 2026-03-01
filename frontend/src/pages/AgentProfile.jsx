@@ -10,8 +10,8 @@ const AgentAvatar = ({ agent }) => {
     const colors = ['bg-blue-600', 'bg-violet-600', 'bg-teal-700', 'bg-orange-500', 'bg-pink-600'];
     const color = colors[agent.id % colors.length];
 
-    if (agent.avatar) {
-        return <SafeImage src={agent.avatar} alt={agent.name} className="h-32 w-32 rounded-[40px] object-cover shadow-2xl" />;
+    if (agent.avatar_url) {
+        return <SafeImage src={agent.avatar_url} alt={agent.name} className="h-32 w-32 rounded-[40px] object-cover shadow-2xl" />;
     }
     return (
         <div className={`h-25 w-25 ${color} rounded-3xl flex items-center justify-center text-white font-black text-4xl shadow-2xl mt-5`}>
@@ -256,8 +256,8 @@ const AgentProfile = () => {
                                                         {review.user?.name?.charAt(0) || 'U'}
                                                     </div>
                                                     <div>
-                                                        <p className="font-black text-gray-900">{review.user?.name || 'Anonymous'}</p>
-                                                        <p className="text-xs text-gray-400 font-medium">{new Date(review.created_at).toLocaleDateString()}</p>
+                                                        <p className="font-black text-gray-900">{review.user?.name || review.name || 'Anonymous'}</p>
+                                                        <p className="text-xs text-gray-400 font-medium">{review.date || new Date(review.created_at).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
                                                 <div className="flex">

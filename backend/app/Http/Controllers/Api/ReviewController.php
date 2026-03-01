@@ -63,6 +63,10 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Either property_id or agent_id is required.'], 422);
         }
 
+        if ($request->property_id && $request->agent_id) {
+            return response()->json(['message' => 'A review can only be for a property or an agent, not both.'], 422);
+        }
+
         $validated['user_id'] = auth()->id();
         $validated['is_approved'] = true; // Auto-approve for now, or match existing logic
 

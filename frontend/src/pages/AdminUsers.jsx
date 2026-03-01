@@ -91,6 +91,18 @@ const AdminUsers = () => {
         }
     };
 
+    const handleToggleVerification = async (id) => {
+        try {
+            const res = await api.post(`/admin/users/${id}/toggle-verification`);
+            setUsers(prev => prev.map(u =>
+                u.id === id ? { ...u, is_verified: res.data.is_verified } : u
+            ));
+        } catch (err) {
+            console.error('Error toggling verification:', err);
+            alert('Failed to update verification status');
+        }
+    };
+
     const openModal = (user = null) => {
         if (user) {
             setCurrentUser({ ...user, password: '' });
@@ -109,69 +121,69 @@ const AdminUsers = () => {
 
     return (
         <div className="space-y-8 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">User Management</h1>
-                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Manage permissions, roles, and account security for all members.</p>
+                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Manage permissions and roles.</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-3 flex items-center border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    className="px-6 py-3 flex items-center justify-center border border-black/10 bg-teal-700 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg w-full sm:w-auto"
                 >
-                    <HiOutlinePlus className="h-5 w-5" />
-                    <span>Create New User</span>
+                    <HiOutlinePlus className="h-5 w-5 mr-2" />
+                    <span>Create User</span>
                 </button>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div className="bg-teal-700 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <div className="h-12 w-12 bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                         <HiOutlineUserGroup className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-2xl text-start font-black text-white line-none">{users.filter(u => u.role?.slug === 'agent').length || stats?.total_agents || 0}</p>
-                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest">Total Agents</p>
+                        <p className="text-2xl text-start font-black text-white leading-none">{users.filter(u => u.role?.slug === 'agent').length || stats?.total_agents || 0}</p>
+                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest mt-1">Total Agents</p>
                     </div>
                 </div>
                 <div className="bg-teal-700 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-purple-50 text-purple-600 flex items-center justify-center">
+                    <div className="h-12 w-12 bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
                         <HiOutlineBadgeCheck className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-2xl text-start font-black text-white line-none">{users.length || stats?.total_users || 0}</p>
-                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest">Active Members</p>
+                        <p className="text-2xl text-start font-black text-white leading-none">{users.length || stats?.total_users || 0}</p>
+                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest mt-1">Active Members</p>
                     </div>
                 </div>
-                <div className="bg-teal-700 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="bg-teal-700 p-6 shadow-sm border border-black/20 flex items-center space-x-4 sm:col-span-2 lg:col-span-1">
+                    <div className="h-12 w-12 bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                         <HiOutlineShieldCheck className="h-6 w-6" />
                     </div>
                     <div>
-                        <p className="text-2xl text-start font-black text-white line-none">94%</p>
-                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest">Verification Rate</p>
+                        <p className="text-2xl text-start font-black text-white leading-none">94%</p>
+                        <p className="text-[10px] text-start font-black text-black uppercase tracking-widest mt-1">Verification Rate</p>
                     </div>
                 </div>
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-teal-700 p-8 border border-black/20 shadow-sm">
-                <form onSubmit={handleSearch} className="flex flex-col md:flex-row  items-center gap-4">
+            <div className="bg-teal-700 p-4 sm:p-8 border border-black/20 shadow-sm">
+                <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                     <div className="relative flex-grow">
                         <HiOutlineSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                         <input
                             type="text"
-                            placeholder="Find by name, email, or ID..."
+                            placeholder="Find by name..."
                             className="w-full pl-10 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <div className="relative">
+                    <div className="flex flex-col xs:flex-row items-stretch sm:items-center gap-2">
+                        <div className="relative flex-grow">
                             <HiOutlineFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
                             <select
-                                className="pl-10 h-fit pr-10 py-2 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70"
+                                className="w-full pl-10 pr-10 py-2 bg-gray-50 border border-black/80 focus:ring-0 text-sm font-bold text-black/70"
                                 value={roleFilter}
                                 onChange={(e) => setRoleFilter(e.target.value)}
                             >
@@ -181,7 +193,7 @@ const AdminUsers = () => {
                                 ))}
                             </select>
                         </div>
-                        <button type="submit" className="px-6 py-2.5 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                        <button type="submit" className="px-6 py-2 bg-amber-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
                             Apply
                         </button>
                     </div>
@@ -189,74 +201,85 @@ const AdminUsers = () => {
             </div>
 
             {/* User List */}
-            <div className="border border-black/20 shadow-sm overflow-hidden">
+            <div className="border border-black/20 shadow-sm overflow-hidden bg-teal-700">
                 {loading ? (
-                    <div className="p-40 flex flex-col items-center justify-center space-y-4">
+                    <div className="py-20 flex flex-col items-center justify-center space-y-4">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                         <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Syncing user data...</p>
                     </div>
                 ) : users.length === 0 ? (
-                    <div className="p-40 text-center italic text-gray-400">No users found for this selection.</div>
+                    <div className="py-20 text-center italic text-gray-400">No users found for this selection.</div>
                 ) : (
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-amber-600 border-b border-black/20">
-                                <th className="px-8 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Profile</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Role & Access</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Join Date</th>
-                                <th className="px-8 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y-2 divide-gray-50">
-                            {users.map((u) => (
-                                <tr key={u.id} className="bg-teal-700 transition-colors group">
-                                    <td className="px-8 py-4">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="h-14 w-14 bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:scale-105 transition shadow-sm">
-                                                <SafeImage src={u.avatar} className="h-full w-full object-cover" alt="" />
-                                            </div>
-                                            <div>
-                                                <p className="font-black text-white tracking-tight">{u.name}</p>
-                                                <p className="text-xs text-black font-medium group-hover:text-blue-600 transition-colors">{u.email}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <span className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest inline-flex items-center border border-black/20 shadow-lg ${u.role?.slug === 'admin' ? 'bg-indigo-600 text-white' :
-                                            u.role?.slug === 'agent' ? 'bg-blue-600 text-white' :
-                                                'bg-gray-50 text-gray-500'
-                                            }`}>
-                                            <div className={`h-1.5 w-1.5 rounded-full mr-2 ${u.role?.slug === 'admin' ? 'bg-white' :
-                                                u.role?.slug === 'agent' ? 'bg-white' :
-                                                    'bg-gray-400'
-                                                }`} />
-                                            {u.role?.name || 'User'}
-                                        </span>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <p className="text-sm font-bold text-white">{new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
-                                        <p className="text-[10px] text-black font-black uppercase mt-0.5">Verified Account</p>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex justify-end space-x-2">
-                                            <button
-                                                onClick={() => openModal(u)}
-                                                className="p-2 text-indigo-950 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 transition"
-                                            >
-                                                <HiOutlinePencil className="h-5 w-5" />
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(u.id)}
-                                                className="p-2 text-rose-600/95 hover:text-red-500 hover:border-red-100 hover:bg-red-50 transition"
-                                            >
-                                                <HiOutlineTrash className="h-5 w-5" />
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div className="overflow-x-auto scrollbar-hide">
+                        <table className="w-full text-left border-collapse min-w-[700px]">
+                            <thead>
+                                <tr className="bg-amber-600 border-b border-black/20">
+                                    <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Profile</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Role & Access</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Join Date</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="divide-y divide-black/10">
+                                {users.map((u) => (
+                                    <tr key={u.id} className="bg-teal-700 transition-colors group hover:bg-teal-600/50">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="h-12 w-12 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0 group-hover:scale-105 transition shadow-sm border border-black/10">
+                                                    <SafeImage src={u.avatar_url} className="h-full w-full object-cover" alt="" />
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="font-black text-white tracking-tight truncate max-w-[150px]">{u.name}</p>
+                                                    <p className="text-[10px] text-black/70 font-bold truncate max-w-[150px]">{u.email}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest inline-flex items-center border border-black/10 ${u.role?.slug === 'admin' ? 'bg-indigo-600 text-white' :
+                                                u.role?.slug === 'agent' ? 'bg-blue-600 text-white' :
+                                                    'bg-white/90 text-gray-500'
+                                                }`}>
+                                                {u.role?.name || 'User'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <p className="text-xs font-bold text-white">{new Date(u.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                            <p className={`text-[9px] font-black uppercase mt-0.5 ${u.is_verified ? 'text-green-400' : 'text-amber-400'}`}>
+                                                {u.is_verified ? 'Verified' : 'Pending'}
+                                            </p>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex justify-end space-x-2">
+                                                {u.role?.slug === 'agent' && (
+                                                    <button
+                                                        onClick={() => handleToggleVerification(u.id)}
+                                                        className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-widest border transition ${u.is_verified
+                                                            ? 'bg-red-500/10 border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white'
+                                                            : 'bg-green-500/10 border-green-500/30 text-green-400 hover:bg-green-600 hover:text-white'}`}
+                                                        title={u.is_verified ? 'Revoke Verification' : 'Approve Agent'}
+                                                    >
+                                                        {u.is_verified ? 'Unverify' : 'Verify Agent'}
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={() => openModal(u)}
+                                                    className="p-2 text-white hover:bg-amber-600 transition"
+                                                >
+                                                    <HiOutlinePencil className="h-4 w-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(u.id)}
+                                                    className="p-2 text-red-400 hover:bg-red-600 hover:text-white transition"
+                                                >
+                                                    <HiOutlineTrash className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
 

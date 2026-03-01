@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import blogService from '../services/blogService';
-import { HiOutlineCalendar, HiOutlineUserCircle, HiOutlineArrowNarrowLeft, HiOutlineShare, HiOutlineBookmark } from 'react-icons/hi';
+import { HiOutlineCalendar, HiOutlineArrowNarrowLeft, HiOutlineShare, HiOutlineBookmark } from 'react-icons/hi';
 import { BiBuildingHouse } from 'react-icons/bi';
 import SafeImage from '../components/SafeImage';
+import { useAuth } from '../context/AuthContext';
 
 const BlogPost = () => {
     const { slug } = useParams();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [saved, setSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetchPost();
@@ -22,6 +26,31 @@ const BlogPost = () => {
             console.error('Error fetching post:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!user) {
+            window.location.href = '/login';
+            return;
+        }
+        setSaving(true);
+        try {
+            const res = await blogService.toggleSaved(post.id);
+            setSaved(res.data.saved);
+        } catch (err) {
+            console.error('Failed to toggle saved post:', err);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleShare = () => {
+        if (navigator.share) {
+            navigator.share({ title: post?.title, url: window.location.href });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard!');
         }
     };
 
@@ -58,8 +87,6 @@ const BlogPost = () => {
                         </Link>
                     </div>
 
-
-
                     <h1 className="text-lg text-black text-start font-black uppercase tracking-widest mb-3">
                         {post.title}
                     </h1>
@@ -78,8 +105,22 @@ const BlogPost = () => {
                                 <span className="block text-xs text-start font-black text-black/80 uppercase tracking-widest">{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                             </div>
                             <div className="flex items-center space-x-2">
-                                <button className="p-3 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest white hover:bg-blue-600 transition shadow-lg "><HiOutlineShare className="h-5 w-5 text-white" /></button>
-                                <button className="p-3 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg "><HiOutlineBookmark className="h-5 w-5 text-white" /></button>
+                                <button
+                                    onClick={handleShare}
+                                    className="p-3 py-2 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest white hover:bg-blue-600 transition shadow-lg"
+                                    title="Share this article"
+                                >
+                                    <HiOutlineShare className="h-5 w-5 text-white" />
+                                </button>
+                                <button
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                    title={saved ? 'Remove from saved' : 'Save this article'}
+                                    className={`flex items-center gap-2 px-4 py-2 border border-black/10 text-xs font-black uppercase tracking-widest text-white transition shadow-lg ${saved ? 'bg-blue-600 hover:bg-blue-700' : 'bg-amber-600 hover:bg-blue-600'}`}
+                                >
+                                    <HiOutlineBookmark className={`h-5 w-5 ${saved ? 'fill-current' : ''}`} />
+                                    <span>{saved ? 'Saved' : 'Save'}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -104,13 +145,13 @@ const BlogPost = () => {
                     </div>
                 </div>
 
-                <div className="mt-24 p-12 bg-gray-900 rounded-[50px] text-white relative overflow-hidden text-center">
+                <div className="mt-24 p-12 bg-teal-700 text-white relative overflow-hidden text-center">
                     <div className="absolute inset-0 bg-blue-600/10 backdrop-blur-3xl"></div>
                     <div className="relative z-10">
                         <BiBuildingHouse className="h-16 w-16 text-blue-500 mx-auto mb-6" />
-                        <h3 className="text-3xl font-black mb-4">Start your journey today.</h3>
-                        <p className="text-gray-400 text-lg mb-10 max-w-md mx-auto">Explore premium listings curated for those who seek the extraordinary.</p>
-                        <Link to="/properties" className="px-12 py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-blue-600 hover:text-white transition shadow-2xl shadow-blue-500/10">
+                        <h3 className="text-3xl text-amber-500 font-black mb-4">Start your journey today.</h3>
+                        <p className="text-white text-lg mb-10 max-w-md mx-auto">Explore premium listings curated for those who seek the extraordinary.</p>
+                        <Link to="/properties" className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
                             Browse Properties
                         </Link>
                     </div>

@@ -1,10 +1,34 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { HiLocationMarker, HiOutlineHeart, HiOutlinePlus } from 'react-icons/hi';
+import { HiLocationMarker, HiOutlinePlus } from 'react-icons/hi';
 import { BiBed, BiBath, BiArea } from 'react-icons/bi';
 import SafeImage from './SafeImage';
+import propertyService from '../services/propertyService';
+import { useAuth } from '../context/AuthContext';
 
-const PropertyCard = ({ property, viewMode = 'grid' }) => {
+const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => {
     const isList = viewMode === 'list';
+    const { user } = useAuth();
+    const [saved, setSaved] = useState(initialSaved);
+    const [saving, setSaving] = useState(false);
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user) {
+            window.location.href = '/login';
+            return;
+        }
+        setSaving(true);
+        try {
+            const res = await propertyService.toggleSaved(property.id);
+            setSaved(res.data.saved);
+        } catch (err) {
+            console.error('Failed to toggle saved:', err);
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className={` overflow-hidden hover:border hover:border-black/20 hover:shadow-2xl transition-all duration-500 group relative ${isList ? 'flex flex-col md:flex-row h-full md:h-72' : 'flex flex-col'}`}>
@@ -20,12 +44,20 @@ const PropertyCard = ({ property, viewMode = 'grid' }) => {
                         </span>
                     )}
                 </div>
-                <button className="z-10 w-fit p-2 bg-amber-600 backdrop-blur-md  text-white hover:bg-blue-600 transition shadow-xl border border-black/10">
-                    <HiOutlineHeart className="h-6 w-6" />
+                {/* Save / Bookmark Button */}
+                <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    title={saved ? 'Remove from saved' : 'Save property'}
+                    className={`z-10 w-fit p-2 backdrop-blur-md text-white hover:bg-blue-600 transition shadow-xl border border-black/10 ${saved ? 'bg-blue-600' : 'bg-amber-600'}`}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill={saved ? 'currentColor' : 'none'}
+                        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z" />
+                    </svg>
                 </button>
             </div>
-
-
 
             {/* Image Container */}
             <div className={`${isList ? 'w-full md:w-2/5 h-50 md:h-full' : 'w-full h-50'} overflow-hidden relative`}>
@@ -95,7 +127,6 @@ const PropertyCard = ({ property, viewMode = 'grid' }) => {
                         )}
                     </div>
 
-
                     <div className="">
                         {!isList && (
                             <Link
@@ -106,10 +137,7 @@ const PropertyCard = ({ property, viewMode = 'grid' }) => {
                                     Details
                                 </p>
                             </Link>
-                        )
-
-                        }
-
+                        )}
                     </div>
                 </div>
 
@@ -117,7 +145,7 @@ const PropertyCard = ({ property, viewMode = 'grid' }) => {
                     <div className="mt-6 flex justify-between items-center">
                         <div className="flex items-center space-x-3">
                             <div className="h-10 w-10 bg-gray-200 rounded-full"></div>
-                            <p className="text-sm font-bold text-gray-900">Dennis Kavuma</p>
+                            <p className="text-sm font-bold text-gray-900">{property.agent?.name || 'Agent'}</p>
                         </div>
                         <Link
                             to={`/properties/${property.slug}`}
@@ -127,18 +155,6 @@ const PropertyCard = ({ property, viewMode = 'grid' }) => {
                         </Link>
                     </div>
                 )}
-
-                {/* {!isList && (
-                    <div className="absolute inset-0 bg-blue-600/90 flex flex-col items-center justify-center translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20">
-                        <HiOutlinePlus className="text-white h-16 w-16 mb-4" />
-                        <Link
-                            to={`/properties/${property.slug}`}
-                            className="px-10 py-5 bg-white text-blue-600 font-black rounded-2xl hover:bg-gray-100 transition shadow-2xl scale-0 group-hover:scale-100 duration-500 delay-100"
-                        >
-                            View Listing
-                        </Link>
-                    </div>
-                )} */}
             </div>
         </div>
     );

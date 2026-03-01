@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/forgot-password', [\App\Http\Controllers\Api\PasswordResetController::class, 'sendResetLinkEmail']);
+Route::post('/reset-password', [\App\Http\Controllers\Api\PasswordResetController::class, 'reset']);
+
+Route::get('/login/google', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('/login/google/callback', [\App\Http\Controllers\Api\SocialAuthController::class, 'handleGoogleCallback'])->name('login.google.callback');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
@@ -44,6 +49,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [App\Http\Controllers\Api\ProfileController::class, 'update']);
     Route::post('/profile/password', [App\Http\Controllers\Api\ProfileController::class, 'updatePassword']);
 
+    // Saved Items
+    Route::get('/saved-properties', [\App\Http\Controllers\Api\SavedPropertyController::class, 'index']);
+    Route::post('/properties/{id}/save', [\App\Http\Controllers\Api\SavedPropertyController::class, 'toggle']);
+    
+    Route::get('/saved-posts', [\App\Http\Controllers\Api\SavedPostController::class, 'index']);
+    Route::post('/posts/{id}/save', [\App\Http\Controllers\Api\SavedPostController::class, 'toggle']);
+
     // Admin routes
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Api\Admin\DashboardController::class, 'index']);
@@ -51,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users', [\App\Http\Controllers\Api\Admin\UserController::class, 'store']);
         Route::get('/users/{id}', [\App\Http\Controllers\Api\Admin\UserController::class, 'show']);
         Route::post('/users/{id}', [\App\Http\Controllers\Api\Admin\UserController::class, 'update']);
+        Route::post('/users/{id}/toggle-verification', [\App\Http\Controllers\Api\Admin\UserController::class, 'toggleVerification']);
         Route::delete('/users/{id}', [\App\Http\Controllers\Api\Admin\UserController::class, 'destroy']);
         Route::get('/roles', [\App\Http\Controllers\Api\Admin\UserController::class, 'roles']);
 
@@ -80,6 +93,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/posts', [\App\Http\Controllers\Api\PostController::class, 'store']);
         Route::post('/posts/{id}', [\App\Http\Controllers\Api\PostController::class, 'update']);
         Route::delete('/posts/{id}', [\App\Http\Controllers\Api\PostController::class, 'destroy']);
+
+        Route::post('/properties/{id}/toggle-featured', [\App\Http\Controllers\Api\PropertyController::class, 'toggleFeatured']);
     });
 });
 

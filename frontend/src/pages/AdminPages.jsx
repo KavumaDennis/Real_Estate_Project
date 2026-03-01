@@ -116,38 +116,38 @@ const AdminPages = () => {
                 ) : (
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50/50 border-b border-gray-100">
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Page Title</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Route Slug</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Last Updated</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
+                            <tr className="bg-teal-700 border-b border-gray-100">
+                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Page Title</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Route Slug</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Last Updated</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Status</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-black/30">
                             {filteredPages.map((p) => (
                                 <tr key={p.id} className="hover:bg-gray-50/30 transition-colors group">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center space-x-4">
-                                            <div className="h-12 w-12 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center group-hover:scale-105 transition">
+                                            <div className="h-12 w-12 bg-gray-50 border border-black/30 text-gray-400 flex items-center justify-center group-hover:scale-105 transition">
                                                 <HiOutlineDocumentText className="h-6 w-6" />
                                             </div>
                                             <p className="font-black text-gray-900 tracking-tight">{p.title}</p>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <code className="text-[10px] font-black bg-gray-100 px-3 py-1.5 rounded-lg text-blue-600 tracking-tight">
+                                        <code className="text-[10px] font-black border border-black/30 bg-amber-500 px-3 py-1.5  text-black tracking-tight">
                                             /{p.slug}
                                         </code>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <div className="flex items-center text-xs text-gray-400 font-bold">
+                                        <div className="flex items-center text-xs text-teal-700 font-bold">
                                             <HiOutlineClock className="mr-2 h-4 w-4 opacity-50" />
                                             <span>{new Date(p.updated_at).toLocaleDateString()}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest inline-flex items-center ${p.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-400'}`}>
+                                        <span className={`px-4 py-1.5 border border-black/30 text-[10px] font-black uppercase tracking-widest inline-flex items-center ${p.is_published ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-400'}`}>
                                             {p.is_published ? <HiOutlineCheckCircle className="mr-2 h-4 w-4" /> : null}
                                             {p.is_published ? 'Live' : 'Draft'}
                                         </span>
@@ -177,51 +177,51 @@ const AdminPages = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-                    <div className="bg-white border border-black/20 w-full max-w-4xl p-10 shadow-2xl animate-in zoom-in duration-300 my-8">
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="bg-teal-700 border border-black/20 w-full max-w-4xl p-10 shadow-2xl animate-in duration-300">
                         <div className="mb-8">
-                            <h2 className="text-2xl font-black text-gray-900">{isEditing ? 'Edit CMS Page' : 'Create CMS Page'}</h2>
-                            <p className="text-gray-500 font-medium">Control static content and landing pages.</p>
+                            <h2 className="text-2xl font-black text-white text-start">{isEditing ? 'Edit CMS Page' : 'Create CMS Page'}</h2>
+                            <p className="text-amber-500 font-medium text-start">Control static content and landing pages.</p>
                         </div>
                         <form onSubmit={handleSave} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Page Title</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="space-y-2 flex flex-col items-start md:col-span-2">
+                                    <label className="text-[10px] font-black text-black text-start uppercase tracking-widest">Page Title</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full pl-4 bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
+                                        className="w-full pl-4 bg-gray-50 border border-black/80 text-black/70 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
                                         placeholder="e.g. Terms and Conditions"
                                         value={currentPage.title}
                                         onChange={(e) => setCurrentPage({ ...currentPage, title: e.target.value })}
                                     />
                                 </div>
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Page Content</label>
+                                <div className="space-y-2 flex flex-col items-start md:col-span-2">
+                                    <label className="text-[10px] font-black text-black text-start uppercase tracking-widest">Page Content</label>
                                     <textarea
                                         required
-                                        rows="10"
-                                        className="w-full pl-4 bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/70 font-mono"
+                                        rows="5"
+                                        className="w-full pl-4 bg-gray-50 border border-black/80 text-black/70 p-3 focus:ring-0 text-sm font-bold placeholder-black/70 font-mono"
                                         placeholder="HTML or Text content goes here..."
                                         value={currentPage.content}
                                         onChange={(e) => setCurrentPage({ ...currentPage, content: e.target.value })}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Meta Title (SEO)</label>
+                                <div className="space-y-2 flex flex-col items-start">
+                                    <label className="text-[10px] font-black text-black text-start uppercase tracking-widest">Meta Title (SEO)</label>
                                     <input
                                         type="text"
-                                        className="w-full pl-4 bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
+                                        className="w-full pl-4 bg-gray-50 border border-black/80 text-black/70 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
                                         placeholder="Optional meta title"
                                         value={currentPage.meta_title}
                                         onChange={(e) => setCurrentPage({ ...currentPage, meta_title: e.target.value })}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Meta Description (SEO)</label>
+                                <div className="space-y-2 flex flex-col items-start">
+                                    <label className="text-[10px] font-black text-black text-start uppercase tracking-widest">Meta Description (SEO)</label>
                                     <input
                                         type="text"
-                                        className="w-full pl-4 bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
+                                        className="w-full pl-4 bg-gray-50 border border-black/80 text-black/70 p-3 focus:ring-0 text-sm font-bold placeholder-black/70"
                                         placeholder="Optional meta description"
                                         value={currentPage.meta_description}
                                         onChange={(e) => setCurrentPage({ ...currentPage, meta_description: e.target.value })}
@@ -229,7 +229,7 @@ const AdminPages = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center space-x-3 pt-4 border-t border-black/10">
+                            <div className="flex items-center space-x-3 border-t border-black/10">
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
@@ -242,17 +242,17 @@ const AdminPages = () => {
                                 </label>
                             </div>
 
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex space-x-4">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="flex-grow py-4 bg-gray-100 text-gray-500 font-black rounded-2xl hover:bg-gray-200 transition uppercase tracking-widest text-xs"
+                                    className="flex-grow px-6 py-3 w-fit flex justify-start border border-black/10 bg-white text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg "
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-grow py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition shadow-xl shadow-blue-100 uppercase tracking-widest text-xs"
+                                    className="flex-grow px-6 py-3 w-fit flex justify-start border border-black/10 bg-amber-500 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg "
                                 >
                                     {isEditing ? 'Save Changes' : 'Publish Page'}
                                 </button>

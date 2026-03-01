@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import propertyService from '../services/propertyService';
 import blogService from '../services/blogService';
 import agentService from '../services/agentService';
+import api from '../services/api';
 import PropertyCard from '../components/PropertyCard';
 import SafeImage from '../components/SafeImage';
 import {
@@ -106,13 +107,64 @@ const Home = () => {
             {/* Hero Section */}
             <section className=" h-[86vh] grid grid-cols-1 md:grid-cols-2 overflow-hidden">
                 <div className="relative group/hero">
+
+
+                    {carouselImages.map((slide, idx) => (
+                        <div key={idx} className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-100 pointer-events-none'}`}>
+                            <div className="absolute inset-0 z-0">
+                                <SafeImage
+                                    src={slide.url}
+                                    className="w-full h-full object-cover"
+                                    alt={slide.title}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/70 to-black/50"></div>
+                            </div>
+
+                            <div className="relative z-10 p-5 w-full h-full flex flex-col justify-center item-start">
+                                <div className="w-full text-start">
+                                    <div className=" mb-3 text-white text-sm font-black uppercase tracking-widest">
+
+                                        <span>Direct From Top Developers</span>
+                                    </div>
+                                    <h1 className="text-5xl lg:text-7xl font-black text-amber-500 w-fit mb-8 leading-[0.9] tracking-tighter">
+                                        {slide.title.split(' ')[0]} <br /> {slide.title.split(' ')[1]}
+                                    </h1>
+                                    <p className="block max-w-2xl mx-auto my-6 text-center text-xs font-black text-white text-start uppercase tracking-widest bg-teal-700 p-4 backdrop-blur-sm">
+                                        {slide.subtitle}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="absolute bottom-5 right-3 flex space-x-2">
+                                <div className="py-2.5 px-5 bg-amber-500 border border-black/30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7" /><path d="M19 12H5" /></svg>
+                                </div>
+                                <div className="py-2.5 px-5 bg-amber-500 border border-black/30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Carousel Controls */}
+                    <div className="absolute top-5 right-3 z-20 flex space-x-4">
+                        {carouselImages.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setCurrentSlide(i)}
+                                className={`h-2 transition-all rounded-xl duration-500 ${i === currentSlide ? 'w-12 bg-amber-500' : 'w-4 bg-white/20 border border-white/20 hover:bg-white/60'}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div className="flex flex-col justify-between ml-3 relative">
                     {/* Search Results Modal / Overlay */}
                     {isSearching && (
-                        <div className="absolute inset-0 z-30 bg-white/95 backdrop-blur-xl p-8 overflow-y-auto animate-in fade-in slide-in-from-left duration-500">
+                        <div className="absolute inset-0 z-30 bg-teal-700 border border-black/30 backdrop-blur-xl p-8 overflow-y-auto animate-in fade-in slide-in-from-left duration-500">
                             <div className="flex justify-between items-center mb-10 pb-6 border-b border-black/5">
                                 <div>
-                                    <h3 className="text-2xl font-black text-black uppercase tracking-widest">Search Results</h3>
-                                    <p className="text-xs font-bold text-teal-700 uppercase tracking-widest">{searchResults.length} properties found matching your criteria</p>
+                                    <h3 className="block text-xs text-start font-black text-white uppercase tracking-widest mb-1">Search Results</h3>
+                                    <p className="text-xs text-start font-bold text-amber-500 uppercase tracking-widest">{searchResults.length} properties found matching your criteria</p>
                                 </div>
                                 <button
                                     onClick={() => setIsSearching(false)}
@@ -152,68 +204,41 @@ const Home = () => {
                             </Link>
                         </div>
                     )}
-
-                    {carouselImages.map((slide, idx) => (
-                        <div key={idx} className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}`}>
-                            <div className="absolute inset-0 z-0">
-                                <SafeImage
-                                    src={slide.url}
-                                    className="w-full h-full object-cover"
-                                    alt={slide.title}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/50"></div>
+                    <div className="py-3">
+                        <div className="grid grid-cols-2 gap-5">
+                            <div className="">
+                                <h2 className="border border-black/20 bg-amber-500 text-xs w-fit font-extrabold text-white/80 focus:outline-none cursor-pointer p-0.5 uppercase mb-2">Our Vision</h2>
+                                <p className="text-sm text-start font-bold text-black tracking-widest">
+                                    To be Ugandas's leading homegrown provider of sustainable property, facilities and assets management solutions, setting the bench mark for excellence, integrity and innovation in the built environment
+                                </p>
                             </div>
-
-                            <div className="relative z-10 mx-auto px-4 sm:px-6 lg:px-8 w-full h-full flex flex-col justify-center">
-                                <div className="w-full text-center">
-                                    <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-5 py-2.5 border border-white/20 mb-8 text-white text-sm font-black uppercase tracking-widest">
-                                        <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-ping"></span>
-                                        <span>Direct From Top Developers</span>
-                                    </div>
-                                    <h1 className="text-5xl lg:text-7xl mx-auto font-black text-amber-600 border border-amber-600 p-8 w-fit mb-8 leading-[0.9] tracking-tighter bg-white/5 backdrop-blur-sm shadow-2xl">
-                                        {slide.title.split(' ')[0]} <br /> {slide.title.split(' ')[1]}
-                                    </h1>
-                                    <p className="block max-w-2xl mx-auto my-6 text-center text-xs font-black text-white uppercase tracking-widest bg-black/20 p-4 backdrop-blur-sm">
-                                        {slide.subtitle}
-                                    </p>
-                                </div>
+                            <div className="">
+                                <h2 className="border border-black/20 bg-amber-500 text-xs w-fit font-extrabold text-white/80 focus:outline-none cursor-pointer p-0.5 uppercase mb-2">Our Mission</h2>
+                                <p className="text-sm text-start font-bold text-black tracking-widest">
+                                    To deliver professional, sustainable and client-centered property facilities and asset management services in Uganda, driven by expertise, technology, and a commitment topreserving value across real estate assets
+                                </p>
                             </div>
                         </div>
-                    ))}
-
-                    {/* Carousel Controls */}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex space-x-4">
-                        {carouselImages.map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentSlide(i)}
-                                className={`h-1.5 transition-all duration-500 ${i === currentSlide ? 'w-12 bg-amber-600' : 'w-4 bg-white/30 hover:bg-white/60'}`}
-                            />
-                        ))}
                     </div>
-                </div>
-                <div className="flex flex-col justify-between ml-3 relative">
-                    <div className="p-8">
-                        <div className="space-y-4">
-                            <h2 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Our Core Services</h2>
-                            <div className="space-y-2">
-                                <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-amber-600">
-                                    <HiLightningBolt className="text-amber-600" />
-                                    <span className="text-xs font-black uppercase tracking-widest text-teal-900">Swift Property Valuation</span>
-                                </div>
-                                <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-blue-600">
-                                    <HiLightningBolt className="text-blue-600" />
-                                    <span className="text-xs font-black uppercase tracking-widest text-teal-900">Virtual Property Tours</span>
-                                </div>
-                                <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-green-600">
-                                    <HiLightningBolt className="text-green-600" />
-                                    <span className="text-xs font-black uppercase tracking-widest text-teal-900">Expert Legal Support</span>
-                                </div>
+                    <div className="col-span-2">
+                        <h2 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Our Core Services</h2>
+                        <div className="space-y-2">
+                            <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-amber-600">
+                                <HiLightningBolt className="text-amber-600" />
+                                <span className="text-xs font-black uppercase tracking-widest text-teal-900">Swift Property Valuation</span>
+                            </div>
+                            <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-blue-600">
+                                <HiLightningBolt className="text-blue-600" />
+                                <span className="text-xs font-black uppercase tracking-widest text-teal-900">Virtual Property Tours</span>
+                            </div>
+                            <div className="flex items-center space-x-3 p-4 bg-white/40 border-l-4 border-green-600">
+                                <HiLightningBolt className="text-green-600" />
+                                <span className="text-xs font-black uppercase tracking-widest text-teal-900">Expert Legal Support</span>
                             </div>
                         </div>
                     </div>
                     {/* Advanced Search Bar */}
-                    <div className="bg-amber-600 w-full backdrop-blur-2xl w-fit p-3 border border-white/20 shadow-2xl mx-auto mt-12">
+                    <div className="bg-amber-500 w-full backdrop-blur-2xl w-fit p-3 border border-white/20 shadow-2xl mx-auto">
                         <div className="w-full grid grid-cols-2  gap-x-5">
                             <div className="flex flex-col justify-center">
                                 <label className="text-[10px] text-start font-black text-black uppercase tracking-widest mb-2 flex items-center gap-1">
@@ -274,29 +299,31 @@ const Home = () => {
             </section>
 
             {/* Featured Properties Section */}
-            <section className="py-10">
-                <div className="w-full">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-center md:text-left">
-                        <div>
-                            <span className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Handpicked Selections</span>
-                            <h2 className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Featured Properties.</h2>
+            {featuredProperties.length > 0 && (
+                <section className="py-10">
+                    <div className="w-full">
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-center md:text-left">
+                            <div>
+                                <span className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Handpicked Selections</span>
+                                <h2 className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Featured Properties.</h2>
+                            </div>
+                            <Link to="/properties?is_featured=1" className="px-6 py-3 border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                View All Collection
+                            </Link>
                         </div>
-                        <Link to="/properties?is_featured=1" className="px-6 py-3 border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                            View All Collection
-                        </Link>
-                    </div>
 
-                    {loading ? (
-                        <div className="flex justify-center py-24"><div className="animate-spin rounded-full h-16 w-16 border-b-4 border-amber-600"></div></div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                            {featuredProperties.map((prop) => (
-                                <PropertyCard key={prop.id} property={prop} />
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </section>
+                        {loading ? (
+                            <div className="flex justify-center py-24"><div className="animate-spin rounded-full h-16 w-16 border-b-4 border-amber-600"></div></div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                                {featuredProperties.map((prop) => (
+                                    <PropertyCard key={prop.id} property={prop} />
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
 
             {/* Categories Grid */}
             <section className="bg-teal-900 text-white">
@@ -326,7 +353,7 @@ const Home = () => {
             {/* Recently Added Section */}
             <section className="py-10">
                 <div className="w-full">
-                    <div className="flex justify-between items-center mb-16">
+                    <div className="flex justify-between items-center mb-5">
                         <div>
                             <span className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Just Hit the Market</span>
                             <h2 className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">New Arrivals</h2>
@@ -347,7 +374,7 @@ const Home = () => {
             {/* Featured Agents Section */}
             <section className="py-10 bg-gray-50 border-y border-black/5">
                 <div className="w-full">
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-16 text-center md:text-left">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-5 text-center md:text-left">
                         <div className="mb-8 md:mb-0">
                             <h2 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Expert Concierge.</h2>
                             <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Dedicated specialists for a seamless experience.</p>
@@ -361,7 +388,7 @@ const Home = () => {
                         {featuredAgents.map((agent) => (
                             <Link to={`/agents/${agent.id}`} key={agent.id} className="group">
                                 <div className="h-80 relative overflow-hidden bg-gray-200 border border-black/10 relative mb-4">
-                                    <SafeImage src={agent.avatar} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={agent.name} />
+                                    <SafeImage src={agent.avatar_url} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" alt={agent.name} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     <div className="absolute w-full bottom-0 left-0 p-3 bg-teal-700">
                                         <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">{agent.specialization || 'Property Consultant'}</p>
@@ -378,7 +405,7 @@ const Home = () => {
             {/* Blog Preview Section */}
             <section className="py-10 bg-gray-900 text-white overflow-hidden relative">
                 <div className="w-full relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-5 gap-8">
                         <div>
                             <span className="block text-xs text-start font-black text-white uppercase tracking-widest mb-1">Knowledge Hub</span>
                             <h2 className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Insights Journal.</h2>
@@ -392,7 +419,7 @@ const Home = () => {
                         {latestPosts.map((post) => (
                             <Link to={`/blog/${post.slug}`} key={post.id} className="group">
                                 <div className="aspect-video overflow-hidden bg-white/5 mb-6">
-                                    <SafeImage src={post.featured_image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" alt={post.title} />
+                                    <SafeImage src={post.featured_image} className="w-full h-full object-cover  group-hover:scale-110 transition-all duration-700" alt={post.title} />
                                 </div>
                                 <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-3">{post.category?.name}</p>
                                 <h3 className="text-xl font-black uppercase tracking-widest group-hover:text-amber-500 transition-colors leading-tight">{post.title}</h3>
@@ -403,9 +430,9 @@ const Home = () => {
             </section>
 
             {/* Testimonials Expanded */}
-            <section className="py-24">
+            <section className="py-10">
                 <div className="w-full">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                         <div className="relative h-full">
                             <SafeImage src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" className="w-full h-full grayscale border border-black/10" alt="Luxury Interior" />
                             <div className="absolute bottom-3 right-3 bg-amber-600 p-10 text-white hidden lg:block shadow-2xl">
@@ -414,12 +441,12 @@ const Home = () => {
                             </div>
                         </div>
                         <div className="space-y-12">
-                            <h2 className="text-4xl lg:text-5xl font-black text-black uppercase tracking-tighter leading-tight">What our clients <span className="text-teal-700 underline decoration-8 underline-offset-8">actually</span> say.</h2>
-                            <div className="bg-white p-12 border border-black/10 shadow-2xl relative">
+                            <h2 className="text-4xl lg:text-5xl text-start font-black text-black uppercase tracking-tighter leading-tight">What our clients <span className="text-teal-700 underline decoration-8 underline-offset-8">actually</span> say.</h2>
+                            <div className="p-5 bg-teal-700 border border-black/20 shadow-2xl relative">
                                 <div className="flex text-amber-500 mb-8"><HiOutlineStar size={24} /><HiOutlineStar size={24} /><HiOutlineStar size={24} /><HiOutlineStar size={24} /><HiOutlineStar size={24} /></div>
-                                <p className="text-2xl font-medium italic text-gray-800 leading-relaxed mb-10">"The most professional team I've ever worked with. They didn't just find me a house, they found me a future."</p>
+                                <p className="text-2xl text-start font-medium italic text-gray-800 leading-relaxed mb-10">"The most professional team I've ever worked with. They didn't just find me a house, they found me a future."</p>
                                 <div className="flex items-center gap-4">
-                                    <div className="h-12 w-12 bg-teal-700 flex items-center justify-center text-white font-black text-xl">E</div>
+                                    <div className="h-12 w-12 bg-amber-600 flex items-center justify-center text-white font-black text-xl">E</div>
                                     <div>
                                         <p className="font-black text-black uppercase tracking-widest text-sm">Emily Kasasa</p>
                                         <p className="text-[10px] text-teal-600 font-black uppercase tracking-widest">Luxury Home Owner</p>

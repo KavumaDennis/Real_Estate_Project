@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { HiPlus, HiPencil, HiTrash, HiX, HiCheck, HiPhotograph, HiEye, HiSearch, HiChevronRight } from 'react-icons/hi';
+import { HiPlus, HiPencil, HiTrash, HiX, HiCheck, HiPhotograph, HiEye, HiSearch, HiChevronRight, HiOutlineBookmark } from 'react-icons/hi';
 import api from '../services/api';
 import SafeImage from '../components/SafeImage';
+import { Link } from 'react-router-dom';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80';
 
@@ -16,7 +17,7 @@ const PostModal = ({ post, categories, onClose, onSaved }) => {
         status: post?.status || 'draft',
     });
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(post?.featured_image ? `http://localhost:8000/storage/${post.featured_image}` : null);
+    const [imagePreview, setImagePreview] = useState(post?.featured_image || null);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
@@ -231,13 +232,23 @@ const BlogManager = () => {
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Blog Manager</h1>
                     <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Write, edit, and publish your blog posts.</p>
                 </div>
-                <button
-                    onClick={() => setShowNew(true)}
-                    className="px-6 py-3 flex items-center gap-3 border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
-                >
-                    <HiPlus className="h-5 w-5" />
-                    <span>New Post</span>
-                </button>
+                <div className="flex items-center gap-2">
+                    <Link
+                        to="/dashboard/saved-posts"
+                        className="px-6 py-3 flex items-center gap-3 border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    >
+                        <HiOutlineBookmark className="h-5 w-5" />
+                        <span>Saved Posts</span>
+                    </Link>
+                    <button
+                        onClick={() => setShowNew(true)}
+                        className="px-6 py-3 flex items-center gap-3 border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    >
+                        <HiPlus className="h-5 w-5" />
+                        <span>New Post</span>
+                    </button>
+                </div>
+
             </div>
 
             {/* Filters */}
@@ -306,7 +317,7 @@ const BlogManager = () => {
                                         <div className="flex items-center space-x-4">
                                             <div className="h-14 w-20 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
                                                 <SafeImage
-                                                    src={post.featured_image ? `http://localhost:8000/storage/${post.featured_image}` : FALLBACK}
+                                                    src={post.featured_image || FALLBACK}
                                                     className="w-full h-full object-cover"
                                                     alt=""
                                                 />

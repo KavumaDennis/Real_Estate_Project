@@ -11,10 +11,10 @@ const AgentAvatar = ({ agent, size = 'lg' }) => {
     const color = colors[agent.id % colors.length];
     const sizeClass = size === 'lg' ? 'h-20 w-20 text-3xl' : 'h-16 w-16 text-xl';
 
-    if (agent.avatar) {
+    if (agent.avatar_url) {
         return (
             <SafeImage
-                src={agent.avatar}
+                src={agent.avatar_url}
                 alt={agent.name}
                 className={`${sizeClass} rounded-3xl object-cover`}
             />

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -12,27 +13,34 @@ import {
     HiOutlineInbox,
     HiOutlineStar,
     HiOutlineChartBar,
-    HiOutlineCreditCard
+    HiOutlineCreditCard,
+    HiOutlineMenuAlt2,
+    HiOutlineX,
+    HiOutlineBookmark
 } from 'react-icons/hi';
 
 const DashboardLayout = () => {
     const { user, loading, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleLogout = async () => {
         await logout();
         navigate('/login');
     };
 
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+    const closeSidebar = () => setIsSidebarOpen(false);
+
     const menuItems = [
         { name: 'Overview', path: '/dashboard', icon: HiOutlineHome },
-        { name: 'My Listings', path: '/dashboard/properties', icon: HiOutlineOfficeBuilding, roles: ['agent', 'admin'] },
-        { name: 'Leads', path: '/dashboard/leads', icon: HiOutlineInbox, roles: ['agent', 'admin'] },
-        { name: 'Reviews', path: '/dashboard/reviews', icon: HiOutlineStar, roles: ['agent', 'admin'] },
-        { name: 'Analytics', path: '/dashboard/analytics', icon: HiOutlineChartBar, roles: ['agent', 'admin'] },
-        { name: 'Subscription', path: '/dashboard/subscription', icon: HiOutlineCreditCard, roles: ['agent', 'admin'] },
-        { name: 'Blog Manager', path: '/dashboard/blog', icon: HiOutlinePencilAlt, roles: ['admin'] },
+        { name: 'My Listings', path: '/dashboard/properties', icon: HiOutlineOfficeBuilding, roles: ['agent', 'admin', 'super-admin'] },
+        { name: 'Leads', path: '/dashboard/leads', icon: HiOutlineInbox, roles: ['agent', 'admin', 'super-admin'] },
+        { name: 'Reviews', path: '/dashboard/reviews', icon: HiOutlineStar, roles: ['agent', 'admin', 'super-admin'] },
+        { name: 'Analytics', path: '/dashboard/analytics', icon: HiOutlineChartBar, roles: ['agent', 'admin', 'super-admin'] },
+        { name: 'Subscription', path: '/dashboard/subscription', icon: HiOutlineCreditCard, roles: ['agent', 'admin', 'super-admin'] },
+        { name: 'Blog Manager', path: '/dashboard/blog', icon: HiOutlinePencilAlt, roles: ['admin', 'super-admin'] },
     ];
 
     const filteredMenu = menuItems.filter(item =>
@@ -49,23 +57,38 @@ const DashboardLayout = () => {
     }
 
     return (
-        <div className="flex h-screen bg-emerald-100/80 backdrop-blur-2xl overflow-hidden">
+        <div className="flex h-screen bg-emerald-100/80 backdrop-blur-2xl overflow-hidden relative">
+            {/* Mobile Overlay */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm transition-opacity"
+                    onClick={closeSidebar}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-75 flex flex-col gap-1">
-                <div className="px-6 py-3 bg-teal-700 border-r border-black/30 ">
-                    <Link to="/" className="text-xl font-black text-white">
+            <aside className={`
+                fixed inset-y-0 left-0 z-50 w-72 flex flex-col gap-1 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
+                ${isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
+            `}>
+                <div className="px-6 py-3 border border-black/20 bg-teal-700 flex items-center justify-between">
+                    <Link to="/" className="text-xl font-black text-white" onClick={closeSidebar}>
                         Antigravity<span className=" text-sm italic">Dash</span>
                     </Link>
+                    <button onClick={closeSidebar} className="lg:hidden text-white p-1">
+                        <HiOutlineX className="h-6 w-6" />
+                    </button>
                 </div>
 
-                <nav className="flex-grow p-4 pl-0 space-y-2 overflow-y-auto bg-teal-700 border border-black/30 ">
+                <nav className="flex-grow p-4 pl-0 border border-black/20 bg-teal-700 space-y-2 overflow-y-auto scrollbar-hide">
                     {filteredMenu.map((item) => (
                         <Link
                             key={item.name}
                             to={item.path}
-                            className={`flex items-center space-x-3 px-4 py-3  text-xs text-start font-black text-black uppercase tracking-widest ${location.pathname === item.path
-                                ? 'bg-amber-600 text-white'
-                                : 'text-white hover:bg-gray-100 hover:text-blue-600'
+                            onClick={closeSidebar}
+                            className={`flex items-center space-x-3 px-4 py-3 text-xs font-black uppercase tracking-widest transition-all ${location.pathname === item.path
+                                ? 'bg-amber-600 text-white shadow-lg'
+                                : 'text-white/80 hover:bg-white/10 hover:text-white'
                                 }`}
                         >
                             <item.icon className="h-5 w-5" />
@@ -74,17 +97,21 @@ const DashboardLayout = () => {
                     ))}
                 </nav>
 
-                <div className="p-4 pl-0 border-t space-y-2 bg-teal-700 ">
-                    <Link to="/dashboard/profile" className={`flex items-center space-x-3 px-4 py-3  text-xs text-start font-black  uppercase tracking-widest${location.pathname === '/dashboard/profile'
-                        ? 'bg-amber-600 text-white'
-                        : 'text-gray-500 hover:bg-gray-100 hover:text-blue-600'
-                        }`}>
+                <div className="p-4 pl-0 border border-black/20 bg-teal-700 space-y-2">
+                    <Link
+                        to="/dashboard/profile"
+                        onClick={closeSidebar}
+                        className={`flex items-center space-x-3 px-4 py-3 text-xs font-black uppercase tracking-widest transition-all ${location.pathname === '/dashboard/profile'
+                            ? 'bg-amber-600 text-white shadow-lg'
+                            : 'text-white/80 hover:bg-white/10 hover:text-white'
+                            }`}
+                    >
                         <HiOutlineKey className="h-5 w-5" />
                         <span>Profile Settings</span>
                     </Link>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 px-4 py-3   text-white bg-red-700/95 text-xs text-start font-black  uppercase tracking-widest"
+                        className="w-full flex items-center space-x-3 px-4 py-3 text-white bg-red-600 hover:bg-red-700 text-xs font-black uppercase tracking-widest transition-colors"
                     >
                         <HiOutlineLogout className="h-5 w-5" />
                         <span>Sign Out</span>
@@ -93,24 +120,35 @@ const DashboardLayout = () => {
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-grow flex flex-col overflow-hidden">
-                <header className="h-13 border-b border-black/30 bg-teal-700 flex items-center justify-between px-8">
-                    <h2 className="text-xl font-bold text-white">
-                        {filteredMenu.find(item => item.path === location.pathname)?.name || 'Dashboard'}
-                    </h2>
-                    <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                            <p className="text-xs text-gray-400 font-bold uppercase">{user?.role?.name}</p>
-                            <p className="text-sm font-bold text-gray-900">{user?.name}</p>
+            <div className="flex-grow flex flex-col overflow-hidden w-full">
+                <header className="h-13.5 ml-1 border-b border-black/20 bg-teal-700 flex items-center justify-between px-4 lg:px-8 shrink-0">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={toggleSidebar}
+                            className="lg:hidden p-2 text-white bg-white/10 hover:bg-white/20 transition-colors"
+                        >
+                            <HiOutlineMenuAlt2 className="h-6 w-6" />
+                        </button>
+                        <h2 className="text-lg lg:text-xl font-bold text-white truncate max-w-[150px] sm:max-w-none">
+                            {filteredMenu.find(item => item.path === location.pathname)?.name || 'Dashboard'}
+                        </h2>
+                    </div>
+
+                    <div className="flex items-center space-x-3 sm:space-x-4">
+                        <div className="text-right hidden xs:block">
+                            <p className="text-[10px] font-black uppercase text-amber-500 tracking-wider leading-none mb-1">{user?.role?.name}</p>
+                            <p className="text-xs sm:text-sm font-bold text-white leading-none truncate max-w-[100px] sm:max-w-none">{user?.name}</p>
                         </div>
-                        <div className="h-10 w-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold">
+                        <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white font-black border border-white/20">
                             {user?.name?.charAt(0)}
                         </div>
                     </div>
                 </header>
 
-                <main className="flex-grow overflow-y-auto p-8 pr-0">
-                    <Outlet />
+                <main className="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8">
+                    <div className="max-w-6xl mx-auto">
+                        <Outlet />
+                    </div>
                 </main>
             </div>
         </div>

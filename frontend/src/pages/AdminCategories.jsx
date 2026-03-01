@@ -63,14 +63,14 @@ const AdminCategories = () => {
 
     return (
         <div className="space-y-8 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Standard Categories</h1>
-                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Manage descriptions for the platform's core property types.</p>
+                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">Manage core property types.</p>
                 </div>
-                <div className="flex items-center space-x-2 text-blue-600 font-bold bg-blue-50 px-6 py-3 border border-blue-100 uppercase text-[10px] tracking-widest shadow-sm">
-                    <HiOutlineInformationCircle className="h-5 w-5" />
-                    <span>Fixed Architecture: 4 Types</span>
+                <div className="flex items-center space-x-2 text-blue-600 font-black bg-blue-50 px-4 py-2 border border-blue-100 uppercase text-[9px] tracking-widest shadow-sm w-fit">
+                    <HiOutlineInformationCircle className="h-4 w-4" />
+                    <span>Fixed: 4 Types</span>
                 </div>
             </div>
 
@@ -87,59 +87,57 @@ const AdminCategories = () => {
             </div>
 
             {/* Categories List */}
-            <div className="bg-white/50 border border-dashed border-black/20 shadow-sm overflow-hidden">
+            <div className="bg-white/50 border border-dashed border-black/20 shadow-sm overflow-x-auto scrollbar-hide">
                 {loading ? (
-                    <div className="p-40 flex flex-col items-center justify-center space-y-4">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Syncing categories...</p>
+                    <div className="p-20 sm:p-40 flex flex-col items-center justify-center space-y-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
+                        <p className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Syncing...</p>
                     </div>
                 ) : filteredCategories.length === 0 ? (
-                    <div className="p-40 text-center italic text-gray-400 font-medium">No categories found.</div>
+                    <div className="p-20 sm:p-40 text-center italic text-gray-400 font-bold uppercase text-[10px] tracking-widest">No categories.</div>
                 ) : (
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[600px]">
                         <thead>
                             <tr className="bg-amber-600 border-b border-black/20">
-                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Category Info</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">System ID</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em]">Listings</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Category Info</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">System ID</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Usage</th>
+                                <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em] text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-gray-50/10">
                             {filteredCategories.map((c) => (
                                 <tr key={c.id} className="bg-teal-700 transition-colors group">
-                                    <td className="px-8 py-6">
+                                    <td className="px-6 py-5">
                                         <div className="flex items-center space-x-4">
-                                            <div className="h-12 w-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center group-hover:scale-105 transition shadow-sm">
-                                                <HiOutlineCollection className="h-6 w-6" />
+                                            <div className="h-10 w-10 bg-white/10 text-amber-500 border border-white/10 flex items-center justify-center shrink-0">
+                                                <HiOutlineCollection className="h-5 w-5" />
                                             </div>
                                             <div>
-                                                <p className="font-black text-white tracking-tight capitalize">{c.name}</p>
-                                                <p className="text-xs text-black line-clamp-1 max-w-xs">{c.description || 'Core platform type.'}</p>
+                                                <p className="font-black text-white text-sm tracking-tight capitalize">{c.name}</p>
+                                                <p className="text-[10px] text-white/50 line-clamp-1 max-w-[200px]">{c.description || 'Core platform type.'}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <code className="text-[10px] font-black bg-white/20 border border-white/10 px-3 py-1.5 rounded-lg text-white uppercase tracking-widest">
+                                    <td className="px-6 py-5">
+                                        <code className="text-[9px] font-black bg-black/20 border border-white/5 px-2 py-1 text-amber-500 uppercase tracking-widest">
                                             {c.slug}
                                         </code>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center text-sm font-bold text-amber-500">
-                                            <HiOutlineExternalLink className="mr-2 text-gray-300" />
-                                            <span>Dynamic Count</span>
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center text-[10px] font-black text-blue-400 uppercase tracking-widest">
+                                            <HiOutlineExternalLink className="mr-2 h-3.5 w-3.5" />
+                                            <span>Active</span>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex justify-end">
-                                            <button
-                                                onClick={() => openModal(c)}
-                                                className="p-3 bg-white border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 rounded-2xl transition shadow-sm"
-                                                title="Edit Description"
-                                            >
-                                                <HiOutlinePencil className="h-5 w-5" />
-                                            </button>
-                                        </div>
+                                    <td className="px-6 py-5 text-right">
+                                        <button
+                                            onClick={() => openModal(c)}
+                                            className="p-2.5 bg-amber-600 text-white hover:bg-white hover:text-amber-600 transition shadow-sm border border-black/10"
+                                            title="Edit"
+                                        >
+                                            <HiOutlinePencil className="h-4 w-4" />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -150,42 +148,42 @@ const AdminCategories = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[40px] w-full max-w-md p-10 shadow-2xl animate-in zoom-in duration-300">
+                <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-teal-700 border border-black/20 w-full max-w-md p-6 sm:p-10 shadow-2xl animate-in zoom-in duration-300">
                         <div className="mb-8">
-                            <h2 className="text-2xl font-black text-gray-900">Edit {currentCategory.name}</h2>
-                            <p className="text-gray-500 font-medium">Update the public description for this category.</p>
+                            <h2 className="text-2xl font-black text-white uppercase tracking-tight">Edit Category</h2>
+                            <p className="text-white/50 text-xs font-black uppercase tracking-widest mt-2">Update public description.</p>
                         </div>
                         <form onSubmit={handleSave} className="space-y-6">
-                            <div className="space-y-2 opacity-50 cursor-not-allowed">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">System Name (Locked)</label>
+                            <div className="space-y-2 opacity-40">
+                                <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest">System Name (Locked)</label>
                                 <input
                                     type="text"
                                     disabled
-                                    className="w-full px-6 py-4 bg-gray-100 border-transparent rounded-2xl font-bold"
+                                    className="w-full bg-gray-50 border border-black/80 p-3 text-sm font-black text-black/50 tracking-widest uppercase"
                                     value={currentCategory.name}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Description</label>
+                                <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Description</label>
                                 <textarea
-                                    className="w-full px-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-medium min-h-[120px]"
+                                    className="w-full bg-gray-50 border border-black/80 p-3 focus:ring-0 text-sm font-bold text-black/70 min-h-[120px] resize-none"
                                     placeholder="Describe this property type..."
                                     value={currentCategory.description || ''}
                                     onChange={(e) => setCurrentCategory({ ...currentCategory, description: e.target.value })}
                                 />
                             </div>
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/5">
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="flex-grow py-4 bg-gray-50 text-gray-500 font-black rounded-2xl hover:bg-gray-100 transition uppercase tracking-widest text-xs"
+                                    className="flex-1 py-4 bg-white/10 text-white font-black uppercase tracking-widest text-xs hover:bg-white/20 transition"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-grow py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition shadow-xl shadow-blue-100 uppercase tracking-widest text-xs"
+                                    className="flex-1 py-4 bg-amber-600 text-white font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition shadow-xl"
                                 >
                                     Save Changes
                                 </button>

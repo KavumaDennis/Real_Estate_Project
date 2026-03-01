@@ -1,11 +1,11 @@
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import api from './api';
 
 const blogService = {
-    getPosts: (page = 1) => axios.get(`${API_URL}/posts?page=${page}`),
-    getPost: (slug) => axios.get(`${API_URL}/posts/${slug}`),
-    getCategories: () => axios.get(`${API_URL}/post-categories`),
+    getPosts: (page = 1) => api.get(`/posts?page=${page}`),
+    getPost: (slug) => api.get(`/posts/${slug}`),
+    getCategories: () => api.get('/post-categories'),
+    getSaved: () => api.get('/saved-posts'),
+    toggleSaved: (id) => api.post(`/posts/${id}/save`),
 };
 
 export default blogService;

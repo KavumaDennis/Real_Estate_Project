@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import propertyService from '../services/propertyService';
 import api from '../services/api';
-import { HiArrowLeft, HiUpload, HiX } from 'react-icons/hi';
+import { HiArrowLeft, HiUpload, HiX, HiOutlineShieldExclamation } from 'react-icons/hi';
 import SafeImage from '../components/SafeImage';
+import { useAuth } from '../context/AuthContext';
 
 const AddProperty = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const isUnverifiedAgent = user?.role?.slug === 'agent' && !user?.is_verified;
     const [loading, setLoading] = useState(false);
     const [locations, setLocations] = useState([]);
     const [images, setImages] = useState([]);
@@ -97,6 +100,18 @@ const AddProperty = () => {
                 </button>
                 <h1 className="font-black">Add New Property</h1>
             </div>
+
+            {isUnverifiedAgent && (
+                <div className="mb-8 p-6 bg-amber-50 border-l-4 border-amber-500 rounded-r-2xl flex items-center space-x-4 animate-in slide-in-from-top duration-500">
+                    <HiOutlineShieldExclamation className="h-10 w-10 text-amber-600 shrink-0" />
+                    <div>
+                        <h3 className="text-amber-800 font-black uppercase text-xs tracking-widest">Verification Required</h3>
+                        <p className="text-amber-700 text-sm font-medium mt-1">
+                            Your agent account is currently pending admin approval. You can draft your property listing, but you cannot publish it until you are verified.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Basic Information */}
@@ -255,7 +270,11 @@ const AddProperty = () => {
 
                 <div className="flex justify-end gap-4">
                     <button type="button" onClick={() => navigate(-1)} className="px-6 py-3 border border-black  text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg">Cancel</button>
-                    <button type="submit" disabled={loading} className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                    <button
+                        type="submit"
+                        disabled={loading || isUnverifiedAgent}
+                        className={`px-6 py-3 border border-black/10 text-xs text-start font-black uppercase tracking-widest text-white transition shadow-lg ${isUnverifiedAgent ? 'bg-gray-400 cursor-not-allowed' : 'bg-amber-600 hover:bg-blue-600'}`}
+                    >
                         {loading ? 'Creating...' : 'Publish Property'}
                     </button>
                 </div>

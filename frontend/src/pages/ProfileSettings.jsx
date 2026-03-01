@@ -21,9 +21,7 @@ const ProfileSettings = () => {
         specialization: user?.specialization || '',
     });
     const [avatarFile, setAvatarFile] = useState(null);
-    const [avatarPreview, setAvatarPreview] = useState(
-        user?.avatar ? `${API_BASE}/storage/${user.avatar}` : null
-    );
+    const [avatarPreview, setAvatarPreview] = useState(user?.avatar_url || null);
     const avatarRef = useRef();
 
     // ── Password Form ────────────────────────────────────────
@@ -138,80 +136,80 @@ const ProfileSettings = () => {
             {/* ── Avatar + Account ────────────────────────────── */}
             <form onSubmit={handleSaveAccount} className="bg-teal-700 border border-black/20 shadow-sm overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-50 to-violet-50">
-                    <div className="flex items-center bg-amber-600 space-x-6">
-                        {/* Avatar */}
-                        <div className="relative group">
-                            <div className="h-24 w-24 overflow-hidden bg-blue-100 flex items-center justify-center flex-shrink-0 shadow-lg">
-                                {avatarPreview ? (
-                                    <SafeImage src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
-                                ) : (
-                                    <span className="text-3xl font-black text-blue-600">
-                                        {user?.name?.charAt(0).toUpperCase()}
-                                    </span>
-                                )}
+                    <div className="bg-amber-600 p-6 sm:p-8">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                            {/* Avatar */}
+                            <div className="relative group shrink-0">
+                                <div className="h-28 w-28 overflow-hidden bg-white border border-black/20 flex items-center justify-center shadow-xl">
+                                    {avatarPreview ? (
+                                        <SafeImage src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-4xl font-black text-amber-600">
+                                            {user?.name?.charAt(0).toUpperCase()}
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => avatarRef.current?.click()}
+                                    className="absolute -bottom-2 -right-2 h-10 w-10 bg-teal-700 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 transition border border-white/20"
+                                    title="Change avatar"
+                                >
+                                    <HiPhotograph className="h-5 w-5" />
+                                </button>
+                                <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => avatarRef.current?.click()}
-                                className="absolute -bottom-2 -right-2 h-8 w-8 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-md hover:bg-blue-700 transition"
-                                title="Change avatar"
-                            >
-                                <HiPhotograph className="h-4 w-4" />
-                            </button>
-                            <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-                        </div>
 
-                        <div cl>
-                            <p className="text-xl text-start font-black text-white">{user?.name}</p>
-                            <p className="text-sm text-black text-start">{user?.email}</p>
-                            <span className={`w-fit mt-2 flex items-start px-3 py-1 text-xs font-black uppercase tracking-widest ${user?.role?.slug === 'admin' ? 'bg-violet-100 text-violet-700' : user?.role?.slug === 'agent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
-                                {user?.role?.name || 'User'}
-                            </span>
+                            <div className="text-center sm:text-left flex flex-col justify-center">
+                                <h2 className="text-2xl font-black text-white uppercase tracking-tight leading-none">{user?.name}</h2>
+                                <p className="text-black/70 font-bold text-sm mt-2">{user?.email}</p>
+                                <div className="flex justify-center sm:justify-start mt-4">
+                                    <span className={`px-4 py-1 text-[10px] font-black uppercase tracking-[0.2em] border border-black/10 shadow-sm ${user?.role?.slug === 'admin' ? 'bg-indigo-600 text-white' : user?.role?.slug === 'agent' ? 'bg-blue-600 text-white' : 'bg-white text-gray-500'}`}>
+                                        {user?.role?.name || 'User'}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-8 space-y-5 bg-teal-700">
-                    <h3 className="text-lg text-start font-black text-white uppercase tracking-widest flex items-center space-x-2">
-                        <HiUser className="h-5 w-5" />
-                        <span>Account Details</span>
+                <div className="p-6 sm:p-8 space-y-6 bg-teal-700">
+                    <h3 className="text-lg text-start font-black text-white uppercase tracking-widest flex items-center space-x-3">
+                        <div className="p-2 bg-amber-600 border border-black/10">
+                            <HiUser className="h-5 w-5 text-white" />
+                        </div>
+                        <span>Personal Information</span>
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                         <Field label="Full Name" icon={HiUser} error={errors.name}>
-                            <input className={inputClass} value={accountForm.name} onChange={e => setAccountForm({ ...accountForm, name: e.target.value })} placeholder="Your full name" required />
+                            <input className={inputClass} value={accountForm.name} onChange={e => setAccountForm({ ...accountForm, name: e.target.value })} placeholder="Full Name" required />
                         </Field>
                         <Field label="Email Address" icon={HiMail} error={errors.email}>
-                            <input type="email" className={inputClass} value={accountForm.email} onChange={e => setAccountForm({ ...accountForm, email: e.target.value })} placeholder="your@email.com" required />
+                            <input type="email" className={inputClass} value={accountForm.email} onChange={e => setAccountForm({ ...accountForm, email: e.target.value })} placeholder="email@example.com" required />
                         </Field>
                         <Field label="Phone Number" icon={HiPhone} error={errors.phone}>
-                            <input type="tel" className={inputClass} value={accountForm.phone} onChange={e => setAccountForm({ ...accountForm, phone: e.target.value })} placeholder="+256 700 000 000" />
+                            <input type="tel" className={inputClass} value={accountForm.phone} onChange={e => setAccountForm({ ...accountForm, phone: e.target.value })} placeholder="Phone Number" />
                         </Field>
                         {isAgent && (
                             <Field label="Specialization" icon={HiBriefcase} error={errors.specialization}>
-                                <input className={inputClass} value={accountForm.specialization} onChange={e => setAccountForm({ ...accountForm, specialization: e.target.value })} placeholder="e.g. Residential Properties" />
+                                <input className={inputClass} value={accountForm.specialization} onChange={e => setAccountForm({ ...accountForm, specialization: e.target.value })} placeholder="e.g. Luxury Estates" />
                             </Field>
                         )}
                     </div>
 
                     {isAgent && (
-                        <Field label="Bio" error={errors.bio}>
-                            <textarea rows="3" className={`${inputClass} resize-none`} value={accountForm.bio} onChange={e => setAccountForm({ ...accountForm, bio: e.target.value })} placeholder="Tell clients about yourself and your experience..." />
+                        <Field label="Professional Bio" error={errors.bio}>
+                            <textarea rows="4" className={`${inputClass} resize-none`} value={accountForm.bio} onChange={e => setAccountForm({ ...accountForm, bio: e.target.value })} placeholder="Write a short professional bio..." />
                         </Field>
                     )}
 
-                    <div className="flex justify-end pt-2">
-                        <button type="submit" disabled={saving} className="px-6 py-3 border border-black/30 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+                    <div className="flex justify-end pt-4 border-t border-black/10">
+                        <button type="submit" disabled={saving} className="w-full sm:w-auto px-10 py-4 bg-amber-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-2xl disabled:opacity-50 flex items-center justify-center space-x-2">
                             {saving ? (
-                                <>
-                                    <div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" />
-                                    <span>Saving...</span>
-                                </>
+                                <><div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" /><span>Syncing...</span></>
                             ) : (
-                                <>
-                                    <HiCheck className="h-5 w-5" />
-                                    <span>Save Changes</span>
-                                </>
+                                <><HiCheck className="h-5 w-5" /><span>Save Changes</span></>
                             )}
                         </button>
                     </div>
@@ -219,10 +217,12 @@ const ProfileSettings = () => {
             </form>
 
             {/* ── Password ─────────────────────────────────────── */}
-            <form onSubmit={handleChangePassword} className="bg-teal-700 border border-black/20 shadow-sm p-8 space-y-5">
-                <h3 className=" text-lg text-start font-black text-white uppercase tracking-widest flex items-center space-x-2">
-                    <HiLockClosed className="h-5 w-5 " />
-                    <span>Change Password</span>
+            <form onSubmit={handleChangePassword} className="bg-teal-700 border border-black/20 shadow-sm p-6 sm:p-8 space-y-6">
+                <h3 className="text-lg text-start font-black text-white uppercase tracking-widest flex items-center space-x-3">
+                    <div className="p-2 bg-amber-600 border border-black/10">
+                        <HiLockClosed className="h-5 w-5 text-white" />
+                    </div>
+                    <span>Password Security</span>
                 </h3>
 
                 <Field label="Current Password" error={errors.current_password}>
@@ -232,16 +232,16 @@ const ProfileSettings = () => {
                             className={`${inputClass} pr-12`}
                             value={pwForm.current_password}
                             onChange={e => setPwForm({ ...pwForm, current_password: e.target.value })}
-                            placeholder="Enter current password"
+                            placeholder="Current Password"
                             required
                         />
-                        <button type="button" onClick={() => setShowPw(p => ({ ...p, current: !p.current }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                        <button type="button" onClick={() => setShowPw(p => ({ ...p, current: !p.current }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
                             {showPw.current ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
                         </button>
                     </div>
                 </Field>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                     <Field label="New Password" error={errors.password}>
                         <div className="relative">
                             <input
@@ -249,10 +249,10 @@ const ProfileSettings = () => {
                                 className={`${inputClass} pr-12`}
                                 value={pwForm.password}
                                 onChange={e => setPwForm({ ...pwForm, password: e.target.value })}
-                                placeholder="Min 8 characters"
+                                placeholder="New Password"
                                 required minLength={8}
                             />
-                            <button type="button" onClick={() => setShowPw(p => ({ ...p, new: !p.new }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <button type="button" onClick={() => setShowPw(p => ({ ...p, new: !p.new }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
                                 {showPw.new ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
                             </button>
                         </div>
@@ -264,10 +264,10 @@ const ProfileSettings = () => {
                                 className={`${inputClass} pr-12`}
                                 value={pwForm.password_confirmation}
                                 onChange={e => setPwForm({ ...pwForm, password_confirmation: e.target.value })}
-                                placeholder="Repeat new password"
+                                placeholder="Confirm Password"
                                 required
                             />
-                            <button type="button" onClick={() => setShowPw(p => ({ ...p, confirm: !p.confirm }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <button type="button" onClick={() => setShowPw(p => ({ ...p, confirm: !p.confirm }))} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition">
                                 {showPw.confirm ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
                             </button>
                         </div>
@@ -276,18 +276,20 @@ const ProfileSettings = () => {
 
                 {/* Password strength hint */}
                 {pwForm.password && (
-                    <div className="flex gap-2">
-                        {[1, 2, 3, 4].map(i => (
-                            <div key={i} className={`h-1.5 flex-1 rounded-full ${pwForm.password.length >= i * 2 ? (pwForm.password.length >= 10 ? 'bg-green-500' : 'bg-yellow-400') : 'bg-gray-100'}`} />
-                        ))}
-                        <span className="text-xs text-gray-400 ml-2 font-medium">{pwForm.password.length < 6 ? 'Weak' : pwForm.password.length < 10 ? 'Fair' : 'Strong'}</span>
+                    <div className="flex items-center gap-3">
+                        <div className="flex flex-grow gap-1">
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className={`h-1 flex-1 transition-all ${pwForm.password.length >= i * 2 ? (pwForm.password.length >= 10 ? 'bg-emerald-500' : 'bg-amber-400') : 'bg-white/10'}`} />
+                            ))}
+                        </div>
+                        <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">{pwForm.password.length < 6 ? 'Weak' : pwForm.password.length < 10 ? 'Medium' : 'Strong'}</span>
                     </div>
                 )}
 
-                <div className="flex justify-end pt-2">
-                    <button type="submit" disabled={changingPw} className="px-6 py-3 border border-black/30 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 flex items-center space-x-2">
+                <div className="flex justify-end pt-4 border-t border-black/10">
+                    <button type="submit" disabled={changingPw} className="w-full sm:w-auto px-10 py-4 bg-amber-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-2xl disabled:opacity-50 flex items-center justify-center space-x-2">
                         {changingPw ? (
-                            <><div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" /><span>Updating...</span></>
+                            <><div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full" /><span>Updating Security...</span></>
                         ) : (
                             <><HiLockClosed className="h-5 w-5" /><span>Update Password</span></>
                         )}
@@ -296,15 +298,15 @@ const ProfileSettings = () => {
             </form>
 
             {/* ── Danger Zone ──────────────────────────────────── */}
-            <div className="bg-white border border-dashed border-red-500 shadow-sm p-8">
-                <h3 className="block text-xs text-start font-black uppercase tracking-widest text-red-600 mb-4">Danger Zone</h3>
-                <div className="flex items-center justify-between">
-                    <div>
-                        <p className="font-bold text-start text-gray-900">Delete Account</p>
-                        <p className="text-sm text-start text-gray-400 mt-1">Permanently remove your account and all associated data.</p>
+            <div className="bg-white border border-dashed border-red-500 shadow-sm p-6 sm:p-8">
+                <h3 className="block text-xs text-start font-black uppercase tracking-widest text-red-600 mb-6">Danger Zone</h3>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                    <div className="max-w-md">
+                        <p className="font-black text-gray-900 uppercase tracking-tight">Delete Account</p>
+                        <p className="text-sm text-gray-400 mt-2 leading-relaxed">Permanently remove your account and all associated data. This action is irreversible.</p>
                     </div>
-                    <button type="button" className="px-6 py-3 border border-black/10 bg-red-500 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                        Delete Account
+                    <button type="button" className="w-full sm:w-auto px-8 py-4 bg-red-600 text-xs font-black uppercase tracking-widest text-white hover:bg-black transition shadow-xl">
+                        Terminate Account
                     </button>
                 </div>
             </div>
