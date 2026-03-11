@@ -38,11 +38,13 @@ const SavedPosts = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Saved Articles</h1>
-                    <p className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white shadow-lg">
+                    <p className="px-6 py-3 border border-black/10 bg-green-600 relative text-xs text-start font-black uppercase tracking-widest text-white shadow-lg">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Your bookmarked blog posts and articles.
                     </p>
                 </div>
-                <Link to="/blog" className="px-6 py-3 flex items-center gap-2 border border-black/10 bg-teal-700 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg w-fit">
+                <Link to="/blog" className="px-6 py-3 flex items-center gap-2 border border-black/10 bg-gray-900 relative z-10 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg w-fit">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     Browse Blog
                 </Link>
             </div>
@@ -62,7 +64,7 @@ const SavedPosts = () => {
                     </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2  gap-8">
                     {posts.map(post => (
                         <article key={post.id} className="group bg-white border border-black/10 overflow-hidden hover:shadow-xl transition-all duration-500">
                             <Link to={`/blog/${post.slug}`} className="block">
@@ -73,30 +75,32 @@ const SavedPosts = () => {
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                     />
                                 </div>
-                                <div className="p-5">
-                                    <span className="inline-block mb-3 px-3 py-1 bg-amber-600/10 text-amber-700 text-[10px] font-black uppercase tracking-widest">
+                                <div className="">
+                                    <span className="flex justify-start w-fit mb-3 px-3 py-1 text-start bg-amber-600/10 border border-black/30 text-amber-700 text-[10px] font-black uppercase tracking-widest">
                                         {post.category?.name || 'Uncategorized'}
                                     </span>
-                                    <h2 className="font-black text-black uppercase tracking-widest text-sm line-clamp-2 mb-3">
+                                    <h2 className="font-black text-black uppercase text-start tracking-widest text-sm line-clamp-2 mb-3">
                                         {post.title}
                                     </h2>
-                                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{post.excerpt}</p>
+                                    <p className="text-gray-500 text-sm text-start line-clamp-2 mb-4">{post.excerpt}</p>
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center text-xs text-gray-400 font-bold uppercase tracking-widest">
+                                        <div className="flex items-center text-xs text-green-600 font-bold uppercase tracking-widest">
                                             <HiOutlineCalendar className="mr-1 h-4 w-4" />
                                             {new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </div>
-                                        <div className="flex items-center text-teal-700 text-xs font-black uppercase tracking-widest">
-                                            Read <HiOutlineArrowNarrowRight className="ml-1 h-4 w-4" />
+                                        <div className="flex items-center px-4 py-3 relative z-10 text-indigo-100 bg-gray-900 text-xs font-black uppercase tracking-widest">
+                                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                            Read More
                                         </div>
                                     </div>
                                 </div>
                             </Link>
-                            <div className="px-5 pb-4 border-t border-black/5 pt-3">
+                            <div className=" border-t border-black/5">
                                 <button
                                     onClick={() => handleUnsave(post.id)}
-                                    className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition"
+                                    className="text-[10px] py-3 w-full font-black uppercase tracking-widest bg-red-600 border border-black/30 relative z-10 transition"
                                 >
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     Remove from saved
                                 </button>
                             </div>

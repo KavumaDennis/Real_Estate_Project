@@ -61,4 +61,9 @@ class Property extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function managementRequests()
+    {
+        return $this->hasMany(PropertyManagementRequest::class);
+    }
 }

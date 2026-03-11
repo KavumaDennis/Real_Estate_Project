@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import propertyService from '../services/propertyService';
 import api from '../services/api';
 import SafeImage from '../components/SafeImage';
+import { formatUGX } from '../utils/currency';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
 
@@ -13,11 +14,11 @@ const StatusBadge = ({ status, availability }) => {
     const isForSale = status === 'for_sale';
     return (
         <div className="flex flex-col gap-1">
-            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${isForSale ? 'bg-blue-100 text-blue-700' : 'bg-green-100 border border-black/20 text-green-700'}`}>
+            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${isForSale ? 'bg-blue-100 text-blue-700' : 'bg-green-100 border border-black/30 text-green-700'}`}>
                 {isForSale ? 'For Sale' : 'For Rent'}
             </span>
             {availability && (
-                <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${availability === 'available' ? 'bg-blue-50 border border-black/20 text-blue-500' :
+                <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest w-fit ${availability === 'available' ? 'bg-blue-50 border border-black/30 text-blue-500' :
                     availability === 'sold' ? 'bg-red-50 text-red-500' :
                         'bg-orange-50 text-orange-500'
                     }`}>
@@ -46,6 +47,9 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
         is_published: property.is_published ?? true,
         is_featured: property.is_featured ?? false,
     });
+    const [amenityNames, setAmenityNames] = useState(
+        property.amenities?.length ? property.amenities.map(a => a.name) : ['']
+    );
     const [newImages, setNewImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
     const [saving, setSaving] = useState(false);
@@ -63,8 +67,15 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
         setError('');
         try {
             const fd = new FormData();
-            Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+            Object.entries(form).forEach(([k, v]) => {
+                if (typeof v === 'boolean') {
+                    fd.append(k, v ? '1' : '0');
+                } else {
+                    fd.append(k, v ?? '');
+                }
+            });
             newImages.forEach(img => fd.append('images[]', img));
+            amenityNames.filter(n => n?.trim()).forEach(n => fd.append('amenity_names[]', n.trim()));
             await propertyService.update(property.id, fd);
             onSaved();
         } catch (err) {
@@ -76,11 +87,11 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-            <div className="bg-green-600 border border-black/30 w-full max-w-2xl relative shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+            <div className="bg-green-900 border border-black/30 w-full max-w-2xl relative shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 <div className="flex items-center justify-between p-4 px-8 border-b">
                     <h2 className="text-2xl font-black text-white">Edit Property</h2>
-                    <button onClick={onClose} className="h-10 w-10 bg-indigo-600 border border-black/10 flex items-center justify-center hover:bg-gray-200 transition">
+                    <button onClick={onClose} className="h-10 w-10 z-10 relative bg-gray-900 border border-black/10 flex items-center justify-center hover:bg-gray-200 transition">
                         <HiX className="h-5 w-5" />
                     </button>
                 </div>
@@ -92,7 +103,7 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="overflow-y-auto p-8 space-y-5">
+                <form onSubmit={handleSubmit} className="overflow-y-auto p-8 space-y-5 z-10 relative">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="col-span-1 sm:col-span-2">
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Title</label>
@@ -115,7 +126,7 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price ($)</label>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price (UGX)</label>
                             <input type="number" className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
                         </div>
                         <div>
@@ -156,11 +167,46 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
                             </div>
                         </div>
                         <div className="col-span-1 sm:col-span-2">
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Amenities</label>
+                            <div className="space-y-2">
+                                {amenityNames.map((name, i) => (
+                                    <div key={i} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            className="flex-1 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
+                                            placeholder="e.g. Swimming Pool"
+                                            value={name}
+                                            onChange={e => {
+                                                const next = [...amenityNames];
+                                                next[i] = e.target.value;
+                                                setAmenityNames(next);
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setAmenityNames(prev => prev.filter((_, idx) => idx !== i))}
+                                            className="p-2 bg-red-500 text-white hover:bg-red-600 transition shrink-0"
+                                        >
+                                            <HiX className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setAmenityNames(prev => [...prev, ''])}
+                                    className="flex items-center gap-2 px-4 py-2 border border-dashed border-black/30 text-xs font-black uppercase tracking-widest hover:bg-white/20 transition"
+                                >
+                                    <HiPlus className="h-4 w-4" />
+                                    Add more
+                                </button>
+                            </div>
+                        </div>
+                        <div className="col-span-1 sm:col-span-2">
                             <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Images</label>
                             <label className="flex items-center space-x-3 border-2 border-dashed border-gray-200 rounded-2xl p-4 cursor-pointer hover:border-blue-400 transition">
                                 <HiPhotograph className="h-6 w-6 text-gray-300 shrink-0" />
                                 <span className="text-gray-400 font-medium text-sm truncate">Upload images</span>
-                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageChange} />
+                                <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.avif,.gif,image/*" className="hidden" onChange={handleImageChange} />
                             </label>
                             {imagePreviews.length > 0 && (
                                 <div className="flex gap-2 mt-3 flex-wrap">
@@ -187,9 +233,9 @@ const EditModal = ({ property, locations, onClose, onSaved }) => {
                     </div>
                 </form>
 
-                <div className="p-8 pt-3 flex gap-3">
+                <div className="p-8 pt-3 flex gap-3 z-10 relative">
                     <button onClick={onClose} className="flex-1 px-6 py-3 bg-white/70 border border-black/60 text-xs text-center font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg">Cancel</button>
-                    <button onClick={handleSubmit} disabled={saving} className="flex-1 px-6 py-3 border border-black/30 bg-indigo-600 text-xs text-center font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50">
+                    <button onClick={handleSubmit} disabled={saving} className="flex-1 px-6 py-3 z-10 relative border border-black/30 bg-gray-900 text-xs text-center font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50">
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
                 </div>
@@ -242,7 +288,7 @@ const MyProperties = () => {
     const [editingProperty, setEditingProperty] = useState(null);
     const [toast, setToast] = useState(null);
     const { user } = useAuth();
-    const isAdmin = user?.role?.slug === 'admin';
+    const isAdmin = user?.role?.slug === 'admin' || user?.role?.slug === 'super-admin';
 
     useEffect(() => {
         fetchData();
@@ -293,6 +339,20 @@ const MyProperties = () => {
         }
     };
 
+    const handleToggleLiveDraft = async (property) => {
+        try {
+            const fd = new FormData();
+            fd.append('is_published', property.is_published ? '0' : '1');
+            await propertyService.update(property.id, fd);
+            setProperties((prev) =>
+                prev.map((p) => (p.id === property.id ? { ...p, is_published: !p.is_published } : p))
+            );
+            showToast(`Property moved to ${property.is_published ? 'draft' : 'live'}.`);
+        } catch (err) {
+            showToast('Failed to change live/draft state.', 'error');
+        }
+    };
+
     return (
         <div className="space-y-8">
             {/* Toast */}
@@ -323,23 +383,23 @@ const MyProperties = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">My Listings</h1>
                     <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-green-600 relative text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Manage and track your properties.</p>
                 </div>
                 <div className="flex items-end gap-2">
                     <Link
                         to="/dashboard/saved"
-                        className="w-full sm:w-auto px-6 py-2 flex items-center justify-center border border-black/10 bg-indigo-600 relative text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                        className="w-full sm:w-auto px-6 py-2 flex items-center justify-center border border-black/10 bg-gray-900 relative text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                     >
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <HiPlus className="h-5 w-5 mr-2" />
                         <span>Saved Properties</span>
                     </Link>
                     <Link
                         to="/dashboard/properties/create"
-                        className="w-full sm:w-auto px-6 py-2 flex items-center justify-center border border-black/10 bg-indigo-600 relative text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                        className="w-full sm:w-auto px-6 py-2 flex items-center justify-center border border-black/10 bg-gray-900 relative text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                     >
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <HiPlus className="h-5 w-5 mr-2" />
                         <span>Add New Property</span>
                     </Link>
@@ -367,7 +427,7 @@ const MyProperties = () => {
                     <div className="overflow-x-auto scrollbar-hide">
                         <table className="w-full text-left border-collapse border-black/30 min-w-[800px]">
                             <thead className='bg-green-600 relative border-b'>
-                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                 <tr className="">
                                     <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest z-10 relative">Property</th>
                                     <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest z-10 relative">Status</th>
@@ -378,7 +438,7 @@ const MyProperties = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-black/10 relative bg-green-100/50">
-                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                 {properties.map(property => (
                                     <tr key={property.id} className="transition group hover:bg-teal-600/50  z-10 relative">
                                         <td className="px-6 py-5">
@@ -400,10 +460,10 @@ const MyProperties = () => {
                                             <StatusBadge status={property.status} availability={property.availability} />
                                         </td>
                                         <td className="px-6 py-5 font-black text-indigo-600">
-                                            ${Number(property.price).toLocaleString()}
+                                            {formatUGX(property.price)}
                                         </td>
                                         <td className="px-6 py-5">
-                                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest border border-black/20 ${property.is_published ? 'bg-green-500 text-white' : 'bg-indigo-600/30 text-black'}`}>
+                                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest border border-black/30 z-10 relative ${property.is_published ? 'bg-green-500 text-white' : 'bg-gray-900/30 text-black'}`}>
                                                 {property.is_published ? 'Live' : 'Draft'}
                                             </span>
                                         </td>
@@ -411,7 +471,7 @@ const MyProperties = () => {
                                             <td className="px-6 py-5">
                                                 <button
                                                     onClick={() => handleToggleFeatured(property.id)}
-                                                    className={`p-2 transition-colors ${property.is_featured ? 'text-amber-400 hover:text-amber-500' : 'text-gray-400 hover:text-amber-500'}`}
+                                                    className={`p-2 transition-colors ${property.is_featured ? 'text-amber-600 hover:text-amber-500' : 'text-black/50 hover:text-amber-500'}`}
                                                     title={property.is_featured ? 'Remove from featured' : 'Mark as featured'}
                                                 >
                                                     {property.is_featured ? <HiStar className="h-6 w-6" /> : <HiOutlineStar className="h-6 w-6" />}
@@ -420,16 +480,24 @@ const MyProperties = () => {
                                         )}
                                         <td className="px-6 py-5">
                                             <div className="flex justify-end space-x-1">
-                                                <Link to={`/properties/${property.slug}`} className="p-2 px-2.5 relative text-white bg-green-600 border border-black/20 transition" title="View">
-                                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <Link to={`/properties/${property.slug}`} className="p-2 px-2.5 relative text-white bg-green-600 border border-black/30 transition" title="View">
+                                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                     <HiChevronRight className="h-4 w-4" />
                                                 </Link>
-                                                <button onClick={() => setEditingProperty(property)} className="p-2 px-2.5 relative text-white bg-indigo-600 border border-black/20 transition" title="Edit">
-                                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <button onClick={() => setEditingProperty(property)} className="p-2 px-2.5 relative text-white bg-gray-900 border border-black/30 transition" title="Edit">
+                                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                     <HiPencil className="h-4 w-4" />
                                                 </button>
-                                                <button onClick={() => setDeletingProperty(property)} className="p-2 px-2.5 relative text-red-100 bg-red-600 border border-black/20 transition" title="Delete">
-                                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <button
+                                                    onClick={() => handleToggleLiveDraft(property)}
+                                                    className={`p-2 px-2.5 relative border border-black/30 transition text-xs font-black uppercase tracking-widest ${property.is_published ? 'bg-amber-600 text-white' : 'bg-blue-600 text-white'}`}
+                                                    title={property.is_published ? 'Move to Draft' : 'Move to Live'}
+                                                >
+                                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                    <span className="relative z-10">{property.is_published ? 'Draft' : 'Live'}</span>
+                                                </button>
+                                                <button onClick={() => setDeletingProperty(property)} className="p-2 px-2.5 relative text-red-100 bg-red-600 border border-black/30 transition" title="Delete">
+                                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                     <HiTrash className="h-4 w-4" />
                                                 </button>
                                             </div>

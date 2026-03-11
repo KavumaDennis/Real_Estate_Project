@@ -68,7 +68,7 @@ const BlogPost = () => {
     );
 
     return (
-        <div className="min-h-screen pb-32">
+        <div className="min-h-screen pb-20">
             {/* Article Header */}
             <header className="pt-10">
                 <div className="w-full">
@@ -145,13 +145,16 @@ const BlogPost = () => {
                     </div>
                 </div>
 
-                <div className="mt-24 p-12 bg-green-600 text-white relative overflow-hidden text-center">
+                <div className="mt-10 p-12 bg-gray-900 text-white relative overflow-hidden text-center">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="absolute inset-0 bg-blue-600/10 backdrop-blur-3xl"></div>
-                    <div className="relative z-10">
-                        <BiBuildingHouse className="h-16 w-16 text-blue-500 mx-auto mb-6" />
-                        <h3 className="text-3xl text-amber-500 font-black mb-4">Start your journey today.</h3>
-                        <p className="text-white text-lg mb-10 max-w-md mx-auto">Explore premium listings curated for those who seek the extraordinary.</p>
-                        <Link to="/properties" className="px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                    <div className="relative z-10 flex justify-between items-center">
+                        <div className="flex flex-col items-start">
+                            <h3 className="text-3xl text-green-600 font-black mb-4">Start your journey today.</h3>
+                            <p className="text-white text-lg mb-10 mx-auto">Explore premium listings curated for those who seek the extraordinary.</p>
+                        </div>
+                        <Link to="/properties" className="px-6 py-3 relative z-10 border border-black/10 bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             Browse Properties
                         </Link>
                     </div>

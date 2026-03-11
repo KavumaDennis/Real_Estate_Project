@@ -48,7 +48,7 @@ class User extends Authenticatable
             return null;
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar);
+        return \App\Helpers\StorageUrlHelper::url($this->avatar);
     }
 
     public function role()
@@ -84,6 +84,27 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class, 'agent_id');
+    }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'service_agent', 'user_id', 'service_id')
+            ->withTimestamps();
+    }
+
+    public function propertyManagementRequests()
+    {
+        return $this->hasMany(PropertyManagementRequest::class);
+    }
+
+    public function reviewedPropertyManagementRequests()
+    {
+        return $this->hasMany(PropertyManagementRequest::class, 'reviewed_by');
+    }
+
+    public function serviceRequirements()
+    {
+        return $this->hasMany(ServiceRequirement::class);
     }
 
     /**

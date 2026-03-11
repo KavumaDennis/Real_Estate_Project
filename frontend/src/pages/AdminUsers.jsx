@@ -3,7 +3,7 @@ import api from '../services/api';
 import {
     HiOutlineSearch, HiOutlineFilter, HiOutlinePlus, HiOutlinePencil,
     HiOutlineTrash, HiOutlineBadgeCheck, HiOutlineUserGroup, HiOutlineShieldCheck,
-    HiOutlineX, HiOutlineMail, HiOutlinePhone, HiOutlineUserCircle
+    HiOutlineX, HiOutlineMail, HiOutlinePhone, HiOutlineUserCircle, HiOutlineEye, HiOutlineEyeOff
 } from 'react-icons/hi';
 import SafeImage from '../components/SafeImage';
 
@@ -16,6 +16,7 @@ const AdminUsers = () => {
     const [roleFilter, setRoleFilter] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [currentUser, setCurrentUser] = useState({
         name: '', email: '', password: '', role_id: '', phone: '', specialization: '', bio: ''
     });
@@ -111,11 +112,13 @@ const AdminUsers = () => {
             setCurrentUser({ name: '', email: '', password: '', role_id: '', phone: '', specialization: '', bio: '' });
             setIsEditing(false);
         }
+        setShowPassword(false);
         setIsModalOpen(true);
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
+        setShowPassword(false);
         setCurrentUser({ name: '', email: '', password: '', role_id: '', phone: '', specialization: '', bio: '' });
     };
 
@@ -130,7 +133,7 @@ const AdminUsers = () => {
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-2.5 flex items-center justify-center relative z-10 border border-black/20 bg-indigo-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg w-full sm:w-auto"
+                    className="px-6 py-2.5 flex items-center justify-center relative z-10 border border-black/30 bg-gray-900 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg w-full sm:w-auto"
                 >
                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiOutlinePlus className="h-5 w-5 mr-2" />
@@ -140,9 +143,9 @@ const AdminUsers = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                <div className="bg-indigo-600 relative z-10 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
+                <div className="bg-gray-900 relative z-10 p-6 shadow-sm border border-black/30 flex items-center space-x-4">
                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                    <div className="h-12 w-12 bg-blue-50 border border-black/20 text-blue-600 flex items-center justify-center shrink-0">
+                    <div className="h-12 w-12 bg-blue-50 border border-black/30 text-blue-600 flex items-center justify-center shrink-0">
                         <HiOutlineUserGroup className="h-6 w-6" />
                     </div>
                     <div>
@@ -150,9 +153,9 @@ const AdminUsers = () => {
                         <p className="text-[10px] text-start font-black text-black uppercase tracking-widest mt-1">Total Agents</p>
                     </div>
                 </div>
-                <div className="bg-indigo-600 relative z-10 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
+                <div className="bg-gray-900 relative z-10 p-6 shadow-sm border border-black/30 flex items-center space-x-4">
                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                    <div className="h-12 w-12 bg-purple-50 border border-black/20 text-purple-600 flex items-center justify-center shrink-0">
+                    <div className="h-12 w-12 bg-purple-50 border border-black/30 text-purple-600 flex items-center justify-center shrink-0">
                         <HiOutlineBadgeCheck className="h-6 w-6" />
                     </div>
                     <div>
@@ -160,9 +163,9 @@ const AdminUsers = () => {
                         <p className="text-[10px] text-start font-black text-black uppercase tracking-widest mt-1">Active Members</p>
                     </div>
                 </div>
-                <div className="bg-indigo-600 relative z-10 p-6 shadow-sm border border-black/20 flex items-center space-x-4">
+                <div className="bg-gray-900 relative z-10 p-6 shadow-sm border border-black/30 flex items-center space-x-4">
                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                    <div className="h-12 w-12 bg-emerald-50 border border-black/20 text-emerald-600 flex items-center justify-center shrink-0">
+                    <div className="h-12 w-12 bg-emerald-50 border border-black/30 text-emerald-600 flex items-center justify-center shrink-0">
                         <HiOutlineShieldCheck className="h-6 w-6" />
                     </div>
                     <div>
@@ -173,7 +176,7 @@ const AdminUsers = () => {
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-indigo-600 relative p-4 sm:p-8 border border-black/20 shadow-sm">
+            <div className="bg-gray-900 relative p-4 sm:p-8 border border-black/30 shadow-sm">
 
                 <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 z-10 relative">
@@ -210,7 +213,7 @@ const AdminUsers = () => {
             </div>
 
             {/* User List */}
-            <div className="border border-black/20 shadow-sm overflow-hidden">
+            <div className="border border-black/30 shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="py-20 flex flex-col items-center justify-center space-y-4">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -223,7 +226,7 @@ const AdminUsers = () => {
                         <table className="w-full text-left relative z-10 border-collapse min-w-[700px]">
                             <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             <thead>
-                                <tr className="bg-green-600 border-b border-black/20">
+                                <tr className="bg-green-600 border-b border-black/30">
                                     <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Profile</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Role & Access</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-white uppercase tracking-[0.2em]">Join Date</th>
@@ -245,7 +248,7 @@ const AdminUsers = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest inline-flex items-center border border-black/10 ${u.role?.slug === 'admin' ? 'bg-indigo-600 text-white' :
+                                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest inline-flex items-center border border-black/10 ${u.role?.slug === 'admin' ? 'bg-gray-900 text-white' :
                                                 u.role?.slug === 'agent' ? 'bg-blue-600 text-white' :
                                                     'bg-white/90 text-gray-500'
                                                 }`}>
@@ -274,7 +277,7 @@ const AdminUsers = () => {
                                                 )}
                                                 <button
                                                     onClick={() => openModal(u)}
-                                                    className="p-2 text-white relative z-10 bg-indigo-600 border border-black/30 transition"
+                                                    className="p-2 text-white relative z-10 bg-gray-900 border border-black/30 transition"
                                                 >
                                                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                     <HiOutlinePencil className="h-4 w-4" />
@@ -299,50 +302,51 @@ const AdminUsers = () => {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-[40px] w-full max-w-2xl p-10 shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-green-900 relative w-full max-w-2xl p-10 shadow-2xl animate-in zoom-in duration-300 max-h-[90vh] overflow-y-auto">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <div className="flex items-center justify-between mb-8">
                             <div>
-                                <h2 className="text-2xl font-black text-gray-900">{isEditing ? 'Edit User' : 'New User'}</h2>
-                                <p className="text-gray-500 font-medium">Manage account and profile details.</p>
+                                <h2 className="text-2xl font-black text-start text-indigo-100">{isEditing ? 'Edit User' : 'New User'}</h2>
+                                <p className="text-gray-500 font-medium text-start">Manage account and profile details.</p>
                             </div>
-                            <button onClick={closeModal} className="p-2 hover:bg-gray-100 rounded-full transition">
+                            <button onClick={closeModal} className="p-2 relative z-10 bg-indigo-600 border border-black/30 transition">
                                 <HiOutlineX className="h-6 w-6 text-gray-400" />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSave} className="space-y-6">
+                        <form onSubmit={handleSave} className="space-y-6 z-10 relative">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Full Name</label>
-                                    <div className="relative">
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Full Name</label>
+                                    <div className="relative w-full">
                                         <HiOutlineUserCircle className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                                         <input
                                             type="text"
                                             required
-                                            className="w-full pl-12 pr-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold"
+                                            className="w-full pl-12 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                             value={currentUser.name}
                                             onChange={(e) => setCurrentUser({ ...currentUser, name: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Email Address</label>
-                                    <div className="relative">
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Email Address</label>
+                                    <div className="relative w-full">
                                         <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                                         <input
                                             type="email"
                                             required
-                                            className="w-full pl-12 pr-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold"
+                                            className="w-full pl-12 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                             value={currentUser.email}
                                             onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Role</label>
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Role</label>
                                     <select
                                         required
-                                        className="w-full px-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold text-gray-700"
+                                        className=" w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                         value={currentUser.role_id}
                                         onChange={(e) => setCurrentUser({ ...currentUser, role_id: e.target.value })}
                                     >
@@ -352,43 +356,53 @@ const AdminUsers = () => {
                                         ))}
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Password {isEditing && '(Leave blank to keep current)'}</label>
-                                    <input
-                                        type="password"
-                                        required={!isEditing}
-                                        className="w-full px-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold"
-                                        value={currentUser.password}
-                                        onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })}
-                                    />
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Password {isEditing && '(Leave blank to keep current)'}</label>
+                                    <div className="relative w-full">
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            required={!isEditing}
+                                            className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
+                                            value={currentUser.password}
+                                            onChange={(e) => setCurrentUser({ ...currentUser, password: e.target.value })}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((prev) => !prev)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                        >
+                                            {showPassword ? <HiOutlineEyeOff className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Phone Number</label>
-                                    <div className="relative">
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Phone Number</label>
+                                    <div className="relative w-full">
                                         <HiOutlinePhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                                         <input
                                             type="text"
-                                            className="w-full pl-12 pr-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold"
+                                            className="w-full pl-12 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                             value={currentUser.phone || ''}
                                             onChange={(e) => setCurrentUser({ ...currentUser, phone: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Specialization (For Agents)</label>
+                                <div className="space-y-1 flex flex-col items-start">
+                                    <label className="text-[10px] tex-start font-black text-black uppercase tracking-widest">Specialization (For Agents)</label>
                                     <input
                                         type="text"
-                                        className="w-full px-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-bold"
+                                        className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
                                         placeholder="e.g. Luxury Residences"
                                         value={currentUser.specialization || ''}
                                         onChange={(e) => setCurrentUser({ ...currentUser, specialization: e.target.value })}
                                     />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Bio / About</label>
+                            <div className="space-y-1 flex flex-col items-start">
+                                <label className="text-[10px] font-black text-black uppercase tracking-widest">Bio / About</label>
                                 <textarea
-                                    className="w-full px-6 py-4 bg-gray-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition font-medium min-h-[100px]"
+                                    className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70 min-h-[100px]"
                                     value={currentUser.bio || ''}
                                     onChange={(e) => setCurrentUser({ ...currentUser, bio: e.target.value })}
                                 />
@@ -398,14 +412,15 @@ const AdminUsers = () => {
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="flex-grow py-4 bg-gray-50 text-gray-500 font-black rounded-2xl hover:bg-gray-100 transition uppercase tracking-widest text-xs"
+                                    className="flex-grow py-4 bg-gray-50 text-gray-500 font-black hover:bg-gray-100 transition uppercase tracking-widest text-xs"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-grow py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition shadow-xl shadow-blue-100 uppercase tracking-widest text-xs"
+                                    className="flex-grow py-4 relative bg-gray-900 border border-black/30 text-white font-black  hover:bg-blue-700 transition uppercase tracking-widest text-xs"
                                 >
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     {isEditing ? 'Save Changes' : 'Create User'}
                                 </button>
                             </div>
@@ -418,3 +433,4 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+

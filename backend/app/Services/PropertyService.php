@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Amenity;
 use App\Repositories\Interfaces\PropertyRepositoryInterface;
 use Illuminate\Support\Str;
 
@@ -46,9 +47,12 @@ class PropertyService
         }
 
         $images = $data['images'] ?? [];
-        unset($data['images']);
+        $amenityNames = $data['amenity_names'] ?? [];
+        unset($data['images'], $data['amenity_names']);
 
         $property = $this->propertyRepository->create($data);
+
+        $this->syncAmenitiesFromNames($property, $amenityNames);
 
         if (!empty($images)) {
             foreach ($images as $image) {
@@ -66,11 +70,22 @@ class PropertyService
     public function updateProperty(\App\Models\Property $property, array $data)
     {
         $images = $data['images'] ?? [];
-        unset($data['images']);
+        $amenityNames = $data['amenity_names'] ?? null;
+        unset($data['images'], $data['amenity_names']);
 
         $property->update($data);
 
+        if ($amenityNames !== null) {
+            $this->syncAmenitiesFromNames($property, $amenityNames);
+        }
+
         if (!empty($images)) {
+            // Replace existing images when new ones are uploaded from edit flow.
+            foreach ($property->images as $existingImage) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingImage->image_path);
+                $existingImage->delete();
+            }
+
             foreach ($images as $image) {
                 $path = $image->store('properties', 'public');
                 $property->images()->create(['image_path' => $path, 'is_main' => false]);
@@ -87,5 +102,16 @@ class PropertyService
             $image->delete();
         }
         $property->delete();
+    }
+
+    protected function syncAmenitiesFromNames(\App\Models\Property $property, array $names): void
+    {
+        $ids = [];
+        foreach (array_filter(array_map('trim', $names)) as $name) {
+            if ($name === '') continue;
+            $amenity = Amenity::firstOrCreate(['name' => $name], ['icon' => '']);
+            $ids[] = $amenity->id;
+        }
+        $property->amenities()->sync($ids);
     }
 }

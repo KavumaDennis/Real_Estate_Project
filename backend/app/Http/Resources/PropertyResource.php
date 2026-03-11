@@ -27,6 +27,8 @@ class PropertyResource extends JsonResource
                 'id' => $this->location->id,
                 'name' => $this->location->name,
                 'type' => $this->location->type,
+                'latitude' => $this->location->latitude,
+                'longitude' => $this->location->longitude,
             ] : null,
             'agent' => $this->agent ? [
                 'id' => $this->agent->id,

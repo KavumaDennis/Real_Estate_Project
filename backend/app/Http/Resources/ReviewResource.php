@@ -19,12 +19,12 @@ class ReviewResource extends JsonResource
             'agent' => $this->agent_id ? [
                 'id' => $this->agent->id,
                 'name' => $this->agent->name,
-                'avatar' => $this->agent->avatar ? url('storage/' . $this->agent->avatar) : null,
+                'avatar' => \App\Helpers\StorageUrlHelper::url($this->agent->avatar),
             ] : null,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
-                'avatar' => $this->user->avatar ? url('storage/' . $this->user->avatar) : null,
+                'avatar' => \App\Helpers\StorageUrlHelper::url($this->user->avatar),
             ],
             'rating' => $this->rating,
             'comment' => $this->comment,

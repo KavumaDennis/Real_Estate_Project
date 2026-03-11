@@ -15,7 +15,7 @@ class AnalyticsController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $isAdmin = $user->role?->slug === 'admin';
+        $isAdmin = in_array($user->role?->slug ?? '', ['admin', 'super-admin']);
 
         $totalViewsQuery = Property::query();
         $leadsCountQuery = Inquiry::query();
@@ -31,7 +31,8 @@ class AnalyticsController extends Controller
             });
         }
 
-        $totalViews = $totalViewsQuery->sum('views_count');
+        $totalViews = PropertyView::when(!$isAdmin, fn($q) => $q->whereHas('property', fn($pq) => $pq->where('agent_id', $user->id)))
+            ->count();
         $leadsCount = $leadsCountQuery->count();
         $activeListings = $activeListingsQuery->count();
 
@@ -77,12 +78,36 @@ class AnalyticsController extends Controller
         }
         $topPerformer = $topPerformerQuery->orderBy('views_count', 'desc')->first();
 
-        // Recent Activity
+        // Recent Activity (inquiries + property views)
         $recentInquiriesQuery = Inquiry::with('property');
         if (!$isAdmin) {
             $recentInquiriesQuery->where('agent_id', $user->id);
         }
-        $recentInquiries = $recentInquiriesQuery->latest()->limit(5)->get();
+        $recentInquiries = $recentInquiriesQuery->latest()->limit(10)->get();
+
+        $recentViewsQuery = PropertyView::with('property')->whereHas('property', fn($q) => $isAdmin ? $q : $q->where('agent_id', $user->id));
+        $recentViews = $recentViewsQuery->latest()->limit(10)->get();
+
+        $recentActivity = collect()
+            ->merge($recentInquiries->map(fn($i) => [
+                'type' => 'inquiry',
+                'title' => 'New Inquiry received',
+                'desc' => "{$i->name} inquired about " . ($i->property?->title ?? 'a property'),
+                'time' => $i->created_at,
+                'ts' => $i->created_at->timestamp
+            ]))
+            ->merge($recentViews->map(fn($v) => [
+                'type' => 'view',
+                'title' => 'Property viewed',
+                'desc' => ($v->property?->title ?? 'A property') . ' was viewed',
+                'time' => $v->created_at,
+                'ts' => $v->created_at->timestamp
+            ]))
+            ->sortByDesc('ts')
+            ->take(5)
+            ->map(fn($a) => ['type' => $a['type'], 'title' => $a['title'], 'desc' => $a['desc'], 'time' => \Carbon\Carbon::parse($a['time'])->diffForHumans()])
+            ->values()
+            ->all();
 
         return response()->json([
             'stats' => [
@@ -99,17 +124,10 @@ class AnalyticsController extends Controller
                 'title' => $topPerformer->title,
                 'price' => $topPerformer->price,
                 'location' => $topPerformer->location ? $topPerformer->location->name : $topPerformer->address,
-                'image' => $topPerformer->images->first() ? $topPerformer->images->first()->image_path : null,
+                'image' => $topPerformer->images->first() ? $topPerformer->images->first()->url : null,
                 'views' => $topPerformer->views_count
             ] : null,
-            'recentActivity' => $recentInquiries->map(function($inquiry) {
-                return [
-                    'type' => 'inquiry',
-                    'title' => 'New Inquiry received',
-                    'desc' => "{$inquiry->name} viewed {$inquiry->property->title}",
-                    'time' => $inquiry->created_at->diffForHumans()
-                ];
-            })
+            'recentActivity' => $recentActivity
         ]);
     }
 }

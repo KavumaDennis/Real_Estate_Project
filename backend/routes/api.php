@@ -33,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/properties/{id}', [\App\Http\Controllers\Api\PropertyController::class, 'update']); // POST with _method=PUT for FormData
     Route::delete('/properties/{id}', [\App\Http\Controllers\Api\PropertyController::class, 'destroy']);
     Route::post('/agents/{id}/contact', [\App\Http\Controllers\Api\AgentController::class, 'contact']);
+    Route::get('/property-management-requests', [\App\Http\Controllers\Api\PropertyManagementRequestController::class, 'index']);
+    Route::post('/property-management-requests', [\App\Http\Controllers\Api\PropertyManagementRequestController::class, 'store']);
+    Route::patch('/property-management-requests/{id}/cancel', [\App\Http\Controllers\Api\PropertyManagementRequestController::class, 'cancel']);
+    Route::post('/services/{id}/requirements', [\App\Http\Controllers\Api\ServiceController::class, 'require']);
 
     // Inquiry/Leads management
     Route::get('/inquiries', [\App\Http\Controllers\Api\InquiryController::class, 'index']);
@@ -55,6 +59,13 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/saved-posts', [\App\Http\Controllers\Api\SavedPostController::class, 'index']);
     Route::post('/posts/{id}/save', [\App\Http\Controllers\Api\SavedPostController::class, 'toggle']);
+    Route::get('/my-posts', [\App\Http\Controllers\Api\PostController::class, 'myIndex']);
+    Route::post('/my-posts', [\App\Http\Controllers\Api\PostController::class, 'store']);
+    Route::post('/my-posts/{id}', [\App\Http\Controllers\Api\PostController::class, 'update']);
+    Route::delete('/my-posts/{id}', [\App\Http\Controllers\Api\PostController::class, 'destroy']);
+
+    // Analytics (agents and admins)
+    Route::get('/analytics', [\App\Http\Controllers\Api\Admin\AnalyticsController::class, 'index']);
 
     // Admin routes
     Route::prefix('admin')->group(function () {
@@ -81,9 +92,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/pages/{id}', [\App\Http\Controllers\Api\Admin\PageController::class, 'destroy']);
 
         // New Admin Routes
-        Route::apiResource('categories', \App\Http\Controllers\Api\Admin\CategoryController::class);
         Route::apiResource('locations', \App\Http\Controllers\Api\Admin\LocationController::class);
-        Route::apiResource('amenities', \App\Http\Controllers\Api\Admin\AmenityController::class);
+        Route::apiResource('services', \App\Http\Controllers\Api\Admin\ServiceController::class);
         
         // Analytics
         Route::get('/analytics', [\App\Http\Controllers\Api\Admin\AnalyticsController::class, 'index']);
@@ -95,6 +105,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/posts/{id}', [\App\Http\Controllers\Api\PostController::class, 'destroy']);
 
         Route::post('/properties/{id}/toggle-featured', [\App\Http\Controllers\Api\PropertyController::class, 'toggleFeatured']);
+        Route::get('/property-management-requests', [\App\Http\Controllers\Api\PropertyManagementRequestController::class, 'adminIndex']);
+        Route::patch('/property-management-requests/{id}/status', [\App\Http\Controllers\Api\PropertyManagementRequestController::class, 'updateStatus']);
+        Route::get('/contact-messages', [\App\Http\Controllers\Api\Admin\ContactMessageController::class, 'index']);
+        Route::get('/contact-messages/{id}', [\App\Http\Controllers\Api\Admin\ContactMessageController::class, 'show']);
+        Route::patch('/contact-messages/{id}/read', [\App\Http\Controllers\Api\Admin\ContactMessageController::class, 'markRead']);
+        Route::delete('/contact-messages/{id}', [\App\Http\Controllers\Api\Admin\ContactMessageController::class, 'destroy']);
+        Route::get('/service-requirements', [\App\Http\Controllers\Api\Admin\ServiceRequirementController::class, 'index']);
+        Route::patch('/service-requirements/{id}', [\App\Http\Controllers\Api\Admin\ServiceRequirementController::class, 'update']);
     });
 });
 
@@ -106,8 +124,13 @@ Route::get('/posts', [App\Http\Controllers\Api\PostController::class, 'index']);
 Route::get('/posts/{slug}', [App\Http\Controllers\Api\PostController::class, 'show']);
 Route::get('/post-categories', [App\Http\Controllers\Api\PostCategoryController::class, 'index']);
 Route::get('/locations', [App\Http\Controllers\Api\LocationController::class, 'index']);
+Route::get('/locations/top', [App\Http\Controllers\Api\LocationController::class, 'top']);
+Route::get('/services', [App\Http\Controllers\Api\ServiceController::class, 'index']);
+Route::get('/services/{id}', [App\Http\Controllers\Api\ServiceController::class, 'show']);
 
 Route::get('/agents', [App\Http\Controllers\Api\AgentController::class, 'index']);
 Route::get('/agents/{id}', [App\Http\Controllers\Api\AgentController::class, 'show']);
 
 Route::post('/inquiries', [\App\Http\Controllers\Api\InquiryController::class, 'store']);
+Route::post('/newsletter/subscribe', [\App\Http\Controllers\Api\NewsletterController::class, 'subscribe']);
+Route::post('/contact', [\App\Http\Controllers\Api\ContactController::class, 'store']);

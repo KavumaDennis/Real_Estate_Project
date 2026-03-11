@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HiCalculator, HiOutlineInformationCircle } from 'react-icons/hi';
+import { formatUGX } from '../utils/currency';
 
 const MortgageCalculator = ({ price }) => {
     const [loanAmount, setLoanAmount] = useState(price * 0.8);
@@ -45,7 +46,7 @@ const MortgageCalculator = ({ price }) => {
                         <div>
                             <div className="flex justify-between mb-2">
                                 <label className="block text-xs text-start font-black text-amber-600 uppercase tracking-widest">Down Payment</label>
-                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">${Number(downPayment).toLocaleString()}</span>
+                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">{formatUGX(downPayment)}</span>
                             </div>
                             <input
                                 type="range"
@@ -94,18 +95,18 @@ const MortgageCalculator = ({ price }) => {
                         <div className="w-full flex justify-between items-center mb-5">
                             <p className="block text-xs text-start font-black text-white uppercase tracking-widest">Monthly Payment</p>
                             <h3 className="block text-lg text-start font-black text-orange-500 uppercase tracking-widest">
-                                <span className="font-sans">$</span>{Number(monthlyPayment).toLocaleString()}
+                                {formatUGX(monthlyPayment)}
                             </h3>
                         </div>
                         <div className="w-full h-px bg-white/10 mb-8"></div>
                         <div className="w-full space-y-4">
                             <div className="flex justify-between items-center">
                                 <span className="text-teal-700 font-medium">Principal & Interest</span>
-                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">${Number(monthlyPayment).toLocaleString()}</span>
+                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">{formatUGX(monthlyPayment)}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-teal-700 font-medium">Estimated Taxes & Insurance</span>
-                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">$0.00</span>
+                                <span className="block text-xs text-start font-black text-white uppercase tracking-widest">{formatUGX(0)}</span>
                             </div>
                         </div>
                         <button className="mt-10 w-fit px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">

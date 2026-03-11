@@ -25,15 +25,32 @@ class PropertyController extends Controller
     public function show($slug)
     {
         $property = $this->propertyService->getPropertyBySlug($slug);
-        
-        // Record view with timestamp for analytics
-        \App\Models\PropertyView::create([
-            'property_id' => $property->id,
-            'user_id' => auth()->id(),
-            'ip_address' => request()->ip()
-        ]);
 
-        $property->increment('views_count');
+        // Record view: one view per user (or IP for guests) per property per day
+        $userId = auth()->id();
+        $ip = request()->ip();
+        $today = now()->toDateString();
+
+        $exists = \App\Models\PropertyView::where('property_id', $property->id)
+            ->where(function ($q) use ($userId, $ip) {
+                if ($userId) {
+                    $q->where('user_id', $userId);
+                } else {
+                    $q->whereNull('user_id')->where('ip_address', $ip);
+                }
+            })
+            ->whereDate('created_at', $today)
+            ->exists();
+
+        if (!$exists) {
+            \App\Models\PropertyView::create([
+                'property_id' => $property->id,
+                'user_id' => $userId,
+                'ip_address' => $ip
+            ]);
+            $property->increment('views_count');
+        }
+
         return new PropertyResource($property->load(['location', 'agent', 'images', 'amenities', 'reviews.user']));
     }
 
@@ -46,7 +63,7 @@ class PropertyController extends Controller
     public function myProperties()
     {
         $properties = \App\Models\Property::where('agent_id', auth()->id())
-            ->with(['location', 'images'])
+            ->with(['location', 'images', 'amenities'])
             ->latest()
             ->get();
         return PropertyResource::collection($properties);
@@ -75,7 +92,9 @@ class PropertyController extends Controller
             'virtual_tour_url' => 'nullable|url|max:255',
             'availability'   => 'nullable|in:available,sold,reserved,off_market',
             'images'         => 'nullable|array',
-            'images.*'       => 'image|mimes:jpeg,png,jpg|max:5120',
+            'images.*'       => 'image|mimes:jpeg,jpg,png,webp,avif,gif|max:5120',
+            'amenity_names'  => 'nullable|array',
+            'amenity_names.*' => 'nullable|string|max:255',
         ]);
 
         $user = auth()->user();
@@ -91,10 +110,17 @@ class PropertyController extends Controller
     {
         $property = \App\Models\Property::findOrFail($id);
 
-        // Ensure only the owner or admin can update
-        if ($property->agent_id !== auth()->id() && auth()->user()->role?->slug !== 'admin') {
+        // Ensure only the owner or admin/super-admin can update
+        $slug = auth()->user()->role?->slug;
+        if ($property->agent_id !== auth()->id() && !in_array($slug, ['admin', 'super-admin'])) {
             abort(403, 'Unauthorized');
         }
+
+        // Normalize booleans from FormData (sends "true"/"false" or "1"/"0" as strings)
+        $request->merge([
+            'is_published' => filter_var($request->input('is_published'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $property->is_published,
+            'is_featured'  => filter_var($request->input('is_featured'), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $property->is_featured,
+        ]);
 
         $validated = $request->validate([
             'title'          => 'sometimes|required|string|max:255',
@@ -110,9 +136,11 @@ class PropertyController extends Controller
             'virtual_tour_url' => 'nullable|url|max:255',
             'availability'   => 'nullable|in:available,sold,reserved,off_market',
             'images'         => 'nullable|array',
-            'images.*'       => 'image|mimes:jpeg,png,jpg|max:5120',
+            'images.*'       => 'image|mimes:jpeg,jpg,png,webp,avif,gif|max:5120',
             'is_published'   => 'nullable|boolean',
             'is_featured'    => 'nullable|boolean',
+            'amenity_names'  => 'nullable|array',
+            'amenity_names.*' => 'nullable|string|max:255',
         ]);
 
         $property = $this->propertyService->updateProperty($property, $validated);
@@ -123,7 +151,8 @@ class PropertyController extends Controller
     {
         $property = \App\Models\Property::findOrFail($id);
 
-        if ($property->agent_id !== auth()->id() && auth()->user()->role?->slug !== 'admin') {
+        $slug = auth()->user()->role?->slug;
+        if ($property->agent_id !== auth()->id() && !in_array($slug, ['admin', 'super-admin'])) {
             abort(403, 'Unauthorized');
         }
 
@@ -133,7 +162,8 @@ class PropertyController extends Controller
 
     public function toggleFeatured($id)
     {
-        if (auth()->user()->role?->slug !== 'admin') {
+        $slug = auth()->user()->role?->slug;
+        if (!in_array($slug, ['admin', 'super-admin'])) {
             abort(403, 'Unauthorized');
         }
 

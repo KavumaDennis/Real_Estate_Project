@@ -5,7 +5,8 @@ import {
     HiOutlineHome, HiOutlineUsers, HiOutlineOfficeBuilding, HiOutlineCollection,
     HiOutlineLocationMarker, HiOutlineHashtag, HiOutlineNewspaper, HiOutlineDocumentText,
     HiOutlineAnnotation, HiOutlineCreditCard, HiOutlineChartBar, HiOutlineSearchCircle,
-    HiOutlineMail, HiOutlineCog, HiOutlineLogout, HiOutlineViewGrid, HiOutlineMenuAlt2, HiOutlineX
+    HiOutlineMail, HiOutlineCog, HiOutlineLogout, HiOutlineViewGrid, HiOutlineMenuAlt2, HiOutlineX,
+    HiOutlineBriefcase
 } from 'react-icons/hi';
 
 const AdminLayout = () => {
@@ -26,11 +27,11 @@ const AdminLayout = () => {
         { name: 'Dashboard', path: '/admin', icon: HiOutlineViewGrid },
         { name: 'Users', path: '/admin/users', icon: HiOutlineUsers },
         { name: 'Properties', path: '/admin/properties', icon: HiOutlineOfficeBuilding },
-        { name: 'Categories', path: '/admin/categories', icon: HiOutlineCollection },
         { name: 'Locations', path: '/admin/locations', icon: HiOutlineLocationMarker },
-        { name: 'Amenities', path: '/admin/amenities', icon: HiOutlineHashtag },
         { name: 'Blog', path: '/admin/blog', icon: HiOutlineNewspaper },
         { name: 'Pages (CMS)', path: '/admin/pages', icon: HiOutlineDocumentText },
+        { name: 'Services', path: '/admin/services', icon: HiOutlineBriefcase },
+        { name: 'Property Management', path: '/admin/property-management', icon: HiOutlineCollection },
         { name: 'Reviews', path: '/admin/reviews', icon: HiOutlineAnnotation },
     ];
 
@@ -52,25 +53,25 @@ const AdminLayout = () => {
                 fixed inset-y-0 left-0 z-50 w-80  flex flex-col gap-1 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0
                 ${isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
             `}>
-                <div className="px-6 py-3 bg-indigo-600 relative flex items-center justify-between border border-black/20 ">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                    <Link to="/" className="text-xl relative z-10 font-black text-white" onClick={closeSidebar}>
-                        Antigravity<span className=" text-sm italic">Admin</span>
+                <div className="px-6 py-3 bg-gray-900 relative flex items-center justify-between border border-black/30 ">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <Link to="/" className="text-lg relative uppercase tracking-widest z-10 font-black text-indigo-100" onClick={closeSidebar}>
+                        Green wave
                     </Link>
-                    <button onClick={closeSidebar} className="lg:hidden text-white p-1">
+                    <button onClick={closeSidebar} className="lg:hidden z-10 relative text-white p-1">
                         <HiOutlineX className="h-6 w-6" />
                     </button>
                 </div>
 
-                <nav className="flex-grow bg-green-600 relative pl-0 border border-black/20 p-4 space-y-2 overflow-y-auto scrollbar-hide">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <nav className="flex-grow bg-green-600 relative pl-0 border border-black/30 p-4 space-y-2 overflow-y-auto scrollbar-hide">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     {menuItems.map((item) => (
                         <Link
                             key={item.name}
                             to={item.path}
                             onClick={closeSidebar}
                             className={`flex items-center space-x-3 px-4 py-3 relative z-10 text-xs font-black uppercase tracking-widest transition-all ${location.pathname === item.path
-                                ? 'bg-indigo-600 text-white shadow-lg'
+                                ? 'bg-gray-900 text-white shadow-lg'
                                 : 'text-white/80 hover:bg-white/10 hover:text-white'
                                 }`}
                         >
@@ -80,13 +81,13 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="p-4 pl-0 bg-green-600 relative border border-black/20 space-y-2">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="p-4 pl-0 bg-green-600 relative border border-black/30 space-y-2">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <button
                         onClick={logout}
                         className="w-full relative flex items-center space-x-3 px-4 py-3 text-white bg-red-600 hover:bg-red-700 text-xs font-black uppercase tracking-widest transition-colors"
                     >
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <HiOutlineLogout className="h-5 w-5" />
                         <span>Sign Out</span>
                     </button>
@@ -95,12 +96,12 @@ const AdminLayout = () => {
 
             {/* Main Content Area */}
             <div className="flex-grow flex flex-col overflow-hidden w-full">
-                <header className="h-13.5 border ml-1 border-black/20 bg-green-600 relative flex items-center justify-between px-4 lg:px-8 shrink-0">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <header className="h-13.5 border ml-1 border-black/30 bg-green-600 relative flex items-center justify-between px-4 lg:px-8 shrink-0">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="flex items-center gap-4">
                         <button
                             onClick={toggleSidebar}
-                            className="lg:hidden p-2 text-white bg-white/10 hover:bg-white/20 transition-colors"
+                            className="lg:hidden p-2 text-white z-10 relative bg-white/10 hover:bg-white/20 transition-colors"
                         >
                             <HiOutlineMenuAlt2 className="h-6 w-6" />
                         </button>

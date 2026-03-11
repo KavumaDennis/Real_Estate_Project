@@ -67,12 +67,12 @@ const Reviews = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Property Reviews</h1>
                     <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/30 relative bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Manage ratings and feedback.</p>
                 </div>
 
-                <div className="flex items-center px-4 py-2 border border-black/30 bg-indigo-600  relative w-fit">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="flex items-center px-4 py-2 border border-black/30 bg-gray-900  relative w-fit">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className=''>
                         <p className="text-xl text-start font-black text-indigo-100 leading-none">{averageRating}</p>
                         <p className="text-[9px] text-start font-black text-black/70 uppercase tracking-widest leading-none mt-1">Avg Rating</p>
@@ -96,10 +96,10 @@ const Reviews = () => {
                         <button
                             key={f}
                             onClick={() => setFilter(f)}
-                            className={`min-w-fit px-6 py-2.5 relative border border-black/20 focus:ring-0 text-xs font-black uppercase tracking-widest transition flex-shrink-0 ${filter === f ? 'bg-indigo-600 text-white' : 'bg-white text-black hover:bg-gray-50'
+                            className={`min-w-fit px-6 py-2.5 relative border border-black/30 focus:ring-0 text-xs font-black uppercase tracking-widest transition flex-shrink-0 ${filter === f ? 'bg-gray-900 text-white' : 'bg-white text-black hover:bg-gray-50'
                                 }`}
                         >
-                            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             {f}
                         </button>
                     ))}
@@ -118,7 +118,7 @@ const Reviews = () => {
                 <div className="grid grid-cols-1 gap-6">
                     {filteredReviews.map((review) => (
                         <div key={review.id} className="bg-white/50 relative p-6 sm:p-8 border border-dashed border-black/30 shadow-sm hover:shadow-md transition">
-                            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             <div className="flex flex-col h-full lg:flex-row lg:items-start justify-between gap-6 z-10 relative">
                                 <div className="flex-grow">
                                     <div className="flex items-center space-x-4 mb-4">
@@ -165,7 +165,7 @@ const Reviews = () => {
                                 <div className="flex flex-col h-full items-end justify-between gap-2 lg:border-l lg:border-black/5 lg:pl-6">
                                     <button
                                         onClick={() => handleToggleApproval(review.id)}
-                                        className={`flex-1 sm:flex-none lg:w-32 flex items-center justify-center space-x-2 px-4 py-2 border border-black/20 font-black text-[10px] uppercase tracking-widest transition ${review.is_approved
+                                        className={`flex-1 sm:flex-none lg:w-32 flex items-center justify-center space-x-2 px-4 py-2 border border-black/30 font-black text-[10px] uppercase tracking-widest transition ${review.is_approved
                                             ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
                                             : 'bg-green-50 text-green-600 hover:bg-green-100'
                                             }`}

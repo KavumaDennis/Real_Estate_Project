@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import blogService from '../services/blogService';
 import { HiOutlineChevronRight, HiOutlineCalendar, HiOutlineUserCircle, HiOutlineArrowNarrowRight } from 'react-icons/hi';
@@ -7,11 +7,21 @@ import SafeImage from '../components/SafeImage';
 const Blog = () => {
     const [posts, setPosts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     const [loading, setLoading] = useState(true);
+    const heroSlides = ['/img1.jpg', '/img3.jpg', '/img5.jpg', '/img7.jpg'];
+    const [activeHeroSlide, setActiveHeroSlide] = useState(0);
 
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveHeroSlide((prev) => (prev + 1) % heroSlides.length);
+        }, 4200);
+        return () => clearInterval(timer);
+    }, [heroSlides.length]);
 
     const fetchData = async () => {
         try {
@@ -28,17 +38,42 @@ const Blog = () => {
         }
     };
 
+    const filteredPosts = useMemo(() => {
+        if (!selectedCategoryId) return posts;
+        return posts.filter((post) => String(post.category?.id) === String(selectedCategoryId));
+    }, [posts, selectedCategoryId]);
+
     return (
         <div className="bg-emerald-100/80 backdrop-blur-2xl min-h-screen mt-1">
             {/* Blog Hero */}
-            <section className="bg-gray-900 py-24 relative overflow-hidden">
-                <SafeImage src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" className="w-full h-full object-cover  absolute inset-0 opacity-100 " alt="Team" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/60 to-black/60"></div>
+            <section className="bg-gray-900 py-20 pb-15 relative overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
+                    {heroSlides.map((src, idx) => (
+                        <img
+                            key={src}
+                            src={src}
+                            alt={`blog-slide-${idx + 1}`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${idx === activeHeroSlide ? 'opacity-100' : 'opacity-0'}`}
+                        />
+                    ))}
+                </div>
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 via-black/50 to-black/50"></div>
                 <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
                     <div className="w-full">
-                        <span className="inline-flex items-center space-x-2 bg-indigo-600 backdrop-blur-md px-5 py-2.5 border border-white/20 mb-8 text-white text-sm font-black uppercase tracking-widest">Our Journal</span>
-                        <h1 className="text-[40px] mx-auto  font-black bg-green-300/10 backdrop-blur-md border border-white/10 text-white/80  p-6 w-fit mb-8 leading-[0.9] tracking-tighter">Mastering the Art of Real Estate.</h1>
+                        <span className="inline-flex items-center space-x-2 bg-gray-900 backdrop-blur-md px-5 py-2.5 border border-white/20 mb-8 text-white text-sm font-black uppercase tracking-widest">Our Journal</span>
+                        <h1 className="text-[40px] mx-auto  font-black bg-green-300/20 backdrop-blur-md border border-white/10 text-white/80  p-6 w-fit mb-8 leading-[0.9] tracking-tighter">Mastering the Art of Real Estate.</h1>
                         <p className="block max-w-2xl mx-auto my-6 text-center text-xs font-black text-white uppercase tracking-widest">Expert insights, market trends, and curated home design inspiration for the modern homeowner.</p>
+                        <div className="relative z-10 flex justify-start mt-10 gap-2">
+                            {heroSlides.map((_, idx) => (
+                                <button
+                                    key={`blog-indicator-${idx}`}
+                                    type="button"
+                                    onClick={() => setActiveHeroSlide(idx)}
+                                    className={`h-2.5 rounded-full border border-black/30 transition-all ${idx === activeHeroSlide ? 'w-9 bg-green-600' : 'w-4 bg-white/60 hover:bg-white'}`}
+                                    aria-label={`Go to slide ${idx + 1}`}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -46,10 +81,21 @@ const Blog = () => {
             {/* Category Bar */}
             <div className="border-b sticky top-0 w-fit bg-green-600 border border-black/30 backdrop-blur-md z-40 mt-5">
                 <div className="w-full">
-                    <div className="flex items-center space-x-5 overflow-x-auto no-scrollbar pr-5">
-                        <button className="px-6 py-3 border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">All Stories</button>
+                    <div className="flex items-center overflow-x-auto no-scrollbar">
+                        <button
+                            type="button"
+                            onClick={() => setSelectedCategoryId(null)}
+                            className={`px-6 py-3 border border-black/10 text-xs text-start font-black uppercase tracking-widest transition shadow-lg ${selectedCategoryId === null ? 'bg-gray-900 text-white' : 'bg-white/70 text-black hover:bg-white'}`}
+                        >
+                            All Stories
+                        </button>
                         {categories.map(cat => (
-                            <button key={cat.id} className="block text-xs text-start font-black text-black uppercase tracking-widest">
+                            <button
+                                key={cat.id}
+                                type="button"
+                                onClick={() => setSelectedCategoryId(cat.id)}
+                                className={`block px-4 py-3 h-full text-xs text-start font-black uppercase tracking-widest transition ${String(selectedCategoryId) === String(cat.id) ? 'bg-gray-900 text-white border border-black/30' : 'text-black hover:text-indigo-900'}`}
+                            >
                                 {cat.name}
                             </button>
                         ))}
@@ -66,7 +112,7 @@ const Blog = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
-                        {posts.map((post, i) => (
+                        {filteredPosts.map((post, i) => (
                             <article key={post.id} className={`group ${i === 0 ? 'md:col-span-1' : ''}`}>
                                 <Link to={`/blog/${post.slug}`} className="block">
                                     <div className={`relative overflow-hidden shadow-xl h-70`}>
@@ -103,7 +149,7 @@ const Blog = () => {
                                                 <HiOutlineUserCircle className="mr-2 h-5 w-5" />
                                                 {post.author?.name}
                                             </div>
-                                            <div className="flex items-center w-fit px-6 py-2.5 border border-black/30 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                            <div className="flex items-center w-fit px-6 py-2.5 border border-black/30 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
                                                 <span>Read Full Article</span>
                                                 <HiOutlineArrowNarrowRight className="h-6 w-6" />
                                             </div>
@@ -115,7 +161,7 @@ const Blog = () => {
                     </div>
                 )}
 
-                {!loading && posts.length === 0 && (
+                {!loading && filteredPosts.length === 0 && (
                     <div className="text-center py-40">
                         <h2 className="text-4xl font-black text-gray-900">No stories found.</h2>
                         <p className="text-gray-500 mt-4">Check back later for new updates.</p>
@@ -126,15 +172,16 @@ const Blog = () => {
             {/* Newsletter Section */}
             <section className=" py-10">
                 <div className="w-full">
-                    <div className="bg-indigo-600 p-12 md:p-20 relative overflow-hidden shadow-2xl">
-                        <div className="absolute top-0 right-0 w-1/2 h-full bg-white opacity-5 skew-x-12 translate-x-1/4"></div>
+                    <div className="bg-gray-900 relative p-12 md:p-20 relative overflow-hidden shadow-2xl">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        {/* <div className="absolute top-0 right-0 w-1/2 h-full bg-white opacity-5 skew-x-12 translate-x-1/4"></div> */}
                         <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
                             <div>
-                                <h2 className="block text-xl text-start font-black text-black uppercase tracking-widest mb-3">Stay ahead of the market.</h2>
+                                <h2 className="block text-xl text-start font-black text-green-600 uppercase tracking-widest mb-3">Stay ahead of the market.</h2>
                                 <p className="text-xl text-start text-blue-100">Subscribe to our newsletter and get the latest real estate trends straight to your inbox.</p>
                             </div>
                             <div className="">
-                                <form className="flex flex-col sm:flex-row gap-2">
+                                <form className="flex flex-col sm:flex-row gap-2 z-10 relative">
                                     <input
                                         type="email"
                                         placeholder="your@email.com"

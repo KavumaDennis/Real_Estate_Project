@@ -82,14 +82,14 @@ const AdminPages = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">CMS Pages</h1>
                     <p className="px-6 py-3 border border-black/10 bg-green-600 relative z-10 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Manage static content like Privacy Policy, Terms, and Custom Landing Pages.</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="px-6 py-2.5 flex items-center border border-black/10 bg-indigo-600 relative z-10 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    className="px-6 py-2.5 flex items-center border border-black/10 bg-gray-900 relative z-10 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                 >
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiOutlinePlus className="h-5 w-5" />
                     <span>Create New Page</span>
                 </button>
@@ -108,8 +108,8 @@ const AdminPages = () => {
             </div>
 
             {/* List */}
-            <div className="border border-dashed border-black/20 bg-white/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide relative z-10">
-                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+            <div className="border border-dashed border-black/30 bg-white/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide relative z-10">
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 {loading ? (
                     <div className="p-40 flex flex-col items-center justify-center space-y-4">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -160,16 +160,16 @@ const AdminPages = () => {
                                         <div className="flex justify-end space-x-2">
                                             <button
                                                 onClick={() => openModal(p)}
-                                                className="p-2 px-2.5 relative z-10 bg-indigo-600 border border-black/30 text-indigo-100  transition shadow-sm"
+                                                className="p-2 px-2.5 relative z-10 bg-gray-900 border border-black/30 text-indigo-100  transition shadow-sm"
                                             >
-                                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiOutlinePencil className="h-5 w-5" />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(p.id)}
                                                 className="p-2 px-2.5 bg-red-600 relative z-10 border-black/30  transition shadow-sm"
                                             >
-                                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiOutlineTrash className="h-5 w-5" />
                                             </button>
                                         </div>
@@ -185,7 +185,7 @@ const AdminPages = () => {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
                     <div className="bg-green-600 relative border border-black/30 w-full max-w-3xl p-10 shadow-2xl animate-in duration-300">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-white text-start">{isEditing ? 'Edit CMS Page' : 'Create CMS Page'}</h2>
                             <p className="text-black font-medium text-start">Control static content and landing pages.</p>
@@ -255,14 +255,14 @@ const AdminPages = () => {
                                     onClick={closeModal}
                                     className="grow px-6 py-3 w-fit z-10 relative flex justify-center border border-black/10 bg-white text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg "
                                 >
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="grow px-6 py-3 w-fit z-10 relative flex justify-center border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg "
+                                    className="grow px-6 py-3 w-fit z-10 relative flex justify-center border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg "
                                 >
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     {isEditing ? 'Save Changes' : 'Publish Page'}
                                 </button>
                             </div>

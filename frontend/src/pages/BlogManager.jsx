@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const FALLBACK = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=400&q=80';
 
 // ── Post Form Modal ──────────────────────────────────────────
-const PostModal = ({ post, categories, onClose, onSaved }) => {
+const PostModal = ({ post, categories, onClose, onSaved, adminMode = false }) => {
     const isEdit = !!post;
     const [form, setForm] = useState({
         title: post?.title || '',
@@ -38,10 +38,11 @@ const PostModal = ({ post, categories, onClose, onSaved }) => {
             Object.entries(form).forEach(([k, v]) => v !== '' && fd.append(k, v));
             if (imageFile) fd.append('image', imageFile);
 
+            const basePath = adminMode ? '/admin/posts' : '/my-posts';
             if (isEdit) {
-                await api.post(`/admin/posts/${post.id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+                await api.post(`${basePath}/${post.id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
             } else {
-                await api.post('/admin/posts', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+                await api.post(basePath, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
             }
             onSaved();
         } catch (err) {
@@ -52,12 +53,12 @@ const PostModal = ({ post, categories, onClose, onSaved }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 h-full backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-            <div className="bg-green-600 border border-black/30 w-full max-w-3xl z-10 relative  shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+        <div className="fixed inset-0 bg-black/60 h-full backdrop-blur-xs z-50 flex items-center justify-center p-4" onClick={onClose}>
+            <div className="bg-green-900 border border-white/30 w-full max-w-3xl z-10 relative  shadow-2xl overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 <div className="flex items-center justify-between p-4 px-8 border-b">
                     <h2 className="text-2xl font-black text-indigo-100">{isEdit ? 'Edit Post' : 'New Post'}</h2>
-                    <button onClick={onClose} className="h-10 w-10 bg-indigo-600 border border-black/30 z-10 relative  flex items-center justify-center hover:bg-gray-200 transition">
+                    <button onClick={onClose} className="h-10 w-10 bg-gray-900 border border-black/30 z-10 relative  flex items-center justify-center hover:bg-indigo-600 transition">
                         <HiX className="h-5 w-5" />
                     </button>
                 </div>
@@ -121,12 +122,13 @@ const PostModal = ({ post, categories, onClose, onSaved }) => {
                     </div>
                 </form>
 
-                <div className="p-8 flex gap-3 border-t justify-end bg-green-600 pt-5">
-                    <button onClick={onClose} className="px-6 py-3 bg-white border border-black text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg">Cancel</button>
+                <div className="p-8 flex gap-3 border-t justify-end bg-green-900 relative pt-5">
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <button onClick={onClose} className="px-6 py-3 relative z-10 bg-white border border-black text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg">Cancel</button>
                     <button
                         onClick={handleSubmit}
                         disabled={saving}
-                        className={`px-6 py-3 border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg ${form.status === 'published' ? ' hover:bg-green-700' : ' hover:bg-blue-700'}`}
+                        className={`px-6 py-3 relative z-10 border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg ${form.status === 'published' ? ' hover:bg-green-700' : ' hover:bg-blue-700'}`}
                     >
                         {saving ? 'Saving...' : isEdit ? 'Update Post' : (form.status === 'published' ? 'Publish Post' : 'Save as Draft')}
                     </button>
@@ -137,11 +139,12 @@ const PostModal = ({ post, categories, onClose, onSaved }) => {
 };
 
 // ── Delete Modal ─────────────────────────────────────────────
-const DeleteModal = ({ post, onClose, onDeleted }) => {
+const DeleteModal = ({ post, onClose, onDeleted, adminMode = false }) => {
     const [deleting, setDeleting] = useState(false);
     const handle = async () => {
         setDeleting(true);
-        try { await api.delete(`/admin/posts/${post.id}`); onDeleted(); }
+        const basePath = adminMode ? '/admin/posts' : '/my-posts';
+        try { await api.delete(`${basePath}/${post.id}`); onDeleted(); }
         catch { setDeleting(false); }
     };
     return (
@@ -166,7 +169,7 @@ const DeleteModal = ({ post, onClose, onDeleted }) => {
 };
 
 // ── Main ─────────────────────────────────────────────────────
-const BlogManager = () => {
+const BlogManager = ({ adminMode = false }) => {
     const [posts, setPosts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -182,8 +185,9 @@ const BlogManager = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
+            const postsEndpoint = adminMode ? '/admin/posts' : '/my-posts';
             const [postsRes, catsRes] = await Promise.all([
-                api.get('/admin/posts'),
+                api.get(postsEndpoint),
                 api.get('/post-categories'),
             ]);
             setPosts(postsRes.data.data || []);
@@ -221,34 +225,37 @@ const BlogManager = () => {
                     categories={categories}
                     onClose={() => { setShowNew(false); setEditingPost(null); }}
                     onSaved={handleSaved}
+                    adminMode={adminMode}
                 />
             )}
             {deletingPost && (
-                <DeleteModal post={deletingPost} onClose={() => setDeletingPost(null)} onDeleted={handleDeleted} />
+                <DeleteModal post={deletingPost} onClose={() => setDeletingPost(null)} onDeleted={handleDeleted} adminMode={adminMode} />
             )}
 
             {/* Header */}
             <div className="flex justify-between items-end">
                 <div>
-                    <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Blog Manager</h1>
+                    <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">{adminMode ? 'Admin Blog Manager' : 'Blog Manager'}</h1>
                     <p className="px-6 py-3 border border-black/30 relative bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                        Write, edit, and publish your blog posts.</p>
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        {adminMode ? 'Create, update, delete, and view all platform blog posts.' : 'Write, edit, and publish your blog posts.'}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Link
-                        to="/dashboard/saved-posts"
-                        className="px-6 py-2.5 flex items-center z-10 relative gap-3 border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
-                    >
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                        <HiOutlineBookmark className="h-5 w-5" />
-                        <span>Saved Posts</span>
-                    </Link>
+                    {!adminMode && (
+                        <Link
+                            to="/dashboard/saved-posts"
+                            className="px-6 py-2.5 flex items-center z-10 relative gap-3 border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                        >
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <HiOutlineBookmark className="h-5 w-5" />
+                            <span>Saved Posts</span>
+                        </Link>
+                    )}
                     <button
                         onClick={() => setShowNew(true)}
-                        className="px-6 py-2.5 flex items-center gap-3 z-10 relative border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                        className="px-6 py-2.5 flex items-center gap-3 z-10 relative border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                     >
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <HiPlus className="h-5 w-5" />
                         <span>New Post</span>
                     </button>
@@ -269,14 +276,18 @@ const BlogManager = () => {
                     />
                 </div>
                 <div className="flex gap-3 overflow-hidden ">
-                    {['All', 'Published', 'Draft'].map(s => (
+                    {[
+                        { label: 'All', value: 'all' },
+                        { label: 'Published', value: 'published' },
+                        { label: 'Draft', value: 'draft' },
+                    ].map((s) => (
                         <button
-                            key={s}
-                            onClick={() => setStatusFilter(s)}
-                            className={`w-full border border-black/30 relative px-4 p-2 focus:ring-0 text-sm font-bold text-black/70 ${statusFilter === s ? 'bg-indigo-600 text-white' : 'text-black  bg-white  hover:bg-gray-50'}`}
+                            key={s.value}
+                            onClick={() => setStatusFilter(s.value)}
+                            className={`w-full border border-black/30 relative px-4 p-2 focus:ring-0 text-sm font-bold text-black/70 ${statusFilter === s.value ? 'bg-gray-900 text-white' : 'text-black  bg-white  hover:bg-gray-50'}`}
                         >
-                            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                            {s}
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            {s.label}
                         </button>
                     ))}
                 </div>
@@ -289,8 +300,8 @@ const BlogManager = () => {
                     { label: 'Published', value: posts.filter(p => p.status === 'published').length },
                     { label: 'Drafts', value: posts.filter(p => p.status === 'draft').length },
                 ].map(stat => (
-                    <div key={stat.label} className=" bg-indigo-600 relative p-6 border border-black/30">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div key={stat.label} className=" bg-gray-900 relative p-6 border border-black/30">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <p className="block text-xl text-start font-black text-white uppercase tracking-widest  mb-1">{stat.value}</p>
                         <p className="block text-xs text-start font-black text-black uppercase tracking-widest ">{stat.label}</p>
                     </div>
@@ -305,11 +316,13 @@ const BlogManager = () => {
                 ) : filtered.length === 0 ? (
                     <div className="p-16 text-center">
                         <p className="text-gray-400 font-bold mb-4">No posts found.</p>
-                        <button onClick={() => setShowNew(true)} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl">Write First Post</button>
+                        <button onClick={() => setShowNew(true)} className="px-6 py-3 relative z-10 bg-gray-900 border border-black/30 text-white font-bold">
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            Write First Post</button>
                     </div>
                 ) : (
                     <table className="w-full text-left z-10 relative">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <thead>
                             <tr className="bg-green-600 border-b">
                                 <th className="px-6 py-4 text-xs font-black text-white uppercase tracking-widest">Post</th>
@@ -320,7 +333,7 @@ const BlogManager = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y-2 relative">
-                            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             {filtered.map(post => (
                                 <tr key={post.id} className="bg-green-100/50 transition z-10 relative">
                                     <td className="px-6 py-5">
@@ -352,15 +365,15 @@ const BlogManager = () => {
                                     <td className="px-6 py-5">
                                         <div className="flex justify-end space-x-1">
                                             <a href={`/blog/${post.slug}`} target="_blank" rel="noreferrer" className="p-2 text-indigo-100 px-2.5 relative z-10 bg-green-600 border border-black/30 transition" title="View">
-                                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiChevronRight className="h-5 w-5" />
                                             </a>
-                                            <button onClick={() => setEditingPost(post)} className="p-2 px-2.5 relative z-10 bg-indigo-600 border border-black/30 transition" title="Edit">
-                                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                            <button onClick={() => setEditingPost(post)} className="p-2 px-2.5 relative z-10 bg-gray-900 border border-black/30 transition" title="Edit">
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiPencil className="h-5 w-5" />
                                             </button>
                                             <button onClick={() => setDeletingPost(post)} className="p-2 px-2.5 relative z-10 bg-rose-600 border border-black/30 transition" title="Delete">
-                                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiTrash className="h-5 w-5" />
                                             </button>
                                         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import propertyService from '../services/propertyService';
 import api from '../services/api';
-import { HiArrowLeft, HiUpload, HiX, HiOutlineShieldExclamation } from 'react-icons/hi';
+import { HiArrowLeft, HiUpload, HiX, HiOutlineShieldExclamation, HiPlus } from 'react-icons/hi';
 import SafeImage from '../components/SafeImage';
 import { useAuth } from '../context/AuthContext';
 
@@ -35,6 +35,7 @@ const AddProperty = () => {
         virtual_tour_url: '',
         availability: 'available',
     });
+    const [amenities, setAmenities] = useState(['']);
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -68,6 +69,10 @@ const AddProperty = () => {
         setPreviews(prev => prev.filter((_, i) => i !== index));
     };
 
+    const addAmenity = () => setAmenities(prev => [...prev, '']);
+    const removeAmenity = (index) => setAmenities(prev => prev.filter((_, i) => i !== index));
+    const updateAmenity = (index, value) => setAmenities(prev => prev.map((a, i) => i === index ? value : a));
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -79,6 +84,10 @@ const AddProperty = () => {
 
         images.forEach(image => {
             data.append('images[]', image);
+        });
+
+        amenities.filter(a => a?.trim()).forEach(name => {
+            data.append('amenity_names[]', name.trim());
         });
 
         try {
@@ -94,8 +103,8 @@ const AddProperty = () => {
 
     return (
         <div className="w-full">
-            <div className="flex items-center w-fit cursor-pointer px-6 py-3 border border-black/10 bg-indigo-600 z-10 relative text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg space-x-4 mb-8">
-                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+            <div className="flex items-center w-fit cursor-pointer px-6 py-3 border border-black/10 bg-gray-900 z-10 relative text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg space-x-4 mb-8">
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 <button onClick={() => navigate(-1)} className="z-10 relative ">
                     <HiArrowLeft className="h-5 w-5" />
                 </button>
@@ -104,7 +113,7 @@ const AddProperty = () => {
 
             {isUnverifiedAgent && (
                 <div className="mb-8 p-6 bg-amber-50 border-l-4 border-indigo-600 rounded-r-2xl flex items-center space-x-4 animate-in slide-in-from-top duration-500">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiOutlineShieldExclamation className="h-10 w-10 text-green-600 shrink-0" />
                     <div>
                         <h3 className="text-amber-800 font-black uppercase text-xs tracking-widest">Verification Required</h3>
@@ -117,8 +126,8 @@ const AddProperty = () => {
 
             <form onSubmit={handleSubmit} className="space-y-8 z-10 relative">
                 {/* Basic Information */}
-                <div className="bg-green-600 border border-black/20 p-8 relative shadow-sm space-y-6">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="bg-green-600 border border-black/30 p-8 relative shadow-sm space-y-6">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Basic Information</h2>
                     <div className="grid grid-cols-1 gap-6 z-10 relative">
                         <div>
@@ -165,12 +174,12 @@ const AddProperty = () => {
                 </div>
 
                 {/* Pricing & Location */}
-                <div className="bg-green-600 border border-black/20 relative p-8 shadow-sm space-y-6">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="bg-green-600 border border-black/30 relative p-8 shadow-sm space-y-6">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Pricing & Location</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 z-10 relative">
                         <div>
-                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price ($)</label>
+                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Price (UGX)</label>
                             <input name="price" type="number" required onChange={handleChange} className="w-full bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70" placeholder="e.g. 500000" />
                         </div>
                         <div>
@@ -189,10 +198,46 @@ const AddProperty = () => {
                     </div>
                 </div>
 
+                {/* Amenities */}
+                <div className="bg-green-600 relative p-8 shadow-sm border border-black/30 space-y-6">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Amenities</h2>
+                    <p className="text-sm text-white/80 mb-4 z-10 relative text-start">Add amenities offered by this property (e.g. Swimming Pool, Parking, Security).</p>
+                    <div className="space-y-3 z-10 relative">
+                        {amenities.map((name, index) => (
+                            <div key={index} className="flex gap-2 items-center">
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={e => updateAmenity(index, e.target.value)}
+                                    className="flex-1 bg-gray-50 border border-black/80 p-2 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
+                                    placeholder="e.g. Swimming Pool"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => removeAmenity(index)}
+                                    disabled={amenities.length === 1}
+                                    className="p-2 bg-red-500/80 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                >
+                                    <HiX className="h-4 w-4" />
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={addAmenity}
+                            className="flex items-center gap-2 px-4 py-2 border border-dashed border-white/50 text-white hover:bg-white/10 transition text-sm font-bold"
+                        >
+                            <HiPlus className="h-4 w-4" />
+                            Add more
+                        </button>
+                    </div>
+                </div>
+
                 {/* Property Features (Common) */}
                 {formData.type !== 'land' && (
-                    <div className="bg-green-600 relative p-8 shadow-sm border border-black/20 space-y-6">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div className="bg-green-600 relative p-8 shadow-sm border border-black/30 space-y-6">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Property Features</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 z-10 relative">
                             <div>
@@ -213,8 +258,8 @@ const AddProperty = () => {
 
                 {/* Land-Specific Details */}
                 {formData.type === 'land' && (
-                    <div className="bg-green-600 relative p-8 border space-y-6 border-black/20">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div className="bg-green-600 relative p-8 border space-y-6 border-black/30">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Land Specifications</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 z-10 relative">
                             <div>
@@ -238,14 +283,14 @@ const AddProperty = () => {
                 )}
 
                 {/* Image Upload Placeholder */}
-                <div className="bg-green-600 p-8 relative shadow-sm border border-black/20">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="bg-green-600 p-8 relative shadow-sm border border-black/30">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <h2 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Property Images</h2>
 
                     {previews.length > 0 && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-2 md:grid-cols-5 w-fit gap-4 mb-6">
                             {previews.map((preview, index) => (
-                                <div key={index} className="relative group aspect-square rounded-2xl overflow-hidden border">
+                                <div key={index} className="relative group w-20 h-20 rounded-2xl overflow-hidden border">
                                     <SafeImage src={preview} alt="preview" className="w-full h-full object-cover" />
                                     <button
                                         type="button"
@@ -264,13 +309,13 @@ const AddProperty = () => {
                             type="file"
                             multiple
                             onChange={handleImageChange}
-                            accept="image/*"
+                            accept=".jpg,.jpeg,.png,.webp,.avif,.gif,image/*"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
                         <div className="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center hover:bg-gray-50 transition">
                             <HiUpload className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-                            <p className="text-orange-500 font-medium">Click to upload or drag and drop photos</p>
-                            <p className="text-xs text-gray-300 mt-2 uppercase font-bold tracking-widest">Supports JPG, PNG up to 10MB</p>
+                            <p className="text-black font-medium">Click to upload or drag and drop photos</p>
+                            <p className="text-xs text-gray-300 mt-2 uppercase font-bold tracking-widest">Supports JPG, JPEG, PNG, WEBP, AVIF, GIF up to 5MB each</p>
                         </div>
                     </div>
                 </div>
@@ -280,9 +325,9 @@ const AddProperty = () => {
                     <button
                         type="submit"
                         disabled={loading || isUnverifiedAgent}
-                        className={`px-6 py-3 border border-black/10 text-xs text-start font-black uppercase tracking-widest text-white transition z-10 shadow-lg relative ${isUnverifiedAgent ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-blue-600'}`}
+                        className={`px-6 py-3 border border-black/10 text-xs text-start font-black uppercase tracking-widest text-white transition z-10 shadow-lg relative ${isUnverifiedAgent ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-900 hover:bg-blue-600'}`}
                     >
-                         <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                         <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         {loading ? 'Creating...' : 'Publish Property'}
                     </button>
                 </div>

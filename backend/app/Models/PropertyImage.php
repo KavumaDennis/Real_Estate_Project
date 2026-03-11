@@ -29,7 +29,7 @@ class PropertyImage extends Model
             return null;
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->image_path);
+        return \App\Helpers\StorageUrlHelper::url($this->image_path);
     }
 
     public function property()

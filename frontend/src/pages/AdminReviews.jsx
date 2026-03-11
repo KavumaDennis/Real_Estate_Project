@@ -57,7 +57,7 @@ const AdminReviews = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Platform Reviews</h1>
                     <p className="px-6 py-3 border border-black/30 relative bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     Moderate guest feedback and maintain platform quality standards.</p>
                 </div>
             </div>
@@ -75,7 +75,7 @@ const AdminReviews = () => {
             </div>
 
             {/* Reviews List */}
-            <div className="border border-dashed border-black/20 bg-white/50 shadow-sm overflow-hidden">
+            <div className="border border-dashed border-black/30 bg-white/50 shadow-sm overflow-hidden">
                 {loading ? (
                     <div className="p-40 flex flex-col items-center justify-center space-y-4">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -85,7 +85,7 @@ const AdminReviews = () => {
                     <div className="p-40 text-center italic text-gray-400 font-medium">No reviews to display.</div>
                 ) : (
                     <table className="w-full text-left border-collapse relative z-10">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <thead>
                             <tr className="bg-green-600 border-b border-gray-100">
                                 <th className="px-8 py-4 text-[10px] font-black text-indigo-100 uppercase tracking-[0.2em]">Review & User</th>

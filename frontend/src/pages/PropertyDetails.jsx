@@ -7,6 +7,7 @@ import { BiBed, BiBath, BiArea, BiCheck, BiBuildingHouse, BiDna, BiMapAlt, BiMes
 import MortgageCalculator from '../components/MortgageCalculator';
 import PropertyCard from '../components/PropertyCard';
 import SafeImage from '../components/SafeImage';
+import { formatUGX } from '../utils/currency';
 
 const PropertyDetails = () => {
     const { slug } = useParams();
@@ -15,6 +16,8 @@ const PropertyDetails = () => {
     const [activeImage, setActiveImage] = useState(0);
     const [submittedInquiry, setSubmittedInquiry] = useState(false);
     const [similarProperties, setSimilarProperties] = useState([]);
+    const [saved, setSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     const [isInquiryModalOpen, setIsInquiryModalOpen] = useState(false);
     const [inquiryForm, setInquiryForm] = useState({
@@ -46,6 +49,7 @@ const PropertyDetails = () => {
             const response = await propertyService.getBySlug(slug);
             const propData = response.data.data;
             setProperty(propData);
+            setSaved(Boolean(propData?.is_saved));
 
             const similarResponse = await propertyService.getAll({
                 type: propData.type,
@@ -96,6 +100,42 @@ const PropertyDetails = () => {
         }
     };
 
+    const handleToggleSaved = async () => {
+        if (!property?.id || saving) return;
+        setSaving(true);
+        try {
+            const res = await propertyService.toggleSaved(property.id);
+            setSaved(Boolean(res?.data?.saved));
+        } catch (error) {
+            if (error?.response?.status === 401) {
+                alert('Please login first to save this property.');
+                return;
+            }
+            alert('Failed to save property. Please try again.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: property?.title || 'Property',
+            text: `Check out this property: ${property?.title || ''}`,
+            url: window.location.href,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                return;
+            }
+            await navigator.clipboard.writeText(shareData.url);
+            alert('Property link copied to clipboard.');
+        } catch {
+            alert('Unable to share this property right now.');
+        }
+    };
+
     if (loading) return (
         <div className="flex justify-center items-center min-h-screen bg-white">
             <div className="relative">
@@ -119,6 +159,7 @@ const PropertyDetails = () => {
     const images = property.images && property.images.length > 0
         ? property.images
         : [null]; // Will trigger SafeImage placeholder
+    const amenities = Array.isArray(property.amenities) ? property.amenities : [];
 
     return (
         <div className="min-h-screen">
@@ -126,7 +167,7 @@ const PropertyDetails = () => {
             {isInquiryModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div className="w-full max-w-lg border border-black/30 shadow-2xl relative overflow-hidden">
-                        <div className="bg-indigo-600 p-6 flex justify-between items-center text-indigo-100">
+                        <div className="bg-gray-900 p-6 flex justify-between items-center text-indigo-100">
                             <h3 className="text-lg font-black uppercase tracking-widest">Make an Inquiry</h3>
                             <button onClick={() => setIsInquiryModalOpen(false)} className="text-indigo-100 hover:text-amber-400 transition">
                                 <HiOutlineArrowNarrowRight className="h-6 w-6 rotate-180 text-indigo-100" />
@@ -188,14 +229,35 @@ const PropertyDetails = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                         <div className="lg:col-span-2">
                             <div className="flex items-center justify-between mb-5">
-                                <Link to="/properties" className="flex items-center relative w-fit gap-1 px-6 py-3 border border-black/20 bg-green-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                                    <HiOutlineArrowNarrowRight className="h-5 w-5 rotate-180" />
-                                    <span>Back to properties</span>
-                                </Link>
+                                <div className="flex items-center gap-2">
+                                    <Link to="/properties" className="flex items-center relative w-fit gap-1 px-6 py-3 border border-black/30 bg-green-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <HiOutlineArrowNarrowRight className="h-5 w-5 rotate-180" />
+                                        <span>Back to properties</span>
+                                    </Link>
+                                    <button
+                                        type="button"
+                                        onClick={handleToggleSaved}
+                                        disabled={saving}
+                                        className={`flex items-center relative w-fit gap-1 px-6 py-3 border border-black/30 text-xs text-start font-black uppercase tracking-widest transition shadow-lg ${saved ? 'bg-amber-600 text-indigo-100' : 'bg-gray-900 text-indigo-100 hover:bg-blue-600'}`}
+                                    >
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <HiOutlineHeart className={`h-5 w-5 ${saved ? 'fill-current' : ''}`} />
+                                        <span>{saving ? 'Saving...' : (saved ? 'Saved' : 'Save')}</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleShare}
+                                        className="flex items-center relative w-fit gap-1 px-6 py-3 border border-black/30 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg"
+                                    >
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <HiOutlineShare className="h-5 w-5" />
+                                        <span>Share</span>
+                                    </button>
+                                </div>
                             </div>
                             <div className="flex gap-3 mb-4">
-                                <span className={`px-4 py-1.5 text-xs font-black border border-black/30 uppercase tracking-widest ${property.status === 'for_sale' ? 'bg-blue-600 text-indigo-100' : 'bg-indigo-600 text-indigo-100'}`}>
+                                <span className={`px-4 py-1.5 text-xs font-black border border-black/30 uppercase tracking-widest ${property.status === 'for_sale' ? 'bg-blue-600 text-indigo-100' : 'bg-gray-900 text-indigo-100'}`}>
                                     {property.status === 'for_sale' ? 'For Sale' : 'For Rent'}
                                 </span>
                                 <span className="px-4 py-1.5 bg-gray-100 border border-black/30 text-black text-xs font-black uppercase tracking-widest">
@@ -237,30 +299,31 @@ const PropertyDetails = () => {
 
                         {/* Sidebar */}
                         <div className="space-y-5 flex flex-col justify-between">
-                            <div className="bg-indigo-600 relative p-5 border border-black/20 shadow-lg">
-                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <div className="bg-gray-900 relative p-5 border border-black/30 shadow-lg">
+                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                 <h2 className='uppercase text-sm text-start mb-3'>Property valuation</h2>
                                 <p className="text-xs font-black text-start text-indigo-100 uppercase tracking-widest mb-1">Asking Price</p>
-                                <div className="text-4xl font-black text-start text-black/90 tracking-tight">
-                                    ${property.price.toLocaleString()}
+                                <div className="text-4xl font-black text-start text-green-600 tracking-tight">
+                                    {formatUGX(property.price)}
                                 </div>
                                 <button
                                     onClick={() => setIsInquiryModalOpen(true)}
-                                    className="w-full mt-5 py-3 pl-3 bg-indigo-100 text-start border border-black/30 text-black font-black uppercase tracking-widest hover:bg-amber-600 transition shadow-lg"
+                                    className="w-full mt-5 py-3 pl-3 z-10 relative text-xs bg-indigo-100 text-start border border-black/30 text-black font-black uppercase tracking-widest hover:bg-amber-600 transition shadow-lg"
                                 >
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     Make an Inquiry
                                 </button>
                             </div>
 
-                            <div className="bg-green-600 border border-black/20 p-5 text-indigo-100 shadow-xl relative overflow-hidden group">
-                                <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <div className="bg-green-600 border border-black/30 p-5 text-indigo-100 shadow-xl relative overflow-hidden group">
+                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                 <div className="relative z-10">
                                     <div className="flex items-end gap-4 mb-6">
                                         <div className="h-15 w-15 bg-white border border-black/30 flex items-center justify-center text-teal-700 font-black text-2xl">
                                             {property.agent?.name?.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="text-[10px] text-start font-black text-indigo-100/60 uppercase tracking-widest">Listing Agent</p>
+                                            <p className="text-[10px] text-start font-black text-black uppercase tracking-widest">Listing Agent</p>
                                             <h3 className="text-xl text-start font-black uppercase tracking-widest">{property.agent?.name}</h3>
                                         </div>
                                     </div>
@@ -269,7 +332,7 @@ const PropertyDetails = () => {
                                     </p>
                                     <Link
                                         to={`/agents/${property.agent?.id}`}
-                                        className="w-full block py-3 bg-indigo-600 text-start text-indigo-100 pl-3 border border-black/20 font-black uppercase tracking-widest hover:bg-blue-600 hover:text-indigo-100 transition"
+                                        className="w-full block py-3 bg-gray-900 text-start text-xs text-indigo-100 pl-3 border border-black/30 font-black uppercase tracking-widest hover:bg-blue-600 hover:text-indigo-100 transition"
                                     >
                                         Agent Profile
                                     </Link>
@@ -279,38 +342,38 @@ const PropertyDetails = () => {
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-1">
                                     <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bedrooms</p>
-                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
-                                          <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <div className="px-3 py-2 border-r border-black/40">
                                             <BiBed className="h-5 w-5 text-indigo-100" />
                                         </div>
-                                        <span className="font-black">{property.bedrooms}</span>
+                                        <span className="font-black px-2">{property.bedrooms ? property.bedrooms : "No bedrooms"}</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Bathrooms</p>
-                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
-                                          <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <div className="px-3 py-2 border-r border-black/40">
                                             <BiBath className="h-5 w-5 text-indigo-100" />
                                         </div>
-                                        <span className="font-black">{property.bathrooms}</span>
+                                        <span className="font-black px-2">{property.bathrooms ? property.bathrooms : "No bathrooms"}</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Area Size</p>
-                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
-                                          <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <div className="flex items-center w-full gap-1 relative border border-black/10 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <div className="px-3 py-2 border-r border-black/40">
                                             <BiArea className="h-5 w-5 text-amber-600" />
                                         </div>
-                                        <span className="font-black">{property.size} sqft</span>
+                                        <span className="font-black px-2">{property.size} sqft</span>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Property Type</p>
-                                    <div className="flex items-center w-full gap-1 relative border border-black/30 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
-                                          <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <div className="flex items-center w-full gap-1 relative border border-black/30 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <div className="px-3 py-2 border-r border-black/40">
                                             <BiBuildingHouse className="h-5 w-5 text-indigo-100" />
                                         </div>
@@ -328,10 +391,27 @@ const PropertyDetails = () => {
                             <p className="text-indigo-600 font-bold text-start mr-5 leading-relaxed whitespace-pre-line text-md">
                                 {property.description}
                             </p>
+                            {amenities.length > 0 && (
+                                <div className="mt-8">
+                                    <h3 className="text-sm text-start font-black text-black uppercase tracking-widest mb-3">Amenities</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {amenities.map((amenity) => (
+                                            <span
+                                                key={amenity.id || amenity.name}
+                                                className="inline-flex items-center gap-2 px-3 py-2 border border-black/30 bg-gray-900 text-indigo-100 text-[11px] font-black uppercase tracking-widest"
+                                            >
+                                                <BiCheck className="h-4 w-4 text-amber-500" />
+                                                {amenity.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Review Form */}
-                        <div className="bg-gray-900 p-8 text-indigo-100">
+                        <div className="bg-gray-900 relative p-8 text-indigo-100">
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             <h3 className="text-lg text-start font-black uppercase tracking-widest mb-6">Write a Review</h3>
                             {reviewSuccess ? (
                                 <div className="bg-green-500/10 border border-green-500/30 p-6 text-center">
@@ -342,7 +422,7 @@ const PropertyDetails = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <form onSubmit={handleReviewSubmit} className="space-y-6 flex flex-col items-start">
+                                <form onSubmit={handleReviewSubmit} className="space-y-6 flex flex-col items-start z-10 relative">
                                     <div>
                                         <label className="block text-[10px] text-start font-black text-indigo-100/60 uppercase tracking-widest mb-2">Rating</label>
                                         <div className="flex gap-2">
@@ -369,8 +449,9 @@ const PropertyDetails = () => {
                                     </div>
                                     <button
                                         type="submit" disabled={submittingReview}
-                                        className="w-fit gap-1 text-start px-6 py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
+                                        className="w-fit gap-1 text-start px-6 py-3 border border-black/10 bg-gray-900 relative text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
                                     >
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         {submittingReview ? 'Submitting...' : 'Post Review'}
                                     </button>
                                 </form>
@@ -381,16 +462,17 @@ const PropertyDetails = () => {
                     {/* Reviews Section */}
                     <div className="py-10 border-b border-gray-100">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-2xl font-black text-black uppercase tracking-widest flex items-center gap-2">
+                            <h2 className="text-xl font-black text-black uppercase tracking-widest flex items-center gap-2">
                                 Property Reviews
                             </h2>
-                            <span className="text-gray-400 font-bold">{property.reviews?.length || 0} reviews</span>
+                            <span className="text-indigo-600 font-bold">{property.reviews?.length || 0} reviews</span>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                             {property.reviews?.length > 0 ? (
                                 property.reviews.map((review) => (
-                                    <div key={review.id} className="bg-white p-5 border border-dashed border-black/30">
+                                    <div key={review.id} className="bg-green-200/50 relative p-5 border border-dashed border-black/30">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <div className="flex items-center justify-between mb-4">
                                             <div className="flex items-end gap-4">
                                                 <div className="h-12 w-12 bg-amber-600 flex items-center justify-center text-indigo-100 font-black text-xl">
@@ -401,17 +483,17 @@ const PropertyDetails = () => {
                                                     <p className="text-[10px] text-start text-gray-400 font-bold">{review.created_at}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex text-yellow-500 bg-indigo-600 p-.5 border border-black/20">
+                                            <div className="flex text-yellow-500 bg-gray-900 p-.5 border border-black/30">
                                                 {[...Array(5)].map((_, i) => (
                                                     <HiStar key={i} className={`h-5 w-5 ${i < review.rating ? 'fill-current' : 'text-gray-200'}`} />
                                                 ))}
                                             </div>
                                         </div>
-                                        <p className="text-gray-600 text-start italic p-3 border-t border-black/30">"{review.comment}"</p>
+                                        <p className="text-indigo-600 text-start italic p-3 border-t border-black/30">"{review.comment}"</p>
                                     </div>
                                 ))
                             ) : (
-                                <p className="text-gray-400 font-medium italic">No reviews yet for this property.</p>
+                                <p className="text-gray-400 font-medium text-start italic">No reviews yet for this property.</p>
                             )}
                         </div>
 
@@ -420,9 +502,11 @@ const PropertyDetails = () => {
                     {/* Similar Properties */}
                     {similarProperties.length > 0 && (
                         <div className="py-24 border-t border-gray-100 mt-12">
-                            <div className="flex items-center justify-between mb-12">
-                                <h2 className="text-3xl font-black text-black uppercase tracking-widest">Similar Properties</h2>
-                                <Link to="/properties" className="px-8 py-3 bg-teal-700 text-indigo-100 text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition shadow-lg">View All</Link>
+                            <div className="flex items-center justify-between mb-5">
+                                <h2 className="text-xl font-black text-black uppercase tracking-widest">Similar Properties</h2>
+                                <Link to="/properties" className="px-8 py-3 bg-gray-900 relative z-10 text-indigo-100 text-xs font-black uppercase tracking-widest hover:bg-amber-600 transition shadow-lg">
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    View All</Link>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 {similarProperties.map(prop => (

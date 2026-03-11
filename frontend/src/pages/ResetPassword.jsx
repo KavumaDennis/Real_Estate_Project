@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
-import { HiOutlineLockClosed, HiOutlineCheckCircle, HiOutlineExclamationCircle } from 'react-icons/hi';
+import { HiOutlineLockClosed, HiOutlineCheckCircle, HiOutlineExclamationCircle, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
@@ -18,6 +18,8 @@ const ResetPassword = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     useEffect(() => {
         if (!formData.token || !formData.email) {
@@ -71,7 +73,7 @@ const ResetPassword = () => {
                             </div>
                             <h3 className="text-xl font-black text-gray-900">Success!</h3>
                             <p className="text-gray-500 text-sm font-medium">
-                                Your password has been reset successfully. Redirecting you to login...
+                                {message || 'Your password has been reset successfully. Redirecting you to login...'}
                             </p>
                         </div>
                     ) : (
@@ -91,13 +93,21 @@ const ResetPassword = () => {
                                     <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                                     <input
                                         name="password"
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         required
-                                        className="appearance-none block w-full pl-12 pr-6 py-4 bg-gray-50 border-transparent rounded-2xl placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 transition font-bold text-gray-900"
-                                        placeholder="••••••••"
+                                        className="appearance-none block w-full pl-12 pr-12 py-4 bg-gray-50 border-transparent rounded-2xl placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 transition font-bold text-gray-900"
+                                        placeholder="********"
                                         value={formData.password}
                                         onChange={handleChange}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? <HiOutlineEyeOff className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                                    </button>
                                 </div>
                             </div>
 
@@ -109,13 +119,21 @@ const ResetPassword = () => {
                                     <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
                                     <input
                                         name="password_confirmation"
-                                        type="password"
+                                        type={showConfirmPassword ? 'text' : 'password'}
                                         required
-                                        className="appearance-none block w-full pl-12 pr-6 py-4 bg-gray-50 border-transparent rounded-2xl placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 transition font-bold text-gray-900"
-                                        placeholder="••••••••"
+                                        className="appearance-none block w-full pl-12 pr-12 py-4 bg-gray-50 border-transparent rounded-2xl placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 transition font-bold text-gray-900"
+                                        placeholder="********"
                                         value={formData.password_confirmation}
                                         onChange={handleChange}
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showConfirmPassword ? <HiOutlineEyeOff className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                                    </button>
                                 </div>
                             </div>
 

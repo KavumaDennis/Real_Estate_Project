@@ -5,6 +5,7 @@ import {
     HiUsers, HiCollection, HiRefresh, HiLocationMarker
 } from 'react-icons/hi';
 import SafeImage from '../components/SafeImage';
+import { formatUGX } from '../utils/currency';
 
 const ICON_MAP = {
     HiEye: HiEye,
@@ -28,7 +29,7 @@ const Analytics = () => {
     const fetchAnalytics = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/admin/analytics');
+            const res = await api.get('/analytics');
             setStats(res.data.stats);
             setChartData(res.data.chart.data);
             setDays(res.data.chart.days);
@@ -49,15 +50,18 @@ const Analytics = () => {
 
     return (
         <div className="space-y-8 pb-10">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-end justify-between gap-4">
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Performance Analytics</h1>
-                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-amber-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">Track your reach and engagement.</p>
+                    <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/10 bg-green-600 relative z-10 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        Track your reach and engagement.</p>
                 </div>
                 <button
                     onClick={fetchAnalytics}
-                    className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-3 border border-black/10 bg-teal-700 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    className="w-full sm:w-auto relative z-10 flex items-center justify-center space-x-2 px-6 py-3 border border-black/10 bg-gray-900 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                 >
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiRefresh className="h-5 w-5" />
                     <span>Refresh</span>
                 </button>
@@ -67,7 +71,8 @@ const Analytics = () => {
                 {(stats || []).map((stat) => {
                     const Icon = ICON_MAP[stat.icon] || HiEye;
                     return (
-                        <div key={stat.name} className="bg-teal-700 border border-black/20 p-6 shadow-sm hover:shadow-lg transition group">
+                        <div key={stat.name} className="bg-gray-900 border border-black/30 relative z-10 p-6 shadow-sm hover:shadow-lg transition group">
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`${stat.color} p-4 group-hover:scale-110 transition shrink-0`}>
                                     <Icon className="h-6 w-6" />
@@ -77,14 +82,15 @@ const Analytics = () => {
                                 </span>
                             </div>
                             <h3 className="text-2xl text-start font-black text-white uppercase tracking-tight leading-none">{stat.value}</h3>
-                            <p className="text-[10px] text-start font-black text-black/60 uppercase tracking-widest mt-1">{stat.name}</p>
+                            <p className="text-[10px] text-start font-black text-green-600 uppercase tracking-widest mt-1">{stat.name}</p>
                         </div>
                     );
                 })}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white/60 p-4 sm:p-8 border border-dashed border-black/30 shadow-sm overflow-hidden">
+                <div className="lg:col-span-2 bg-green-100 relative z-10 p-4 sm:p-8 border border-dashed border-black/30 shadow-sm overflow-hidden">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="flex items-center justify-between mb-8 sm:mb-10">
                         <h3 className="text-lg sm:text-xl font-black text-gray-900 uppercase tracking-widest">Weekly Traffic</h3>
                         <div className="flex items-center">
@@ -114,18 +120,19 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                <div className="bg-amber-600 border border-black/10 p-5 text-white shadow-xl shadow-blue-100 flex flex-col justify-between">
+                <div className="bg-green-600 relative z-10 border border-black/10 p-5 text-white shadow-xl shadow-blue-100 flex flex-col justify-between">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     {topPerformer ? (
                         <>
                             <div>
                                 <h3 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-1">Top Performer</h3>
                                 <p className="text-blue-100 text-start text-sm mb-1">Your most popular listing this week.</p>
-                                <h3 className="block text-lg text-start font-black text-teal-800 uppercase tracking-widest mb-2">${topPerformer.price?.toLocaleString()}</h3>
+                                <h3 className="block text-lg text-start font-black text-black uppercase tracking-widest mb-2">{formatUGX(topPerformer.price)}</h3>
                             </div>
 
                             <div className="pt-8">
                                 <SafeImage
-                                    src={topPerformer.image ? `http://localhost:8000/storage/${topPerformer.image}` : null}
+                                    src={topPerformer.image}
                                     className="w-full h-40 object-cover shadow-lg"
                                     alt=""
                                 />
@@ -135,7 +142,7 @@ const Analytics = () => {
                                         <HiLocationMarker className="mr-1" />
                                         {topPerformer.location}
                                     </div>
-                                    <div className="mt-2 text-xs font-black text-white uppercase">{topPerformer.views} Total Views</div>
+                                    <div className="mt-2 text-xs text-start font-black text-white uppercase">{topPerformer.views} Total Views</div>
                                 </div>
                             </div>
                         </>
@@ -148,15 +155,17 @@ const Analytics = () => {
                 </div>
             </div>
 
-            <div className="bg-teal-700 border border-black/20 shadow-sm p-5">
+            <div className="bg-gray-900 border border-black/30 shadow-sm p-5">
+                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                 <h3 className="block text-lg text-start font-black text-white uppercase tracking-widest mb-6">Recent Activity</h3>
-                <div className="space-y-4">
+                <div className="space-y-4 z-10 relative">
                     {recentActivity.length === 0 ? (
                         <p className="text-white/50 text-sm italic">No recent activity detected.</p>
                     ) : recentActivity.map((activity, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 border-amber-600 border-y-2  hover:border-blue-100 hover:bg-amber-600 transition">
+                        <div key={i} className="flex items-center justify-between p-4 border-green-600 border-y-2 relative z-10  hover:border-blue-100 hover:bg-green-600 transition">
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             <div className="flex items-center space-x-4">
-                                <div className="h-10 w-10 bg-white shadow-sm rounded-xl flex items-center justify-center text-blue-600">
+                                <div className="h-10 w-10 bg-white shadow-sm flex items-center justify-center text-blue-600">
                                     {activity.type === 'inquiry' ? <HiUsers /> : <HiEye />}
                                 </div>
                                 <div>

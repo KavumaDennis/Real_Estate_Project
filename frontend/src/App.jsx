@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
@@ -8,6 +8,7 @@ import Agents from './pages/Agents';
 import AgentProfile from './pages/AgentProfile';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import ServiceDetails from './pages/ServiceDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -24,16 +25,17 @@ import Leads from './pages/Leads';
 import Reviews from './pages/Reviews';
 import Analytics from './pages/Analytics';
 import Subscription from './pages/Subscription';
+import ManagementRequests from './pages/ManagementRequests';
 import DashboardLayout from './layouts/DashboardLayout';
 import AdminLayout from './layouts/AdminLayout';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/AdminUsers';
-import AdminCategories from './pages/AdminCategories';
 import AdminLocations from './pages/AdminLocations';
-import AdminAmenities from './pages/AdminAmenities';
 import AdminReviews from './pages/AdminReviews';
 import AdminBlog from './pages/AdminBlog';
 import AdminPages from './pages/AdminPages';
+import AdminServices from './pages/AdminServices';
+import AdminPropertyManagement from './pages/AdminPropertyManagement';
 // import AdminTransactions from './pages/AdminTransactions';
 import ProtectedRoute from './components/ProtectedRoute';
 import Blog from './pages/Blog';
@@ -54,6 +56,7 @@ function App() {
             <Route path="agents/:id" element={<AgentProfile />} />
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="services/:id" element={<ServiceDetails />} />
             <Route path="login" element={<Login />} />
             <Route path="login/callback" element={<LoginCallback />} />
             <Route path="register" element={<Register />} />
@@ -65,6 +68,9 @@ function App() {
 
           {/* Protected Dashboard Routes */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/management" element={<Navigate to="/dashboard/management" replace />} />
+            <Route path="/blog-writing" element={<Navigate to="/dashboard/blog" replace />} />
+
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="properties" element={<MyProperties />} />
@@ -74,6 +80,7 @@ function App() {
               <Route path="reviews" element={<Reviews />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="subscription" element={<Subscription />} />
+              <Route path="management" element={<ManagementRequests />} />
               <Route path="blog" element={<BlogManager />} />
               <Route path="saved" element={<SavedProperties />} />
               <Route path="saved-posts" element={<SavedPosts />} />
@@ -87,12 +94,12 @@ function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="properties" element={<MyProperties />} />
-                <Route path="categories" element={<AdminCategories />} />
                 <Route path="locations" element={<AdminLocations />} />
-                <Route path="amenities" element={<AdminAmenities />} />
                 <Route path="blog" element={<AdminBlog />} />
                 <Route path="pages" element={<AdminPages />} />
+                <Route path="services" element={<AdminServices />} />
                 <Route path="reviews" element={<AdminReviews />} />
+                <Route path="property-management" element={<AdminPropertyManagement />} />
               </Route>
             </Route>
           </Route>

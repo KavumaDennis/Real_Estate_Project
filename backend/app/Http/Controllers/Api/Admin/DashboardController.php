@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Property;
 use App\Models\Inquiry;
 use App\Models\Transaction;
+use App\Models\ServiceRequirement;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -19,9 +20,11 @@ class DashboardController extends Controller
             'total_agents' => User::whereHas('role', fn($q) => $q->where('slug', 'agent'))->count(),
             'total_properties' => Property::count(),
             'total_leads' => Inquiry::count(),
+            'total_service_requests' => ServiceRequirement::count(),
             'total_revenue' => Transaction::where('status', 'completed')->sum('amount'),
             'recent_users' => User::with('role')->latest()->limit(5)->get(),
-            'recent_properties' => Property::with('location')->latest()->limit(5)->get(),
+            'recent_properties' => Property::with(['location', 'images'])->latest()->limit(5)->get(),
+            'recent_service_requests' => ServiceRequirement::with(['service:id,name', 'user:id,name,email'])->latest()->limit(5)->get(),
             'sales_chart' => $this->getSalesChartData(),
             'recent_activity' => $this->getRecentActivity(),
         ];

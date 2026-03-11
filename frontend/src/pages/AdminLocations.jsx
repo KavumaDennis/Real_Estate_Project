@@ -75,14 +75,14 @@ const AdminLocations = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Manage Locations</h1>
                     <p className="px-4 sm:px-6 py-2 sm:py-3 relative border border-black/30 bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg shrink-0">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Define regions and cities.</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-2.5 relative border border-black/30 bg-indigo-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
+                    className="w-full sm:w-auto flex items-center justify-center space-x-2 px-6 py-2.5 relative border border-black/30 bg-gray-900 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg"
                 >
-                     <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                     <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiOutlinePlus className="h-5 w-5" />
                     <span>New Location</span>
                 </button>
@@ -101,7 +101,7 @@ const AdminLocations = () => {
             </div>
 
             {/* List */}
-            <div className="border border-black/20 shadow-sm overflow-x-auto scrollbar-hide">
+            <div className="border border-black/30 shadow-sm overflow-x-auto scrollbar-hide">
                 {loading ? (
                     <div className="p-20 sm:p-40 flex flex-col items-center justify-center space-y-4">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
@@ -111,9 +111,9 @@ const AdminLocations = () => {
                     <div className="p-20 sm:p-40 text-center italic text-gray-400 font-black text-[10px] uppercase tracking-widest">No locations.</div>
                 ) : (
                     <table className="w-full text-left border-collapse relative z-10 min-w-[600px]">
-                         <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                         <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <thead>
-                            <tr className="bg-green-600 border-b border-black/20">
+                            <tr className="bg-green-600 border-b border-black/30">
                                 <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Location Name</th>
                                 <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Type</th>
                                 <th className="px-6 py-5 text-[9px] font-black text-white uppercase tracking-[0.2em]">Properties</th>
@@ -125,7 +125,7 @@ const AdminLocations = () => {
                                 <tr key={l.id} className="bg-green-100/50 relative z-10 transition-colors group">
                                     <td className="px-6 py-5">
                                         <div className="flex items-center space-x-4">
-                                            <div className="h-10 w-10 bg-indigo-600/20 text-indigo-600 border border-indigo-600/30 flex items-center justify-center shrink-0">
+                                            <div className="h-10 w-10 bg-gray-900/20 text-indigo-600 border border-indigo-600/30 flex items-center justify-center shrink-0">
                                                 <HiOutlineLocationMarker className="h-5 w-5" />
                                             </div>
                                             <p className="font-black text-indigo-600 tracking-tight">{l.name}</p>
@@ -146,16 +146,16 @@ const AdminLocations = () => {
                                         <div className="flex justify-end space-x-2">
                                             <button
                                                 onClick={() => openModal(l)}
-                                                className="p-2.5 bg-indigo-600 relative z-10 text-white transition shadow-sm border border-black/10"
+                                                className="p-2.5 bg-gray-900 relative z-10 text-white transition shadow-sm border border-black/10"
                                             >
-                                                 <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                 <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiOutlinePencil className="h-4 w-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(l.id)}
                                                 className="p-2.5 bg-rose-600 text-white relative z-10 transition shadow-sm border border-black/10"
                                             >
-                                                 <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                 <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 <HiOutlineTrash className="h-4 w-4" />
                                             </button>
                                         </div>
@@ -170,8 +170,8 @@ const AdminLocations = () => {
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-green-600 relative z-10 border border-black/20 w-full max-w-md p-6 sm:p-10 shadow-2xl animate-in zoom-in duration-300">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div className="bg-green-900 relative z-10 border border-black/30 w-full max-w-md p-6 sm:p-10 shadow-2xl animate-in zoom-in duration-300">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <div className="mb-8">
                             <h2 className="text-2xl font-black text-white uppercase tracking-tight">{isEditing ? 'Edit Location' : 'New Location'}</h2>
                             <p className="text-white/50 text-xs font-black uppercase tracking-widest mt-2">Define geographic attributes.</p>
@@ -205,16 +205,16 @@ const AdminLocations = () => {
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="flex-1 py-4 bg-white relative z-10 border border-black/30 text-black font-black uppercase tracking-widest text-xs hover:bg-white/20 transition"
+                                    className="flex-1 py-3 bg-white relative z-10 border border-black/30 text-black font-black uppercase tracking-widest text-xs hover:bg-white/20 transition"
                                 >
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 py-4 bg-indigo-600 border border-black/30 relative z-10 text-white font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition shadow-xl"
+                                    className="flex-1 py-3 bg-gray-900 border border-black/30 relative z-10 text-white font-black uppercase tracking-widest text-xs hover:bg-blue-600 transition shadow-xl"
                                 >
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     {isEditing ? 'Save' : 'Create'}
                                 </button>
                             </div>

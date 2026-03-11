@@ -29,7 +29,7 @@ class Post extends Model
             return null;
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->featured_image);
+        return \App\Helpers\StorageUrlHelper::url($this->featured_image);
     }
 
     public function category()

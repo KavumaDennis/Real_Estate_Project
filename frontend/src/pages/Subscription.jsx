@@ -24,7 +24,7 @@ const Subscription = () => {
         {
             id: 'agent_plus',
             name: 'Agent Pro',
-            price: '$29',
+            price: 'UGX 29',
             description: 'Best for active real estate agents',
             features: [
                 'Unlimited Listings',
@@ -40,7 +40,7 @@ const Subscription = () => {
         {
             id: 'agent_premium',
             name: 'Platinum Elite',
-            price: '$99',
+            price: 'UGX 99',
             description: 'For top-tier agents and agencies',
             features: [
                 'Featured Agent Status',

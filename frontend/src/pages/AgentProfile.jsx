@@ -4,17 +4,18 @@ import { HiMail, HiPhone, HiStar, HiOutlineArrowNarrowRight, HiLocationMarker, H
 import { BiBed, BiBath, BiArea, BiBuildingHouse } from 'react-icons/bi';
 import api from '../services/api';
 import SafeImage from '../components/SafeImage';
+import { formatUGX } from '../utils/currency';
 
 const AgentAvatar = ({ agent }) => {
     const initials = agent.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    const colors = ['bg-blue-600', 'bg-violet-600', 'bg-teal-700', 'bg-orange-500', 'bg-pink-600'];
-    const color = colors[agent.id % colors.length];
+
 
     if (agent.avatar_url) {
-        return <SafeImage src={agent.avatar_url} alt={agent.name} className="h-32 w-32 rounded-[40px] object-cover shadow-2xl" />;
+        return <SafeImage src={agent.avatar_url} alt={agent.name} className="h-28 w-28 mt-3 border border-black/30 object-cover shadow-2xl" />;
     }
     return (
-        <div className={`h-25 w-25 ${color} rounded-3xl flex items-center justify-center text-white font-black text-4xl shadow-2xl mt-5`}>
+        <div className={`h-20 w-20 bg-gray-900 relative flex items-center justify-center text-white font-black text-3xl shadow-2xl mt-5`}>
+            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
             {initials}
         </div>
     );
@@ -110,11 +111,12 @@ const AgentProfile = () => {
     );
 
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className=" min-h-screen">
             {/* Hero Banner */}
-            <div className="bg-white border-b border-gray-100">
+            <div className="">
                 <div className="w-full py-10">
-                    <Link to="/agents" className="flex items-start w-fit space-x-2 px-6 py-3 border border-black/10 bg-orange-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                    <Link to="/agents" className="flex items-start w-fit space-x-2 px-6 py-3 border border-black/10 bg-green-600 relative z-10 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <HiOutlineArrowNarrowRight className="h-5 w-5 rotate-180 group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm uppercase tracking-widest">All Agents</span>
                     </Link>
@@ -122,24 +124,26 @@ const AgentProfile = () => {
                     <div className="flex flex-col items-start gap-5">
                         <div className="relative">
                             <AgentAvatar agent={agent} />
-                            <div className="absolute -bottom-3 -right-3 h-8 w-8 bg-green-500 border-4 border-white rounded-full" />
                         </div>
 
-                        <div className="flex-1 flex items-end justify-between">
+                        <div className="flex-1 w-full flex items-end justify-between">
                             <div className="">
-                                <p className="text-teal-700 text-start text-lg max-w-2xl leading-relaxed mb-5">
+                                <p className="text-indigo-600 font-bold text-start text-lg max-w-2xl leading-relaxed mb-5">
                                     {agent.bio}
                                 </p>
                                 <p className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">
                                     {agent.specialization}
                                 </p>
-                                <h1 className="px-6 py-3 w-fit border border-black/10 bg-orange-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">{agent.name}</h1>
+                                <h1 className="px-6 py-3 w-fit border border-black/10 relative bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    {agent.name}</h1>
                             </div>
 
 
                             <div className="flex flex-wrap gap-6 mt-8">
                                 <div className="flex items-end space-x-3">
-                                    <div className="h-12 w-12 bg-orange-600 flex items-center justify-center">
+                                    <div className="h-11 w-11 relative bg-green-600 flex items-center justify-center">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <BiBuildingHouse className="h-6 w-6 text-white" />
                                     </div>
                                     <div>
@@ -148,7 +152,8 @@ const AgentProfile = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-end space-x-3">
-                                    <div className="h-12 w-12  bg-orange-600 flex items-center justify-center">
+                                    <div className="h-11 w-11 relative bg-green-600 flex items-center justify-center">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <HiStar className="h-6 w-6 text-white" />
                                     </div>
                                     <div>
@@ -157,12 +162,14 @@ const AgentProfile = () => {
                                     </div>
                                 </div>
                                 {agent.phone && (
-                                    <a href={`tel:${agent.phone}`} className="flex items-center space-x-3 px-6 py-3 bg-teal-700 text-white font-black hover:bg-blue-600 transition">
+                                    <a href={`tel:${agent.phone}`} className="flex items-center space-x-3 relative px-6 py-3 bg-gray-900 text-white font-black hover:bg-blue-600 transition">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <HiPhone className="h-5 w-5" />
                                         <span>{agent.phone}</span>
                                     </a>
                                 )}
-                                <a href={`mailto:${agent.email}`} className="flex items-center space-x-3 px-6 py-3 bg-teal-700 text-white font-black hover:bg-blue-600 hover:text-white transition">
+                                <a href={`mailto:${agent.email}`} className="flex items-center space-x-3 relative px-6 py-3 bg-gray-900 text-white font-black hover:bg-blue-600 hover:text-white transition">
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     <HiMail className="h-5 w-5" />
                                     <span>{agent.email}</span>
                                 </a>
@@ -179,18 +186,18 @@ const AgentProfile = () => {
 
                         {/* Active Listings */}
                         <div>
-                            <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center justify-between mb-5">
                                 <div className="flex items-center space-x-4">
-
-                                    <h2 className="block text-xl text-start font-black text-teal-700 uppercase tracking-widest ">Active Listings</h2>
+                                    <h2 className="block text-xl text-start font-black text-black uppercase tracking-widest ">Active Listings</h2>
                                 </div>
-                                <span className="text-gray-400 font-bold">{agent.listings_count} total</span>
+                                <span className="text-indigo-600 font-bold">{agent.listings_count} total</span>
                             </div>
 
                             {agent.properties?.length === 0 ? (
-                                <div className="bg-white p-16 text-center border border-dashed border-black/50">
-                                    <BiBuildingHouse className="h-12 w-12 text-gray-200 mx-auto mb-4" />
-                                    <p className="text-gray-400 font-bold">No active listings at the moment.</p>
+                                <div className="bg-green-100/50 relative p-16 text-center border border-dashed border-black/50">
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <BiBuildingHouse className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                                    <p className="text-black font-bold">No active listings at the moment.</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -198,36 +205,34 @@ const AgentProfile = () => {
                                         <Link
                                             key={prop.id}
                                             to={`/properties/${prop.slug}`}
-                                            className="bg-white rounded-[28px] overflow-hidden border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+                                            className="bg-white overflow-hidden border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
                                         >
-                                            <div className="relative h-48 overflow-hidden">
+                                            <div className="relative h-40 overflow-hidden">
                                                 <SafeImage
                                                     src={prop.images?.[0]}
                                                     alt={prop.title}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                                                 />
-                                                <div className="absolute top-4 left-4 flex gap-2">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-black uppercase text-white ${prop.status === 'for_sale' ? 'bg-blue-600' : 'bg-green-600'}`}>
+                                                <div className="absolute top-2 left-2 flex gap-2">
+                                                    <span className={`px-3 py-1 relative text-xs font-black uppercase text-white ${prop.status === 'for_sale' ? 'bg-gray-900' : 'bg-green-600'}`}>
+                                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                         {prop.status === 'for_sale' ? 'For Sale' : 'For Rent'}
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="p-6">
-                                                <p className="text-xs font-black text-blue-600 uppercase tracking-widest mb-2">{prop.type}</p>
-                                                <h3 className="text-lg font-black text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition">{prop.title}</h3>
-                                                {prop.location && (
-                                                    <div className="flex items-center text-gray-400 text-sm mb-4">
+                                            <div className="pt-2">
+                                                <p className="text-xs font-black text-end text-gray-900 uppercase tracking-widest mb-2">{prop.type}</p>
+                                                <h3 className="text-sm font-black uppercase tracking-widest text-start text-green-600 mb-2 line-clamp-1 group-hover:text-blue-600 transition">{prop.title}</h3>
+                                              
+                                                <div className="flex items-center justify-between p-3 bg-gray-900 relative">
+                                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                                    <p className="font-black text-green-600">{formatUGX(prop.price)}</p>
+                                                     {prop.location && (
+                                                    <div className="flex items-center text-gray-400 text-sm">
                                                         <HiLocationMarker className="h-4 w-4 mr-1 text-blue-600" />
                                                         {prop.location}
                                                     </div>
                                                 )}
-                                                <div className="flex items-center justify-between">
-                                                    <p className="text-xl font-black text-gray-900">${prop.price?.toLocaleString()}</p>
-                                                    <div className="flex items-center gap-4 text-gray-400 text-sm">
-                                                        {prop.bedrooms && <span className="flex items-center gap-1"><BiBed className="h-4 w-4" />{prop.bedrooms}</span>}
-                                                        {prop.bathrooms && <span className="flex items-center gap-1"><BiBath className="h-4 w-4" />{prop.bathrooms}</span>}
-                                                        {prop.size && <span className="flex items-center gap-1"><BiArea className="h-4 w-4" />{prop.size}</span>}
-                                                    </div>
                                                 </div>
                                             </div>
                                         </Link>
@@ -238,18 +243,20 @@ const AgentProfile = () => {
 
                         {/* Reviews Section */}
                         <div>
-                            <div className="flex items-center space-x-4 mb-10">
-                                <h2 className="block text-xl text-start font-black text-teal-700 uppercase tracking-widest">Client Reviews</h2>
+                            <div className="flex items-center space-x-4 mb-5">
+                                <h2 className="block text-xl text-start font-black text-black uppercase tracking-widest">Client Reviews</h2>
                             </div>
 
                             <div className="grid grid-cols-1 gap-6">
                                 {agent.reviews?.length === 0 ? (
-                                    <div className="bg-white p-12 text-center border border-dashed border-black/50">
-                                        <p className="text-gray-400 font-bold">No reviews yet for this agent.</p>
+                                    <div className="bg-green-200/50 relative p-12 text-center border border-dashed border-black/50">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <p className="text-black font-bold">No reviews yet for this agent.</p>
                                     </div>
                                 ) : (
                                     agent.reviews?.map((review, i) => (
-                                        <div key={i} className="bg-white p-8 border border-dashed border-black/50 shadow-sm">
+                                        <div key={i} className="bg-green-100/50 relative p-8 border border-dashed border-black/50 shadow-sm">
+                                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center space-x-4">
                                                     <div className="h-12 w-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 font-black text-lg">
@@ -274,9 +281,10 @@ const AgentProfile = () => {
 
                             {/* Review Form */}
                             <div className="mt-12">
-                                <h3 className="text-xl font-black text-teal-700 uppercase tracking-widest mb-6">Leave a Review</h3>
+                                <h3 className="text-xl font-black text-start text-black uppercase tracking-widest mb-6">Leave a Review</h3>
                                 {reviewSuccess ? (
-                                    <div className="bg-green-100 border border-green-200 p-8 text-center rounded-3xl">
+                                    <div className="bg-green-100 relative z-10 border border-green-200 p-8 text-center rounded-3xl">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         <HiCheckCircle className="h-14 w-14 text-green-500 mx-auto mb-4" />
                                         <p className="font-black text-lg text-green-800">Review Submitted!</p>
                                         <p className="text-green-600">Your feedback has been posted successfully.</p>
@@ -285,16 +293,17 @@ const AgentProfile = () => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="bg-white p-8 border border-dashed border-black/50 shadow-sm">
-                                        <form onSubmit={handleReviewSubmit} className="space-y-6">
+                                    <div className="bg-green-600 relative p-8 border border-dashed border-black/50 shadow-sm">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <form onSubmit={handleReviewSubmit} className="space-y-6 z-10 relative">
                                             <div>
-                                                <label className="block text-xs font-black text-black uppercase tracking-widest mb-3">Rating</label>
+                                                <label className="block text-xs font-black text-start text-black uppercase tracking-widest mb-3">Rating</label>
                                                 <div className="flex gap-2">
                                                     {[1, 2, 3, 4, 5].map(star => (
                                                         <button
                                                             key={star} type="button"
                                                             onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                                                            className={`p-1 transition-colors ${reviewForm.rating >= star ? 'text-yellow-400' : 'text-gray-200'}`}
+                                                            className={`p-1 transition-colors ${reviewForm.rating >= star ? 'text-yellow-300' : 'text-gray-200'}`}
                                                         >
                                                             <HiStar className="h-8 w-8 fill-current" />
                                                         </button>
@@ -302,7 +311,7 @@ const AgentProfile = () => {
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-black text-black uppercase tracking-widest mb-3">Your Experience</label>
+                                                <label className="block text-xs font-black text-start text-black uppercase tracking-widest mb-3">Your Experience</label>
                                                 <textarea
                                                     required rows="4"
                                                     className="w-full bg-gray-50 border border-black/80 p-4 focus:ring-0 text-sm font-bold placeholder-black/30"
@@ -313,8 +322,9 @@ const AgentProfile = () => {
                                             </div>
                                             <button
                                                 type="submit" disabled={submittingReview}
-                                                className="px-10 py-4 bg-orange-600 text-white font-black uppercase tracking-widest hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
+                                                className="px-10 py-3 bg-gray-900 border border-black/30 text-xs flex items-start relative z-10 text-white font-black uppercase tracking-widest hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
                                             >
+                                                <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                                 {submittingReview ? 'Posting...' : 'Post Review'}
                                             </button>
                                         </form>
@@ -331,7 +341,7 @@ const AgentProfile = () => {
                             <div className="absolute -left-16 -bottom-16 h-48 w-48 bg-violet-600/10 rounded-full blur-3xl" />
 
                             <div className="relative z-10">
-                                <h3 className="block text-lg text-start font-black text-orange-600 uppercase tracking-widest mb-2">Contact {agent.name.split(' ')[0]}</h3>
+                                <h3 className="block text-lg text-start font-black text-green-600 uppercase tracking-widest mb-2">Contact {agent.name.split(' ')[0]}</h3>
                                 <p className="text-gray-400 text-start text-sm mb-8 font-medium">Send a message and get a response within 24 hours.</p>
 
                                 {contactSent ? (
@@ -387,8 +397,9 @@ const AgentProfile = () => {
                                         <button
                                             type="submit"
                                             disabled={contactLoading}
-                                            className="px-6 py-3 w-fit border border-black/10 bg-orange-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
+                                            className="px-6 py-3 w-fit border border-black/30 relative z-10 bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50"
                                         >
+                                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                             {contactLoading ? 'Sending...' : 'Send Message'}
                                         </button>
                                     </form>

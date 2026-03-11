@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const Register = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { register } = useAuth();
     const navigate = useNavigate();
 
@@ -30,103 +33,160 @@ const Register = () => {
     };
 
     return (
+        <div className="min-h-[86vh] bg-[#121417]">
+            <div className="grid grid-cols-1 md:grid-cols-2 my-3 w-full overflow-hidden border border-white/10 shadow-2xl lg:min-h-[78vh]">
+                <div className="relative hidden overflow-hidden bg-gradient-to-br from-[#0a5f4a] via-[#0a2f34] to-[#101a22] p-8 lg:flex lg:flex-col lg:justify-between">
+                    <img src="/bg-img.png" className="absolute inset-0 h-full w-full object-cover opacity-20" alt="" />
+                    <div className="relative z-10">
+                        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-white/80 text-start">Green Wave</p>
+                        <h2 className="mt-6  text-4xl font-black uppercase leading-tight text-white text-start">
+                            Build Your Account
+                        </h2>
+                        <p className="mt-4 text-sm font-semibold text-white/80 text-start">
+                            Create your profile and start listing or discovering premium properties.
+                        </p>
+                    </div>
 
-        <div className="min-h-[80vh] grid grid-cols-2 bg-emerald-100/80 py-10">
-            <div className=""></div>
-            <div className="w-full lg:col-span-1 col-span-2 space-y-8 border bg-amber-600 p-10 py-15 shadow-xl">
-                <div className="text-center">
-                    <h2 className="text-lg text-black text-center font-black uppercase tracking-widest ">Create Account</h2>
-                    <p className="mt-2 text-sm text-white">Join our community of property seekers and agents</p>
+                    <div className="relative z-10 grid grid-cols-3 gap-3">
+                        <div className="border border-white/20 bg-white px-3 py-4 text-[11px] font-black uppercase text-black">
+                            Create account
+                        </div>
+                        <div className="border border-white/20 bg-white/10 px-3 py-4 text-[11px] font-black uppercase text-white/90">
+                            Complete profile
+                        </div>
+                        <div className="border border-white/20 bg-white/10 px-3 py-4 text-[11px] font-black uppercase text-white/90">
+                            Start exploring
+                        </div>
+                    </div>
                 </div>
 
-                {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 p-4 text-red-700 text-sm">
-                        {error}
-                    </div>
-                )}
-
-                <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
-                    <div>
-                        <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Full Name</label>
-                        <input
-                            type="text"
-                            className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
-                            placeholder="John Doe"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Email Address</label>
-                        <input
-                            type="email"
-                            className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
-                            placeholder="john@example.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                        />
+                <div className="w-full relative bg-green-600 p-6 sm:p-8 lg:p-10">
+                    <img src="/bg-img.png" className="absolute inset-0 h-full w-full object-cover opacity-20" alt="" />
+                    <div className="mb-8">
+                        <h2 className="text-2xl font-black text-white text-start mb-3">Create Account</h2>
+                        <p className="mt-1 text-xs font-bold uppercase tracking-widest text-start text-black">Join as a buyer or listing agent.</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    {error && (
+                        <div className="mb-6 border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-200">
+                            {error}
+                        </div>
+                    )}
+
+                    <form className="space-y-4 z-10 relative" onSubmit={handleSubmit}>
                         <div>
-                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Password</label>
+                            <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-black text-start">Full Name</label>
                             <input
-                                type="password"
-                                className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
-                                placeholder="••••••••"
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                type="text"
+                                className="w-full border border-black/30 bg-teal-700/55 px-3 py-3 text-sm font-bold text-white placeholder:text-white/30 focus:outline-none"
+                                placeholder="John Doe"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 required
                             />
                         </div>
+
                         <div>
-                            <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Confirm Password</label>
+                            <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-black text-start">Email</label>
                             <input
-                                type="password"
-                                className="w-full bg-gray-50 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold text-black/70 placeholder-black/70"
-                                placeholder="••••••••"
-                                value={formData.password_confirmation}
-                                onChange={(e) => setFormData({ ...formData, password_confirmation: e.target.value })}
+                                type="email"
+                                className="w-full border border-black/30 bg-teal-700/55 px-3 py-3 text-sm font-bold text-white placeholder:text-white/30 focus:outline-none"
+                                placeholder="john@example.com"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 required
                             />
                         </div>
-                    </div>
 
-                    <div>
-                        <label className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">I am an:</label>
-                        <div className="flex gap-4">
-                            <label className={`w-full text-black/70 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold placeholder-black/70 ${formData.role === 'user' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-gray-50'}`}>
-                                <input type="radio" value="user" className="hidden" checked={formData.role === 'user'} onChange={(e) => setFormData({ ...formData, role: e.target.value })} />
-                                Member (User)
-                            </label>
-                            <label className={`w-full text-black/70 border border-black/80 p-2 pr-4 focus:ring-0 text-sm font-bold placeholder-black/70 ${formData.role === 'agent' ? 'bg-blue-50 border-blue-600 text-blue-600' : 'bg-gray-50'}`}>
-                                <input type="radio" value="agent" className="hidden" checked={formData.role === 'agent'} onChange={(e) => setFormData({ ...formData, role: e.target.value })} />
-                                Listing Agent
-                            </label>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-black text-start">Password</label>
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? 'text' : 'password'}
+                                        className="w-full border border-black/30 bg-teal-700/55 px-3 py-3 pr-10 text-sm font-bold text-white placeholder:text-white/30 focus:outline-none"
+                                        placeholder="Create password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white"
+                                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showPassword ? <HiOutlineEyeOff className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-[10px] font-black uppercase tracking-widest text-black text-start">Confirm Password</label>
+                                <div className="relative">
+                                    <input
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        className="w-full border border-black/30 bg-teal-700/55 px-3 py-3 pr-10 text-sm font-bold text-white placeholder:text-white/30 focus:outline-none"
+                                        placeholder="Repeat password"
+                                        value={formData.password_confirmation}
+                                        onChange={(e) => setFormData({ ...formData, password_confirmation: e.target.value })}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 hover:text-white"
+                                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                                    >
+                                        {showConfirmPassword ? <HiOutlineEyeOff className="h-5 w-5" /> : <HiOutlineEye className="h-5 w-5" />}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
+                        <div>
+                            <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-black text-start">Role</label>
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <label className={`cursor-pointer border px-3 py-3 text-xs font-black uppercase tracking-widest ${formData.role === 'user' ? 'border-cyan-400 bg-cyan-500/50 text-cyan-200' : 'border-white/20 bg-white/5 text-white/70'}`}>
+                                    <input
+                                        type="radio"
+                                        value="user"
+                                        className="hidden"
+                                        checked={formData.role === 'user'}
+                                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                    />
+                                    Member
+                                </label>
+                                <label className={`cursor-pointer border px-3 py-3 text-xs font-black uppercase tracking-widest ${formData.role === 'agent' ? 'border-cyan-400 bg-cyan-500/20 text-cyan-200' : 'border-white/20 bg-white/5 text-white/70'}`}>
+                                    <input
+                                        type="radio"
+                                        value="agent"
+                                        className="hidden"
+                                        checked={formData.role === 'agent'}
+                                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                    />
+                                    Listing Agent
+                                </label>
+                            </div>
+                        </div>
 
-                    <div className="flex items-center gap-5">
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`px-6 py-3 w-fit flex justify-start border border-black/10 bg-teal-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg  ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                            className="w-full border border-black/30 bg-gray-900 relative z-10 px-4 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:from-cyan-400 hover:to-blue-500 disabled:cursor-not-allowed disabled:opacity-70"
                         >
+                            <img src="/bg-img.png" className="absolute inset-0 h-full w-full object-cover opacity-20" alt="" />
                             {loading ? 'Creating Account...' : 'Sign Up'}
                         </button>
-                        <p className="text-center text-sm text-white">
+
+                        <p className="text-start text-xs font-bold text-white/70">
                             Already have an account?{' '}
-                            <Link to="/login" className="font-bold text-blue-600 hover:text-blue-500">
-                                Sign in
+                            <Link to="/login" className="font-black uppercase tracking-widest text-black hover:text-cyan-200">
+                                Sign In
                             </Link>
                         </p>
-                    </div>
-                </form>
-
-
+                    </form>
+                </div>
             </div>
         </div>
     );

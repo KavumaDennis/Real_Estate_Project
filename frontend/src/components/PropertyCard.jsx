@@ -5,6 +5,7 @@ import { BiBed, BiBath, BiArea } from 'react-icons/bi';
 import SafeImage from './SafeImage';
 import propertyService from '../services/propertyService';
 import { useAuth } from '../context/AuthContext';
+import { formatUGX } from '../utils/currency';
 
 const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => {
     const isList = viewMode === 'list';
@@ -31,11 +32,12 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
     };
 
     return (
-        <div className={` overflow-hidden hover:shadow-2xl transition-all duration-500 group relative ${isList ? 'flex flex-col md:flex-row h-full md:h-72' : 'flex flex-col'}`}>
+        <div className={` overflow-hidden hover:shadow-2xl transition-all duration-500 group relative ${isList ? 'flex flex-col md:flex-row h-full md:h-72 space-x-3' : 'flex flex-col'}`}>
             {/* Badge Tags */}
             <div className="absolute top-2 left-2 z-10 flex flex-col gap-3">
                 <div className="">
-                    <span className={`px-4 py-1.5 text-xs font-black uppercase tracking-widest text-indigo-100 shadow-lg ${property.status === 'sale' ? 'bg-blue-600' : 'bg-green-600 border border-black/30'}`}>
+                    <span className={`px-4 py-1.5 relative text-xs font-black uppercase tracking-widest text-indigo-100 shadow-lg ${property.status === 'sale' ? 'bg-blue-600' : 'bg-green-600 border border-black/30'}`}>
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         For {property.status === 'for_sale' ? 'Sale' : 'Rent'}
                     </span>
                     {property.featured && (
@@ -78,13 +80,13 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                         </h3>
                     </div>
                     <div className="text-right flex items-center gap-1">
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Price</p>
-                        <p className="text-xs text-start font-black text-black uppercase tracking-widest">${property.price?.toLocaleString()}</p>
+                       
+                        <p className="text-xs text-start font-black text-indigo-600 uppercase tracking-widest">{formatUGX(property.price)}</p>
                     </div>
                 </div>
 
-                <div className=" bg-green-600 relative border border-black/30 flex items-center justify-between p-2 py-3 mb-3">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className={`${isList ? 'mt-10' : 'mt-0'} bg-green-600 relative border border-black/30 flex items-center justify-between p-2 py-3 mb-3`} >
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="flex items-center text-indigo-100 text-sm font-medium">
                         <HiLocationMarker className="h-5 w-5 mr-1 text-black" />
                         <span className="line-clamp-1">{property.address || 'Unknown location'}</span>
@@ -97,13 +99,13 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                         {(property.type === 'house' || property.type === 'apartment') && (
                             <>
                                 <div className="flex items-center border border-blue-800">
-                                    <div className="p-1 bg-indigo-600  font-black text-indigo-100">
+                                    <div className="p-1 bg-gray-900  font-black text-indigo-100">
                                         <BiBed className="h-4 w-4 " />
                                     </div>
                                     <span className="text-sm font-black px-2 text-gray-900">{property.bedrooms} <span className="text-gray-800 font-bold">Beds</span></span>
                                 </div>
                                 <div className="flex items-center border border-blue-800">
-                                    <div className="p-1 bg-indigo-600  font-black text-indigo-100">
+                                    <div className="p-1 bg-gray-900  font-black text-indigo-100">
                                         <BiBath className="h-4 w-4 " />
                                     </div>
                                     <span className="text-sm font-black px-2 text-gray-900">{property.bathrooms} <span className="text-gray-800 font-bold">Baths</span></span>
@@ -112,7 +114,7 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                         )}
                         {property.type === 'land' && (
                             <div className="flex items-center border border-blue-800">
-                                <div className="p-1 bg-indigo-600  font-black text-indigo-100">
+                                <div className="p-1 bg-gray-900  font-black text-indigo-100">
                                     <BiArea className="h-4 w-4" />
                                 </div>
                                 <span className="text-sm font-black px-2 text-gray-900">{property.land_size} <span className="text-gray-800 font-bold">{property.land_size_unit || 'sqm'}</span></span>
@@ -120,7 +122,7 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                         )}
                         {property.type === 'commercial' && (
                             <div className="flex items-center border border-blue-800">
-                                <div className="p-1 bg-indigo-600  font-black text-indigo-100">
+                                <div className="p-1 bg-gray-900  font-black text-indigo-100">
                                     <HiOutlinePlus className="h-4 w-4" />
                                 </div>
                                 <span className="text-sm font-bold px-2 text-gray-800 uppercase">{property.availability || 'Available'}</span>
@@ -134,7 +136,7 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                                 to={`/properties/${property.slug}`}
                                 className=""
                             >
-                                <p className='px-6 py-3 bg-indigo-600 border border-black/30 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg'>
+                                <p className='px-6 py-3 bg-gray-900 border border-black/30 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg'>
                                     Details
                                 </p>
                             </Link>
@@ -145,14 +147,14 @@ const PropertyCard = ({ property, viewMode = 'grid', initialSaved = false }) => 
                 {isList && (
                     <div className="mt-6 flex justify-between items-center">
                         <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 bg-gray-200"></div>
+                            <div className="h-10 w-10 bg-gray-200 border border-black/30"></div>
                             <p className="text-sm font-bold text-gray-900">{property.agent?.name || 'Agent'}</p>
                         </div>
                         <Link
                             to={`/properties/${property.slug}`}
-                            className="px-6 py-3 relative bg-indigo-600 border border-black/10 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg"
+                            className="px-6 py-3 relative bg-gray-900 border border-black/10 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg"
                         >
-                              <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                             Details
                         </Link>
                     </div>

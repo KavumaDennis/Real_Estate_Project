@@ -9,18 +9,21 @@ class InquiryResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $property = $this->property;
+        $agent = $this->agent;
+
         return [
             'id' => $this->id,
-            'property' => $this->property_id ? [
-                'id' => $this->property->id,
-                'title' => $this->property->title,
-                'slug' => $this->property->slug,
-                'images' => $this->property->images->map(fn($img) => url('storage/' . $img->image_path)),
+            'property' => $property ? [
+                'id' => $property->id,
+                'title' => $property->title,
+                'slug' => $property->slug,
+                'images' => $property->images->map(fn($img) => \App\Helpers\StorageUrlHelper::url($img->image_path)),
             ] : null,
-            'agent' => $this->agent_id ? [
-                'id' => $this->agent->id,
-                'name' => $this->agent->name,
-                'email' => $this->agent->email,
+            'agent' => $agent ? [
+                'id' => $agent->id,
+                'name' => $agent->name,
+                'email' => $agent->email,
             ] : null,
             'user' => $this->user ? [
                 'id' => $this->user->id,

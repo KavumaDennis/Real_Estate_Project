@@ -2,6 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
+import { MdOutlineManageAccounts } from "react-icons/md";
+
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -14,14 +16,14 @@ const Navbar = () => {
             : location.pathname.startsWith(path);
 
     const navLink = (path) =>
-        `transition p-0.5 px-3 ${isActive(path) ? 'bg-indigo-600  border border-black/30 text-sm font-black transition-all duration-300' : 'text-white/95 font-medium hover:text-indigo-800/90'}`;
+        `transition p-0.5 px-3 ${isActive(path) ? 'bg-gray-900  border border-black/30 text-sm font-black transition-all duration-300' : 'text-white/95 font-medium hover:text-indigo-800/90'}`;
 
     const mobileNavLink = (path) =>
         `block text-xs font-black uppercase tracking-widest transition ${isActive(path) ? 'text-amber-600' : 'text-gray-700 hover:text-amber-600'}`;
 
     return (
         <nav className="bg-green-600 relative border border-black/30 shadow-md sticky top-0 z-50">
-            <img src="/public/background.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+            <img src="/background.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
             <div className="w-full pl-8 relative z-10">
                 <div className="flex justify-between h-16">
                     <div className="flex items-center">
@@ -42,19 +44,26 @@ const Navbar = () => {
                         <div className="ml-8 flex items-center space-x-4">
                             {user ? (
                                 <div className="flex items-center space-x-4">
-                                    <Link to="/dashboard" className="text-indigo-800/90 font-black">Dashboard</Link>
+                                    <Link to="/dashboard" className="bg-gray-900 relative z-10 hover:bg-indigo-700/90 transition-all duration-200 text-white flex items-center text-sm border border-black/30 font-black pr-2">
+                                     <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                        <p className='p-1.5 border-r border-black/30 mr-2'>
+                                            <MdOutlineManageAccounts className='h-4 w-4' />
+                                        </p>
+                                        Dashboard
+                                    </Link>
                                     <button
                                         onClick={logout}
-                                        className="bg-red-500/90 px-6 py-3 border border-black/10 text-xs font-black uppercase tracking-widest text-white shadow-lg hover:bg-red-600 transition"
+                                        className="bg-red-500/90 px-6 py-3 relative z-10 border border-black/10 text-xs font-black uppercase tracking-widest text-white shadow-lg hover:bg-red-600 transition"
                                     >
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         Logout
                                     </button>
                                 </div>
                             ) : (
                                 <div className="flex items-center space-x-4">
                                     <Link to="/login" className="px-6 py-3 border border-white/80 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">Login</Link>
-                                    <Link to="/register" className="px-6 py-3 relative border border-black/10 bg-indigo-600 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <Link to="/register" className="px-6 py-3 relative border border-black/10 bg-gray-900 text-xs font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
+                                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                         Register
                                     </Link>
                                 </div>

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\StyledNotificationMail;
 use App\Models\Inquiry;
 use App\Http\Resources\InquiryResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class InquiryController extends Controller
 {
@@ -22,7 +25,7 @@ class InquiryController extends Controller
                     $inner->where('agent_id', $user->id);
                 })->orWhere('agent_id', $user->id);
             });
-        } elseif ($user->role?->slug !== 'admin') {
+        } elseif (!in_array($user->role?->slug, ['admin', 'super-admin'], true)) {
             // Regular users see their own inquiries
             $query->where('user_id', $user->id);
         }
@@ -35,17 +38,9 @@ class InquiryController extends Controller
     public function update(Request $request, $id)
     {
         $inquiry = Inquiry::findOrFail($id);
-        
-        // Authorization
         $user = $request->user();
-        $isOwner = false;
-        if ($inquiry->property_id && $inquiry->property->agent_id === $user->id) {
-            $isOwner = true;
-        } elseif ($inquiry->agent_id === $user->id) {
-            $isOwner = true;
-        }
 
-        if ($user->role?->slug === 'agent' && !$isOwner) {
+        if (!$this->canManageInquiry($user, $inquiry)) {
             abort(403);
         }
 
@@ -61,17 +56,9 @@ class InquiryController extends Controller
     public function destroy(Request $request, $id)
     {
         $inquiry = Inquiry::findOrFail($id);
-        
-        // Authorization
         $user = $request->user();
-        $isOwner = false;
-        if ($inquiry->property_id && $inquiry->property->agent_id === $user->id) {
-            $isOwner = true;
-        } elseif ($inquiry->agent_id === $user->id) {
-            $isOwner = true;
-        }
 
-        if ($user->role?->slug !== 'admin' && ($user->role?->slug === 'agent' && !$isOwner)) {
+        if (!$this->canManageInquiry($user, $inquiry)) {
             abort(403);
         }
 
@@ -99,7 +86,82 @@ class InquiryController extends Controller
         $validated['status'] = 'pending';
 
         $inquiry = Inquiry::create($validated);
+        $inquiry->load(['property', 'agent']);
+        $this->sendInquiryEmails($inquiry);
 
         return new InquiryResource($inquiry->load(['property.images', 'user', 'agent']));
+    }
+
+    private function sendInquiryEmails(Inquiry $inquiry): void
+    {
+        $propertyTitle = $inquiry->property?->title ?? 'your listing';
+        $propertyAddress = $inquiry->property?->address ?? '';
+        $agentEmail = $inquiry->agent?->email ?? $inquiry->property?->agent?->email;
+
+        if (!empty($agentEmail)) {
+            $this->sendEmailSafe(
+                $agentEmail,
+                'New Property Inquiry Received',
+                'New Property Inquiry',
+                "A new inquiry has been submitted for {$propertyTitle}.",
+                [
+                    "Name: {$inquiry->name}",
+                    "Email: {$inquiry->email}",
+                    "Phone: " . ($inquiry->phone ?: 'N/A'),
+                    "Message: {$inquiry->message}",
+                    $propertyAddress ? "Address: {$propertyAddress}" : null,
+                ],
+                'Open Dashboard',
+                rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/') . '/dashboard/leads'
+            );
+        }
+
+        if (!empty($inquiry->email)) {
+            $this->sendEmailSafe(
+                $inquiry->email,
+                'We Received Your Property Inquiry',
+                'Inquiry Received',
+                "Thanks {$inquiry->name}, we have received your request.",
+                [
+                    "Property: {$propertyTitle}",
+                    $propertyAddress ? "Address: {$propertyAddress}" : null,
+                    "Our team will contact you shortly.",
+                ],
+                'Browse Properties',
+                rtrim(env('FRONTEND_URL', 'http://localhost:5173'), '/') . '/properties'
+            );
+        }
+    }
+
+    private function sendEmailSafe(string $to, string $subject, string $title, ?string $intro, array $lines, ?string $ctaText = null, ?string $ctaUrl = null): void
+    {
+        try {
+            Mail::to($to)->send(new StyledNotificationMail($subject, $title, $intro, $lines, $ctaText, $ctaUrl));
+        } catch (\Throwable $e) {
+            Log::warning('Failed to send inquiry email', [
+                'to' => $to,
+                'subject' => $subject,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function canManageInquiry($user, Inquiry $inquiry): bool
+    {
+        $role = $user->role?->slug;
+
+        if (in_array($role, ['admin', 'super-admin'], true)) {
+            return true;
+        }
+
+        if ($inquiry->user_id === $user->id) {
+            return true;
+        }
+
+        if ($inquiry->agent_id === $user->id) {
+            return true;
+        }
+
+        return (int) optional($inquiry->property)->agent_id === (int) $user->id;
     }
 }

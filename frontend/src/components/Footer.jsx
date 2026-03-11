@@ -5,7 +5,7 @@ import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-ic
 const Footer = () => {
     return (
         <footer className="bg-gray-900 relative pt-24 pb-12 font-sans overflow-hidden">
-            <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+            <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 {/* Decorative background element */}
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600 rounded-full blur-[150px] opacity-10"></div>
@@ -22,7 +22,7 @@ const Footer = () => {
                         <div className="flex space-x-4">
                             {[FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
                                 <a key={i} href="#" className="h-10 w-10 relative bg-green-600 border border-black/30 flex items-center justify-center text-white hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:-translate-y-1">
-                                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     <Icon size={18} />
                                 </a>
                             ))}

@@ -4,9 +4,10 @@ import api from '../services/api';
 import {
     HiOutlineUsers, HiOutlineOfficeBuilding, HiOutlineCreditCard,
     HiOutlineChatAlt2, HiOutlineTrendingUp, HiOutlineTrendingDown,
-    HiOutlineArrowNarrowRight, HiOutlineClock, HiOutlineMail
+    HiOutlineArrowNarrowRight, HiOutlineClock, HiOutlineMail, HiOutlineBriefcase
 } from 'react-icons/hi';
 import SafeImage from '../components/SafeImage';
+import { formatUGX } from '../utils/currency';
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState(null);
@@ -34,10 +35,11 @@ const AdminDashboard = () => {
     );
 
     const statCards = [
-        { name: 'Total Revenue', value: `$${(stats.total_revenue || 0).toLocaleString()}`, icon: HiOutlineCreditCard },
+        { name: 'Total Revenue', value: formatUGX(stats.total_revenue || 0), icon: HiOutlineCreditCard },
         { name: 'Active Users', value: stats.total_users || 0, icon: HiOutlineUsers },
         { name: 'Total Properties', value: stats.total_properties || 0, icon: HiOutlineOfficeBuilding },
         { name: 'Total Leads', value: stats.total_leads || 0, icon: HiOutlineChatAlt2 },
+        { name: 'Service Requests', value: stats.total_service_requests || 0, icon: HiOutlineBriefcase },
     ];
 
     return (
@@ -46,28 +48,28 @@ const AdminDashboard = () => {
                 <div>
                     <h1 className="block text-xs text-start font-black text-black uppercase tracking-widest mb-1">Platform Overview</h1>
                     <p className="px-4 sm:px-6 py-2 sm:py-3 border border-black/30 relative bg-green-600 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         Monitoring real-time performance and system health.</p>
                 </div>
                 <div className="flex items-center space-x-2 px-4 sm:px-6 py-2.5 relative z-10 border border-black/10 bg-indigo-700 text-xs text-start font-black uppercase tracking-widest text-white hover:bg-blue-600 transition shadow-lg cursor-pointer">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <HiOutlineClock className="h-5 w-5" />
                     <span className="">Auto-updating every 5m</span>
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
                 {statCards.map((card) => (
-                    <div key={card.name} className="bg-indigo-600 relative p-4 border border-black/30 shadow-sm hover:shadow-xl transition-all duration-300 group">
-                        <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div key={card.name} className="bg-gray-900 relative p-4 border border-black/30 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <div className="flex items-center justify-between mb-6">
-                            <div className={`p-3 bg-green-600 text-white transition-transform duration-300`}>
+                            <div className={`p-3 bg-indigo-100 text-black/70 border border-black/30 transition-transform duration-300`}>
                                 <card.icon className="h-6 w-6" />
                             </div>
                         </div>
                         <h3 className="text-2xl text-start sm:text-3xl font-black text-white mt-2 tracking-tight group-hover:text-blue-600 transition-colors">{card.value}</h3>
-                        <p className="text-black text-start text-[10px] font-black uppercase tracking-[0.2em]">{card.name}</p>
+                        <p className="text-green-600 text-start text-[10px] font-black uppercase tracking-[0.2em]">{card.name}</p>
                     </div>
                 ))}
             </div>
@@ -75,7 +77,7 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10">
                 {/* Revenue Chart Placeholder */}
                 <div className="lg:col-span-2 bg-white/50 z-10 relative h-fit p-10 border border-dashed border-black/30 shadow-sm">
-                    <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="flex items-center justify-between mb-12">
                         <h3 className="text-xl font-black text-gray-900">Revenue Growth</h3>
                         <select className="bg-gray-50 border-none rounded-xl text-xs font-black uppercase tracking-widest text-gray-500 focus:ring-0 cursor-pointer">
@@ -92,7 +94,7 @@ const AdminDashboard = () => {
                                         style={{ height: `${((stats.sales_chart.datasets[0].data[i] || 0) / Math.max(...(stats.sales_chart.datasets[0].data || [1]), 1)) * 240}px`, minHeight: '8px' }}
                                     >
                                         <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] font-black px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition shadow-xl whitespace-nowrap z-20">
-                                            ${(stats.sales_chart.datasets[0].data[i] || 0).toLocaleString()}
+                                            {formatUGX(stats.sales_chart.datasets[0].data[i] || 0)}
                                         </div>
                                     </div>
                                 </div>
@@ -102,11 +104,11 @@ const AdminDashboard = () => {
                     </div>
                 </div>
 
-                <div className="bg-green-600 relative z-10 p-8 border border-black/20 shadow-sm">
-                 <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                <div className="bg-green-600 relative z-10 p-8 border border-black/30 shadow-sm">
+                    <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                     <div className="flex items-center justify-between mb-8 z-10 relative">
                         <h3 className="text-lg font-black text-white">New Agents</h3>
-                        <Link to="/admin/users" className="text-white p-2 bg-indigo-600 border border-black/30 transition">
+                        <Link to="/admin/users" className="text-white p-2 bg-gray-900 border border-black/30 transition">
                             <HiOutlineArrowNarrowRight className="h-5 w-5" />
                         </Link>
                     </div>
@@ -114,7 +116,7 @@ const AdminDashboard = () => {
                         {stats.recent_users.map((user) => (
                             <div key={user.id} className="flex items-center space-x-4 group cursor-pointer">
                                 <div className="h-12 w-12 bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 group-hover:scale-110 transition">
-                                    {user.avatar ? <SafeImage src={user.avatar} className="h-full w-full object-cover" alt="" /> : <span className="text-gray-400 font-bold">{user.name.charAt(0)}</span>}
+                                    {(user.avatar_url || user.avatar) ? <SafeImage src={user.avatar_url || user.avatar} className="h-full w-full object-cover" alt="" /> : <span className="text-gray-400 font-bold">{user.name.charAt(0)}</span>}
                                 </div>
                                 <div className="overflow-hidden">
                                     <p className="font-black text-black text-sm truncate">{user.name}</p>
@@ -128,32 +130,55 @@ const AdminDashboard = () => {
 
             {/* Bottom Grid for Lists */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
-                <div className="bg-white/50 relative p-8 border border-dashed border-black/30 shadow-sm overflow-hidden">
-                 <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
-                    <h3 className="text-xl text-start font-black text-black mb-5 px-2">Latest Properties</h3>
-                    <div className="divide-y divide-black/30">
-                        {stats.recent_properties.map(prop => (
-                            <div key={prop.id} className="py-4 px-2 hover:bg-gray-50/50 transition flex items-center justify-between group">
-                                <div className="flex items-center space-x-4 overflow-hidden">
-                                    <div className="h-12 w-12 bg-gray-100 overflow-hidden flex-shrink-0">
-                                        <SafeImage src={prop.images?.[0]} className="h-full w-full object-cover" alt="" />
-                                    </div>
-                                    <div className="overflow-hidden">
-                                        <p className="font-black text-start text-gray-900 text-sm truncate">{prop.title}</p>
-                                        <p className="text-[10px] text-start text-green-600 font-bold uppercase tracking-widest mt-0.5">{prop.location?.name}</p>
-                                    </div>
+                <div className="space-y-3">
+                    <div className="bg-white/60 h-fit relative p-4 border border-dashed border-black/30 shadow-sm overflow-hidden">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <h3 className="text-lg font-black text-start mb-5 uppercase tracking-widest text-gray-900">Service Requirements</h3>
+                        <div className="space-y-3 relative z-10">
+                            {(stats.recent_service_requests || []).map((req) => (
+                                <div key={req.id} className="p-3 border border-black/20 bg-white/90">
+                                    <p className="text-xs font-black uppercase tracking-widest text-gray-900">
+                                        {req.service?.name || 'Service'}
+                                    </p>
+                                    <p className="text-sm font-bold text-blue-700">{req.user?.name || 'Unknown user'}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500">
+                                        {new Date(req.created_at).toLocaleString()}
+                                    </p>
                                 </div>
-                                <span className="text-sm font-black text-indigo-600 group-hover:translate-x-1 transition-transform animate-in fade-in duration-500">
-                                    ${Number(prop.price).toLocaleString()}
-                                </span>
-                            </div>
-                        ))}
+                            ))}
+                            {(!stats.recent_service_requests || stats.recent_service_requests.length === 0) && (
+                                <p className="text-sm text-gray-400 italic">No service requests yet.</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="bg-white/50 relative p-8 border border-dashed border-black/30 shadow-sm overflow-hidden">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                        <h3 className="text-xl text-start font-black text-black mb-5 px-2">Latest Properties</h3>
+                        <div className="divide-y divide-black/30">
+                            {stats.recent_properties.map(prop => (
+                                <div key={prop.id} className="py-4 px-2 hover:bg-gray-50/50 transition flex items-center justify-between group">
+                                    <div className="flex items-center space-x-4 overflow-hidden">
+                                        <div className="h-12 w-12 bg-gray-100 overflow-hidden flex-shrink-0">
+                                            <SafeImage src={prop.images?.[0]} className="h-full w-full object-cover" alt="" />
+                                        </div>
+                                        <div className="overflow-hidden">
+                                            <p className="font-black text-start text-gray-900 text-sm truncate">{prop.title}</p>
+                                            <p className="text-[10px] text-start text-green-600 font-bold uppercase tracking-widest mt-0.5">{prop.location?.name}</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-sm font-black text-indigo-600 group-hover:translate-x-1 transition-transform animate-in fade-in duration-500">
+                                        {formatUGX(prop.price)}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
+
                 {/* Recent Activity Mini-List */}
                 <div className="space-y-6">
-                    <div className="bg-indigo-600 relative p-8 text-white shadow-xl overflow-hidden group">
-                         <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                    <div className="bg-gray-900 relative p-8 text-white shadow-xl overflow-hidden group">
+                        <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                         <h3 className="text-lg font-black text-start mb-6 uppercase tracking-widest">Recent Activity</h3>
                         <div className="space-y-4">
                             {stats.recent_activity?.map((activity, i) => (

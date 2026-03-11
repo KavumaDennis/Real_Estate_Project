@@ -7,7 +7,7 @@ import SafeImage from '../components/SafeImage';
 
 const AgentAvatar = ({ agent, size = 'lg' }) => {
     const initials = agent.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    const colors = ['bg-blue-600', 'bg-violet-600', 'bg-teal-600', 'bg-orange-500', 'bg-pink-600', 'bg-indigo-600'];
+    const colors = ['bg-blue-600', 'bg-violet-600', 'bg-teal-600', 'bg-orange-500', 'bg-pink-600', 'bg-gray-900'];
     const color = colors[agent.id % colors.length];
     const sizeClass = size === 'lg' ? 'h-15 w-15 text-xl' : 'h-12 w-12 text-xl';
 
@@ -76,7 +76,7 @@ const Agents = () => {
             <div className="border-b border-gray-100">
                 <div className="w-full mx-auto py-10 pb-5">
                     <div className="text-center mb-10">
-                        <span className="inline-block px-5 py-2 bg-indigo-600 border border-black/30 text-indigo-100 font-black text-xs uppercase tracking-widest mb-6">
+                        <span className="inline-block px-5 py-2 bg-gray-900 border border-black/30 text-indigo-100 font-black text-xs uppercase tracking-widest mb-6">
                             Our Team
                         </span>
                         <h1 className="text-5xl md:text-6xl font-black text-black/90 mb-6">
@@ -101,8 +101,8 @@ const Agents = () => {
                                 </p>
                             </div>
                             <div className="">
-                                <Link className='px-6 py-3 bg-green-600 border border-black/30 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg'>
-                                    Real estate management
+                                <Link to={"/blog"} className='px-6 py-3 bg-green-600 border border-black/30 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg'>
+                                    industry insights
                                 </Link>
                             </div>
                         </div>
@@ -163,7 +163,7 @@ const Agents = () => {
                         </div>
 
                         <p className="text-indigo-100 text-sm border border-blue-800 w-fit mx-auto font-bold my-5 flex">
-                            <p className='text-indigo-100 text-sm h-full bg-indigo-600 p-1'>Showing</p> <span className="flex items-center text-black px-2">{filtered.length} agent{filtered.length !== 1 ? 's' : ''}</span>
+                            <p className='text-indigo-100 text-sm h-full bg-gray-900 p-1'>Showing</p> <span className="flex items-center text-black px-2">{filtered.length} agent{filtered.length !== 1 ? 's' : ''}</span>
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filtered.map(agent => (
@@ -171,7 +171,7 @@ const Agents = () => {
                                     key={agent.id}
                                     className="bg-green-600 p-8 relative border border-black/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-start items-start w-full"
                                 >
-                                      <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                      <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                     <div className="flex flex-col items-start text-center flex-1 w-full">
                                         <div className="relative mb-6">
                                             <AgentAvatar agent={agent} size="lg" />
@@ -219,15 +219,15 @@ const Agents = () => {
                                     <div className="grid grid-cols-2 gap-3 mt-4">
                                         <Link
                                             to={`/agents/${agent.id}`}
-                                            className="flex items-center justify-center relative px-6 py-3 border border-black/30 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg"
+                                            className="flex items-center justify-center relative px-6 py-3 border border-black/30 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-indigo-100 hover:bg-blue-600 transition shadow-lg"
                                         >
-                                              <img src="/public/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
+                                              <img src="/bg-img.png" className='absolute w-full h-full object-cover opacity-20 inset-0' alt="" />
                                             View Profile
                                         </Link>
                                         {agent.phone ? (
                                             <a
                                                 href={`tel:${agent.phone}`}
-                                                className="flex items-center justify-center space-x-2 px-6 py-3 border border-black/30 bg-indigo-600 text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg"
+                                                className="flex items-center justify-center space-x-2 px-6 py-3 border border-black/30 bg-gray-900 text-xs text-start font-black uppercase tracking-widest text-black hover:bg-blue-600 transition shadow-lg"
                                             >
                                                 <HiPhone className="h-4 w-4" />
                                                 <span>Call</span>
